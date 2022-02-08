@@ -5,6 +5,7 @@ import 'package:famfam/HomeScreen.dart';
 import 'package:famfam/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/register.dart';
+import 'package:famfam/pinpost_screen/pin_screen.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -21,9 +22,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
         ),
-        // home: Welcome()
+        
         // home: HomeScreen()
-        home: Welcome()
+        home: PinScreen()
         // home: CheckIn()
         // home: MenuCheckIn());)
         );
