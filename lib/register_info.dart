@@ -1,5 +1,5 @@
 import 'package:famfam/circleScreen/createCricle/body.dart';
-import 'package:famfam/HomeScreen.dart';
+import 'package:famfam/login.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -84,7 +84,6 @@ class _Register_InfoState extends State<Register_Info> {
                           Phone_number(),
 
                           // Birthdate
-
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -116,16 +115,6 @@ class _Register_InfoState extends State<Register_Info> {
                                               side: BorderSide(
                                                   color: Colors.red)))),
                                   onPressed: () => pickDate(context),
-                                  // {
-                                  // showDatePicker(
-                                  //     context: context,
-                                  //     initialDate: DateTime.now(),
-                                  //     firstDate: DateTime(1940),
-                                  //     lastDate: DateTime.now());
-                                  // .then((date) => setState(() {
-                                  //       _dateTime = date;
-                                  //     }));
-                                  // }
                                 ),
                               ),
                             ],
