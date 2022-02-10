@@ -1,7 +1,9 @@
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/Homepage/addList.dart';
 import 'package:famfam/check-in/Checkin.dart';
+import 'package:famfam/loading.dart';
 import 'package:famfam/login.dart';
+import 'package:famfam/register_info.dart';
 import 'package:famfam/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/register.dart';
@@ -10,9 +12,18 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MaterialApp(
-    home: MyApp(),
-  ));
+  runApp(
+    MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => Loading(),
+        '/welcome': (context) => Welcome(),
+        '/register': (context) => Register(),
+        '/registerinfo': (context) => Register_Info(),
+        '/login': (context) => Login(),
+      },
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,6 +35,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
         ),
-        home: HomePage());
+        home: Welcome());
   }
 }

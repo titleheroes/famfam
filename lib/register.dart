@@ -168,7 +168,7 @@ class Register extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomeScreen()));
+                                    builder: (context) => Login()));
                           },
                           // alignment: Alignment.centerRight,
                           // padding: EdgeInsets.fromLTRB(0, 10, 25, 10),

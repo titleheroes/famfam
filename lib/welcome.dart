@@ -1,3 +1,4 @@
+import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -48,12 +49,6 @@ class _Welcome1State extends State<Welcome> {
   //   _pageController.dispose();
   // }
 
-  @override
-  // void initState() {
-  //   super.initState();
-  //   checkAuth(context);
-  // }
-
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -95,14 +90,5 @@ class _Welcome1State extends State<Welcome> {
         ],
       )),
     );
-  }
-
-  Future checkAuth(BuildContext context) async {
-    var user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      print("Already singed-in with");
-      // Navigator.pushReplacement(
-      //     context, MaterialPageRoute(builder: (context) => MyHomePage(user)));
-    }
   }
 }

@@ -1,10 +1,12 @@
+import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/register.dart';
 import 'package:famfam/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/services/auth.dart';
 
-class HomeScreen extends StatelessWidget {
+class Login extends StatelessWidget {
   final AuthService _auth = AuthService();
+  Login({Key? key}) : super(key: key);
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -112,7 +114,7 @@ class HomeScreen extends StatelessWidget {
                     style: TextStyle(height: 0),
                   ),
                 ),
-                //Forfot password
+                //Forgot password
                 TextButton(
                   onPressed: () {},
                   // alignment: Alignment.centerRight,
@@ -138,9 +140,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                     child: Text('Login'),
                     onPressed: () async {
-                      _auth.signin();
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Welcome()));
+                      _auth.signin(context, emailController.text.trim(),
+                          passwordController.text.trim());
                     },
                   ),
                 ),
@@ -156,10 +157,8 @@ class HomeScreen extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Register()));
+                            Navigator.pushReplacementNamed(
+                                context, "/register");
                           },
                           // alignment: Alignment.centerRight,
                           // padding: EdgeInsets.fromLTRB(0, 10, 25, 10),

@@ -2,6 +2,9 @@ import 'dart:math';
 import 'package:famfam/Homepage/menuHome.dart';
 import 'package:famfam/Homepage/tabbar.dart';
 import 'package:famfam/check-in/Checkin.dart';
+import 'package:famfam/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:famfam/services/auth.dart';
 import 'package:flutter/material.dart';
 // import 'package:famfam/Homepage/eachMenu.dart';
 
@@ -13,6 +16,9 @@ import 'package:famfam/Homepage/date.dart';
 final Color backgroundColor = Color(0xFFE7C581);
 
 class HomePage extends StatefulWidget {
+  var user = FirebaseAuth.instance.currentUser;
+  HomePage(this.user, {Key? key}) : super(key: key);
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -21,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   double value = 0;
   String family = "Family Name";
   String name = "Janejira";
+  final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,9 +112,10 @@ class _HomePageState extends State<HomePage> {
                                     size: 40,
                                   ),
                                   onPressed: () {
-                                    setState(() {
-                                      value == 0 ? value = 1 : value = 0;
-                                    });
+                                    // setState(() {
+                                    //   value == 0 ? value = 1 : value = 0;
+                                    // });
+                                    _auth.signOut(context);
                                   }))
                         ],
                       ),

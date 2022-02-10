@@ -195,7 +195,7 @@ class Finish_Button extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()));
+                        MaterialPageRoute(builder: (context) => Login()));
                   },
                   child: Text(
                     "Cancel",
