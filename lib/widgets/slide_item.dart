@@ -1,5 +1,5 @@
-import 'package:famfam/Login.dart';
-import 'package:famfam/model/slide.dart';
+import 'package:famfam/login.dart';
+import 'package:famfam/models/slide.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

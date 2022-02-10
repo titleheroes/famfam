@@ -52,6 +52,10 @@ dependencies:
   geocode: 1.0.1
   another_flushbar: ^1.10.28
   sliding_up_panel: ^2.0.0+1
+  provider: ^6.0.2
+  intl: ^0.17.0
+  firebase_core: ^1.12.0
+  firebase_auth: ^3.3.6
 
 dev_dependencies:
   flutter_test:
