@@ -1,5 +1,5 @@
 import 'package:famfam/circleScreen/createCricle/body.dart';
-import 'package:famfam/HomeScreen.dart';
+import 'package:famfam/Login.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -300,7 +300,8 @@ class Finish_Button extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()));
                   },
                   child: Text(
                     "Cancel",
@@ -308,9 +309,7 @@ class Finish_Button extends StatelessWidget {
                       fontSize: 22,
                       color: Colors.white,
                     ),
-                    
                   ),
-                  
                 ),
               ),
             ),
@@ -343,7 +342,10 @@ class Finish_Button extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) =>createCircleScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => createCircleScreen()));
                   },
                   child: Text(
                     "Confirm",

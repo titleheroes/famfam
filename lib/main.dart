@@ -1,6 +1,8 @@
 // import 'package:famfam/Homepage/HomePage.dart';
-import 'package:famfam/HomeScreen.dart';
-// import 'package:famfam/check-in/Checkin.dart';
+import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/Homepage/addList.dart';
+import 'package:famfam/Login.dart';
+import 'package:famfam/check-in/Checkin.dart';
 // import 'package:famfam/check-in/menu.dart';
 import 'package:famfam/welcome.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +23,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
         ),
-        // home: Welcome()
-        // home: HomeScreen()
-        home: Welcome()
-        // home: CheckIn()
-        // home: MenuCheckIn());)
-        );
+        home: HomePage());
   }
 }
