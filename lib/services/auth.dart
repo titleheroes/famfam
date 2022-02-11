@@ -3,19 +3,26 @@ import 'package:famfam/login.dart';
 import 'package:flutter/material.dart';
 // import 'package:famfam/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   //sign in email, password
   Future signin(BuildContext context, email, password) async {
-    _auth
-        .signInWithEmailAndPassword(email: email, password: password)
-        .then((user) {
-      print("signed in");
-      checkAuth(context);
-    }).catchError((error) {
-      print(error);
-    });
+    try {
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((value) {
+        var user = FirebaseAuth.instance.currentUser;
+        print("signed in");
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomePage(user)));
+      });
+    } on FirebaseAuthException catch (e) {
+      // print(e.message);
+      Fluttertoast.showToast(
+          msg: e.message.toString(), gravity: ToastGravity.BOTTOM);
+    }
   }
 
   //register with email, password
