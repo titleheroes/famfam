@@ -51,85 +51,91 @@ class _HomePageState extends State<HomePage> {
             duration: Duration(milliseconds: 500),
             builder: (___, double val, __) {
               return (Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.identity()
-                    ..setEntry(3, 2, 0.001)
-                    ..setEntry(0, 3, -280 * val)
-                    ..rotateY(-(pi / 6) * val),
-                  child: Scaffold(
-                      //Main Screean
-                      body: SafeArea(
-                          child: Container(
-                              child: SingleChildScrollView(
-                    child: Column(children: [
-                      Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
-                            height: 90,
-                            width: 90,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.orange),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                alignment: Alignment.center,
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.001)
+                  ..setEntry(0, 3, -280 * val)
+                  ..rotateY(-(pi / 6) * val),
+                child: Scaffold(
+                  //Main Screean
+                  body: SafeArea(
+                    child: Container(
+                      child: SingleChildScrollView(
+                        child: Column(children: [
+                          Row(
                             children: [
                               Container(
-                                margin: EdgeInsets.fromLTRB(15, 20, 0, 0),
-                                child: Text(
-                                  family,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontSize: 22,
+                                margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
+                                height: 90,
+                                width: 90,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.orange),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(15, 20, 0, 0),
+                                    child: Text(
+                                      family,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Container(
+                                    child: Row(
+                                      // mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          margin:
+                                              EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                          child: Text(
+                                            "Hey, ",
+                                            style: TextStyle(
+                                              fontSize: 30,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          child: Text(
+                                            name + "!",
+                                            style: TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
                               ),
                               Container(
-                                child: Row(
-                                  // mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                                      child: Text(
-                                        "Hey, ",
-                                        style: TextStyle(
-                                          fontSize: 30,
-                                        ),
+                                  padding: EdgeInsets.only(left: 60),
+                                  child: IconButton(
+                                      icon: Icon(
+                                        Icons.menu_open_rounded,
+                                        size: 40,
                                       ),
-                                    ),
-                                    Container(
-                                      child: Text(
-                                        name + "!",
-                                        style: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
+                                      onPressed: () {
+                                        // setState(() {
+                                        //   value == 0 ? value = 1 : value = 0;
+                                        // });
+                                        _auth.signOut(context);
+                                      }))
                             ],
                           ),
-                          Container(
-                              padding: EdgeInsets.only(left: 60),
-                              child: IconButton(
-                                  icon: Icon(
-                                    Icons.menu_open_rounded,
-                                    size: 40,
-                                  ),
-                                  onPressed: () {
-                                    // setState(() {
-                                    //   value == 0 ? value = 1 : value = 0;
-                                    // });
-                                    _auth.signOut(context);
-                                  }))
-                        ],
+                          Date(),
+                          tabbar()
+                        ]),
                       ),
-                      Date(),
-                      tabbar()
-                    ]),
-                  ))))));
+                    ),
+                  ),
+                ),
+              ));
             }),
 
         //open drawer
