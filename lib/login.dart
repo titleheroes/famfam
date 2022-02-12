@@ -1,12 +1,14 @@
-import 'package:famfam/login.dart';
-import 'package:famfam/register_info.dart';
+import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/register.dart';
+import 'package:famfam/welcome.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:famfam/services/auth.dart';
 
-class Register extends StatelessWidget {
+class Login extends StatelessWidget {
+  final AuthService _auth = AuthService();
+  Login({Key? key}) : super(key: key);
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController passwordConfirmController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,7 @@ class Register extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(50, 30, 0, 10),
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Welcome!",
+                    "Let's sign you in.",
                     style: TextStyle(
                       fontSize: 35,
                       fontWeight: FontWeight.w900,
@@ -69,7 +71,7 @@ class Register extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(50, 0, 0, 0),
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Enjoy and having fun with our",
+                    "Welcome back.",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
                 ),
@@ -77,7 +79,7 @@ class Register extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(50, 0, 0, 20),
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "application :D",
+                    "You've been missed",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
                 ),
@@ -88,11 +90,12 @@ class Register extends StatelessWidget {
                     controller: emailController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Please enter your e-mail',
+                      labelText: 'E-mail address',
                       prefixIcon: Icon(Icons.email),
                       fillColor: Colors.white.withOpacity(0.8),
                       filled: true,
                     ),
+                    style: TextStyle(height: 0),
                   ),
                 ),
                 //Password
@@ -103,25 +106,24 @@ class Register extends StatelessWidget {
                     controller: passwordController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: '6-10 characters or number',
+                      labelText: 'Password',
                       prefixIcon: Icon(Icons.lock),
                       fillColor: Colors.white.withOpacity(0.8),
                       filled: true,
                     ),
+                    style: TextStyle(height: 0),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
-                  child: TextField(
-                    obscureText: true,
-                    controller: passwordConfirmController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Confirm password',
-                      prefixIcon: Icon(Icons.lock),
-                      fillColor: Colors.white.withOpacity(0.8),
-                      filled: true,
-                    ),
+                //Forgot password
+                TextButton(
+                  onPressed: () {},
+                  // alignment: Alignment.centerRight,
+                  // padding: EdgeInsets.fromLTRB(0, 10, 25, 10),
+                  // )
+                  child: Text('Forgot Password ?',
+                      style: TextStyle(color: Colors.grey.shade800)),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.fromLTRB(230, 0, 0, 0),
                   ),
                 ),
 
@@ -136,55 +138,10 @@ class Register extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)),
                     ),
-                    child: Text('Register'),
-                    onPressed: () {
-                      bool emailValid = RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                          .hasMatch(emailController.text);
-                      // print(emailController.text);
-                      // print(passwordController.text);
-                      // print(passwordConfirmController.text);
-                      if (passwordConfirmController.text ==
-                              passwordController.text &&
-                          emailValid == true &&
-                          emailController.text != "" &&
-                          passwordController.text != "" &&
-                          passwordConfirmController.text != "") {
-                        print("Password Matching!");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Register_Info(
-                              emailController: emailController.text,
-                              passwordController: passwordController.text,
-                            ),
-                          ),
-                        );
-                      } else if (emailValid == false) {
-                        Fluttertoast.showToast(
-                            msg: "This is not email format.",
-                            gravity: ToastGravity.BOTTOM);
-                        print("email not found");
-                      } else if (emailController.text == "") {
-                        Fluttertoast.showToast(
-                            msg: "Please insert the email.",
-                            gravity: ToastGravity.BOTTOM);
-                        print("email not found");
-                      } else if (passwordController.text == "") {
-                        Fluttertoast.showToast(
-                            msg: "Please insert the password.",
-                            gravity: ToastGravity.BOTTOM);
-                      } else if (passwordConfirmController.text == "") {
-                        Fluttertoast.showToast(
-                            msg: "Please insert the confirm-password.",
-                            gravity: ToastGravity.BOTTOM);
-                      } else if (passwordConfirmController.text !=
-                          passwordController.text) {
-                        Fluttertoast.showToast(
-                            msg: "Password Not Matching!",
-                            gravity: ToastGravity.BOTTOM);
-                        print("Password Not Matching!");
-                      }
+                    child: Text('Login'),
+                    onPressed: () async {
+                      _auth.signin(context, emailController.text.trim(),
+                          passwordController.text.trim());
                     },
                   ),
                 ),
@@ -195,20 +152,18 @@ class Register extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "if you already had account ",
+                          "Don't have an account ? ",
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Login()));
+                            Navigator.pushReplacementNamed(
+                                context, "/register");
                           },
                           // alignment: Alignment.centerRight,
                           // padding: EdgeInsets.fromLTRB(0, 10, 25, 10),
                           // )
-                          child: Text('Log in',
+                          child: Text('Register',
                               style: TextStyle(
                                 color: Colors.orange.shade900,
                                 fontWeight: FontWeight.w800,

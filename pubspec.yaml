@@ -36,22 +36,28 @@ dependencies:
   
   # image carousel slider
   cupertino_icons: ^1.0.2
-  # google_maps_flutter: ^2.1.1
-  # geolocator: ^8.0.5
-  # location: ^4.2.0
-  # roundcheckbox: ^2.0.4+1
-  # favorite_button: ^0.0.4
-  # #dots indicator
-  # smooth_page_indicator: ^0.3.0-nullsafety.0
-  # baseflow_plugin_template:
-  #   git:
-  #     url: git://github.com/Baseflow/baseflow_plugin_template.git
-  #     ref: v2.0.0-nullsafety
-  # geocoding: ^2.0.2
-  # dio: ^4.0.4
-  # geocode: 1.0.1
-  # another_flushbar: ^1.10.28
-  # sliding_up_panel: ^2.0.0+1
+  google_maps_flutter: ^2.1.1
+  geolocator: ^8.0.5
+  location: ^4.2.0
+  roundcheckbox: ^2.0.4+1
+  favorite_button: ^0.0.4
+  #dots indicator
+  smooth_page_indicator: ^0.3.0-nullsafety.0
+  baseflow_plugin_template:
+    git:
+      url: git://github.com/Baseflow/baseflow_plugin_template.git
+      ref: v2.0.0-nullsafety
+  geocoding: ^2.0.2
+  dio: ^4.0.4
+  geocode: 1.0.1
+  another_flushbar: ^1.10.28
+  sliding_up_panel: ^2.0.0+1
+  provider: ^6.0.2
+  intl: ^0.17.0
+  firebase_core: ^1.12.0
+  firebase_auth: ^3.3.6
+  flutter_spinkit: ^5.1.0
+  fluttertoast: ^8.0.8
 
 dev_dependencies:
   flutter_test:
