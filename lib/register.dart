@@ -1,6 +1,7 @@
 import 'package:famfam/login.dart';
 import 'package:famfam/register_info.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Register extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
@@ -137,17 +138,51 @@ class Register extends StatelessWidget {
                     ),
                     child: Text('Register'),
                     onPressed: () {
-                      print(emailController.text);
-                      print(passwordController.text);
-                      print(passwordConfirmController.text);
+                      bool emailValid = RegExp(
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                          .hasMatch(emailController.text);
+                      // print(emailController.text);
+                      // print(passwordController.text);
+                      // print(passwordConfirmController.text);
                       if (passwordConfirmController.text ==
-                          passwordController.text) {
+                              passwordController.text &&
+                          emailValid == true &&
+                          emailController.text != "" &&
+                          passwordController.text != "" &&
+                          passwordConfirmController.text != "") {
                         print("Password Matching!");
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Register_Info()));
-                      } else {
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Register_Info(
+                              emailController: emailController.text,
+                              passwordController: passwordController.text,
+                            ),
+                          ),
+                        );
+                      } else if (emailValid == false) {
+                        Fluttertoast.showToast(
+                            msg: "This is not email format.",
+                            gravity: ToastGravity.BOTTOM);
+                        print("email not found");
+                      } else if (emailController.text == "") {
+                        Fluttertoast.showToast(
+                            msg: "Please insert the email.",
+                            gravity: ToastGravity.BOTTOM);
+                        print("email not found");
+                      } else if (passwordController.text == "") {
+                        Fluttertoast.showToast(
+                            msg: "Please insert the password.",
+                            gravity: ToastGravity.BOTTOM);
+                      } else if (passwordConfirmController.text == "") {
+                        Fluttertoast.showToast(
+                            msg: "Please insert the confirm-password.",
+                            gravity: ToastGravity.BOTTOM);
+                      } else if (passwordConfirmController.text !=
+                          passwordController.text) {
+                        Fluttertoast.showToast(
+                            msg: "Password Not Matching!",
+                            gravity: ToastGravity.BOTTOM);
                         print("Password Not Matching!");
                       }
                     },

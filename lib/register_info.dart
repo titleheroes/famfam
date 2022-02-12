@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Register_Info extends StatefulWidget {
-  const Register_Info({Key? key}) : super(key: key);
+  const Register_Info(
+      {Key? key, String? emailController, String? passwordController})
+      : super(key: key);
 
   @override
   _Register_InfoState createState() => _Register_InfoState();

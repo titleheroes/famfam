@@ -24,11 +24,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final User user = FirebaseAuth.instance.currentUser!;
+  String uid = "";
   double value = 0;
   String family = "Family Name";
   String name = "Janejira";
   final AuthService _auth = AuthService();
   @override
+  void initState() {
+    uid = user.uid;
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(
