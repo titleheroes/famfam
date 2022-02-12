@@ -8,6 +8,7 @@ import 'package:famfam/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/register.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:famfam/pinpost_screen/pin_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
         ),
-        home: Welcome());
+        // home: HomeScreen()
+        home: PinScreen()
+        // home: CheckIn()
+        // home: MenuCheckIn());)
+        );
   }
 }
