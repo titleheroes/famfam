@@ -17,6 +17,7 @@ final Color backgroundColor = Color(0xFFE7C581);
 
 class HomePage extends StatefulWidget {
   var user = FirebaseAuth.instance.currentUser;
+  //HomePage(this.user, {Key? key}) : super(key: key);
   HomePage(this.user, {Key? key}) : super(key: key);
 
   @override

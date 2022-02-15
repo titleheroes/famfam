@@ -15,13 +15,17 @@ void main() async {
   await Firebase.initializeApp();
   runApp(
     MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/pin',
       routes: {
-        '/': (context) => Loading(),
-        '/welcome': (context) => Welcome(),
-        '/register': (context) => Register(),
-        '/registerinfo': (context) => Register_Info(),
-        '/login': (context) => Login(),
+        //'/': (context) => Loading(),
+        
+        '/pin': (context) => PinScreen(),
+
+        // '/welcome': (context) => Welcome(),
+        // '/register': (context) => Register(),
+        // '/registerinfo': (context) => Register_Info(),
+        // '/login': (context) => Login(),
+        
       },
     ),
   );
@@ -36,8 +40,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
         ),
-        // home: HomeScreen()
-        home: PinScreen()
+        //home: HomePage(),
+        //home: PinScreen()
         // home: CheckIn()
         // home: MenuCheckIn());)
         );
