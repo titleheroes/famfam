@@ -27,8 +27,7 @@ class _BodyState extends State<Body> {
     
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SingleChildScrollView(child: 
-        Stack(
+      body: Stack(
         children: [
           Container(
             decoration: BoxDecoration(color: backgroundColor),
@@ -92,10 +91,24 @@ class _BodyState extends State<Body> {
                               color: Colors.red,
                               child: (SingleChildScrollView(
                               scrollDirection: Axis.vertical,
-                              child: 
-                              Column(children: [
-                                Container()
+                              child: Column(children: [
+                                  
 
+
+
+
+                                Container(
+                                  height: size.height * 0.1,
+                                  
+                                  //width: size.width *0.3,
+                                  color: Colors.green,
+                                ),
+                                SizedBox(height: 10,),
+                                // Container(
+                                //   height: size.height * 0.02,
+                                //   width: size.width *0.3,
+                                //   color: Colors.white,
+                                // ),
 
                               ],)
                               
@@ -121,7 +134,7 @@ class _BodyState extends State<Body> {
       ),
       
       
-      )
+    
       
       
       
