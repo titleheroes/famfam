@@ -5,6 +5,7 @@ import 'package:famfam/Homepage/menuHome.dart';
 import 'package:famfam/Homepage/tabbar.dart';
 import 'dart:math';
 import 'package:famfam/Homepage/date.dart';
+import 'package:intl/intl.dart';
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -24,7 +25,8 @@ class _BodyState extends State<Body> {
 
   Widget build(BuildContext context) {
 
-    
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('dd/MM/yyyy – kk:mm').format(now);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
@@ -52,7 +54,7 @@ class _BodyState extends State<Body> {
                             child: Column(
                           children: [
                             Container(
-                              color: Colors.blue,
+                              //color: Colors.blue,
                               height: size.height*0.09,
                               child: (Row(
                               children: [
@@ -62,8 +64,8 @@ class _BodyState extends State<Body> {
                                   child: Text(
                                     "Pin Post",
                                     style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.w600),
+                                        fontSize: 33,
+                                        fontWeight: FontWeight.w800),
                                   ),
                                 ),
                                 Container(
@@ -74,7 +76,12 @@ class _BodyState extends State<Body> {
                                           size: 40,
                                         ),
                                         onPressed: () {
-                                          
+                                          setState(() {
+                                            value == 0 ? value = 1 : value = 0;
+                                          });
+                                          print(value);
+
+
                                         }))
 
 
@@ -83,40 +90,75 @@ class _BodyState extends State<Body> {
                             )),
                             ),
                             SizedBox(height: 20,),
-
                             
-                            Container(
-                              width: size.width * 0.85,
+                            SingleChildScrollView(
+                            
+                            child: Container(
+                              //width: size.width * 0.85,
                               height: size.height * 0.75,
-                              color: Colors.red,
-                              child: (SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
+                              //color: Colors.red,
+                               child: (SingleChildScrollView(
+                               scrollDirection: Axis.vertical,
                               child: Column(children: [
                                   
-
+                                
 
 
 
                                 Container(
-                                  height: size.height * 0.1,
-                                  
-                                  //width: size.width *0.3,
-                                  color: Colors.green,
+                                  height: size.height * 0.15,
+                                  width: size.width *0.85,
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(color: Colors.black.withOpacity(0.2), spreadRadius: 1,blurRadius: 10,offset: Offset(4,8), ),
+                                    ],
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Color(0xFFF9F6C6)), 
+
+                                  child: Column(children: [
+                                    Row(children: [
+                                      Text("Me"),
+                                      
+                                      Text(formattedDate),
+
+                                    ],
+                                      
+                                    )
+
+                                  ],),
+
                                 ),
-                                SizedBox(height: 10,),
-                                // Container(
-                                //   height: size.height * 0.02,
-                                //   width: size.width *0.3,
-                                //   color: Colors.white,
-                                // ),
+
+                                SizedBox(height: 20,),
+
+                                Container(
+                                  height: size.height * 0.15,
+                                  width: size.width *0.85,
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(color: Colors.black.withOpacity(0.2), spreadRadius: 1,blurRadius: 10,offset: Offset(4,8), ),
+                                    ],
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Color(0xFFF9F6C6)), 
+                                ),
+
+                                
+  
+                              
+                             
 
                               ],)
                               
                               )),
 
 
-                            ),
+                            )),
+
+
                             SizedBox(height: 20,),
+
+
+
                             PinBotSheet(size: size),
 
                           ],
