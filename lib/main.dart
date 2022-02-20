@@ -1,31 +1,34 @@
-// import 'package:famfam/Homepage/HomePage.dart';
-import 'package:famfam/HomeScreen.dart';
-// import 'package:famfam/check-in/Checkin.dart';
-// import 'package:famfam/check-in/menu.dart';
-import 'package:famfam/welcome.dart';
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
-import 'package:famfam/register.dart';
+import 'package:flutter_famfam/constants.dart';
+import 'package:flutter_famfam/screens/ticktik_screen.dart';
+//import 'package:flutter_famfam/screens/circle_screen.dart';
+import 'package:flutter_famfam/screens/todolist_screens.dart';
+import 'package:flutter_famfam/screens/voterandom_screen.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: MyApp(),
-  ));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        // debugShowCheckedModeBanner: false,
-        title: 'Home Page',
-        theme: ThemeData(
-          primarySwatch: Colors.deepOrange,
-        ),
-        // home: Welcome()
-        // home: HomeScreen()
-        home: Welcome()
-        // home: CheckIn()
-        // home: MenuCheckIn());)
-        );
+      debugShowCheckedModeBanner: false,
+      title: "Fam app",
+      theme: ThemeData(
+        scaffoldBackgroundColor: wBackgroundColor,
+        primaryColor: kPrimaryColor,
+        textTheme: Theme.of(context).textTheme.apply(bodyColor: kTextColor),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      //home: CircleScreen(),
+      //home: ToDoListScreen(),
+      //home: TickTikScreen(),
+      home: VoteRandomScreen(),
+    );
   }
 }
