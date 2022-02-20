@@ -34,8 +34,10 @@ class _BodyState extends State<Body> {
             decoration: BoxDecoration(color: backgroundColor),
           ),
           SafeArea(child: menuHome()),
+
+          
           TweenAnimationBuilder(
-              tween: Tween<double>(begin: 0, end: 0),
+              tween: Tween<double>(begin: 0, end: value),
               duration: Duration(milliseconds: 500),
               builder: (___, double val, __) {
                 return (Transform(
@@ -45,7 +47,7 @@ class _BodyState extends State<Body> {
                       ..setEntry(0, 3, -280 * val)
                       ..rotateY(-(pi / 6) * val),
                     child: Scaffold(
-                        //Main Screean
+                        //Main Screen
                         body: SafeArea(
                             child: Container(
                       child: SingleChildScrollView(
@@ -201,6 +203,20 @@ class _BodyState extends State<Body> {
                     
                     )));
               }),
+
+              GestureDetector(
+          onHorizontalDragUpdate: (e) {
+            if (e.delta.dx < 0) {
+              setState(() {
+                value = 1;
+              });
+            } else {
+              setState(() {
+                value = 0;
+              });
+            }
+          },
+        )
         ],
       ),
       
