@@ -104,9 +104,10 @@ class _BodyState extends State<Body> {
                                 
 
 
-
+                                /*  One Card */
                                 Container(
-                                  height: size.height * 0.15,
+                                  
+                                  height: size.height * 0.2,
                                   width: size.width *0.85,
                                   decoration: BoxDecoration(
                                     boxShadow: [
@@ -116,18 +117,47 @@ class _BodyState extends State<Body> {
                                     color: Color(0xFFF9F6C6)), 
 
                                   child: Column(children: [
+                                    
                                     Row(children: [
-                                      Text("Me"),
+                                      Container(
+                                        margin: const EdgeInsets.fromLTRB(15, 15, 0, 0),
+                                        child: ( Image.asset(
+                                                        "assets/images/J-Profile.png",width: 40, height: 40, )),
+                                      ),
+                                     Container(
+                                        margin: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                                        child: (Text("Me",style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 20),)),
+                                      ),
+
+                                      Container(
+                                        margin: const EdgeInsets.fromLTRB(130, 13, 0, 0),
+                                        child: (Text(formattedDate,style: TextStyle(color: Colors.black.withOpacity(0.5)),)),
+                                      ),
                                       
-                                      Text(formattedDate),
+                                      
 
                                     ],
                                       
-                                    )
+                                    ),
+                                    
+                                    Container(
+                                      margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                      width: size.width *0.6,
+                                      //color: Colors.red,
+                                      child: Text('dataaaaaaaaa                           1.เอเอเอเอเอเอเอเอเอ                          2.บีบีบีบีบีบีบีบีบีบีบบีบีบี                       3.ซีซีซีซีซีซีซีซีซีซีซีซีซีซี      '
+                                      
+                                      ,style: TextStyle(fontSize: 18),),
+                                    ),
+
+
 
                                   ],),
 
                                 ),
+                                /*  One Card */
+
+
+
 
                                 SizedBox(height: 20,),
 
