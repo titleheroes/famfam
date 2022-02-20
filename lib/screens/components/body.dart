@@ -1,11 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, annotate_overrides, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
-import 'package:flutter_famfam/components/text_field_container.dart';
-import 'package:flutter_famfam/constants.dart';
+import 'package:famfam/components/text_field_container.dart';
+import 'package:famfam/constants.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_famfam/components/circlebottomsheet.dart';
-import 'package:flutter_famfam/components/tickbottomsheet.dart';
+import 'package:famfam/components/circlebottomsheet.dart';
+import 'package:famfam/components/tickbottomsheet.dart';
 
 import 'header_circle.dart';
 
@@ -112,7 +112,9 @@ class TodoBody extends StatelessWidget {
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   leading: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     icon: SvgPicture.asset(
                       "assets/icons/chevron-back-outline.svg",
                       height: 35,
@@ -330,7 +332,9 @@ class TickBody extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 leading: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   icon: SvgPicture.asset(
                     "assets/icons/chevron-back-outline.svg",
                     height: 35,

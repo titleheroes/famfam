@@ -423,7 +423,10 @@ class _tabbarState extends State<tabbar> {
                                                 ),
                                               ),
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                  context, '/todolist');
+                                            },
                                             child: Row(
                                               children: [
                                                 Padding(
@@ -543,7 +546,10 @@ class _tabbarState extends State<tabbar> {
                                             ),
                                           ),
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.pushNamed(
+                                              context, '/ticktik');
+                                        },
                                         child: Row(
                                           children: [
                                             Padding(

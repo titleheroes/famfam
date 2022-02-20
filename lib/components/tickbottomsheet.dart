@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_famfam/constants.dart';
+import 'package:famfam/constants.dart';
 
 class TicBotSheet extends StatelessWidget {
   final Size size;

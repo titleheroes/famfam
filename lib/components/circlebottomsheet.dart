@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_famfam/constants.dart';
+import 'package:famfam/constants.dart';
 import 'package:flutter/services.dart';
 
 class CircleBotSheet extends StatelessWidget {

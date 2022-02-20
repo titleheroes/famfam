@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_famfam/screens/components/body.dart';
+import 'package:famfam/screens/components/body.dart';
 
 class VoteRandomScreen extends StatelessWidget {
   const VoteRandomScreen({Key? key}) : super(key: key);
