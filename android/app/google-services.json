@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "795875878776",
+    "project_id": "famfam-c881b",
+    "storage_bucket": "famfam-c881b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795875878776:android:16ad8e161ce8b50348ca8d",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "795875878776-stb0rffhktpn7jvibdgg1s1bitrdqlkr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbLQZ7_tNag2WF4zWMwf6eWUWYjPmlu_M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "795875878776-stb0rffhktpn7jvibdgg1s1bitrdqlkr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795875878776:android:3f171c0dc6328cac48ca8d",
+        "android_client_info": {
+          "package_name": "com.sehokhok.famfam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "795875878776-stb0rffhktpn7jvibdgg1s1bitrdqlkr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbLQZ7_tNag2WF4zWMwf6eWUWYjPmlu_M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "795875878776-stb0rffhktpn7jvibdgg1s1bitrdqlkr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,14 +1,37 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'package:flutter/material.dart';
+  
 import 'package:flutter_famfam/constants.dart';
 import 'package:flutter_famfam/screens/ticktik_screen.dart';
 //import 'package:flutter_famfam/screens/circle_screen.dart';
 import 'package:flutter_famfam/screens/todolist_screens.dart';
 import 'package:flutter_famfam/screens/voterandom_screen.dart';
+import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/Homepage/addList.dart';
+import 'package:famfam/check-in/Checkin.dart';
+import 'package:famfam/loading.dart';
+import 'package:famfam/login.dart';
+import 'package:famfam/register_info.dart';
+import 'package:famfam/welcome.dart';
+import 'package:flutter/material.dart';
+import 'package:famfam/register.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:famfam/pinpost_screen/pin_screen.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(
+    MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => Loading(),
+        '/welcome': (context) => Welcome(),
+        '/register': (context) => Register(),
+        '/registerinfo': (context) => Register_Info(),
+        '/login': (context) => Login(),
+      },
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -25,6 +48,10 @@ class MyApp extends StatelessWidget {
         textTheme: Theme.of(context).textTheme.apply(bodyColor: kTextColor),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      // home: HomeScreen()
+      // home: PinScreen()
+      // home: CheckIn()
+      // home: MenuCheckIn());)
       //home: CircleScreen(),
       //home: ToDoListScreen(),
       //home: TickTikScreen(),
