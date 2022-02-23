@@ -1,25 +1,31 @@
-import 'package:famfam/circleScreen/createCricle/body.dart';
 import 'package:famfam/login.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Register_Info extends StatefulWidget {
-  const Register_Info(
-      {Key? key, String? emailController, String? passwordController})
-      : super(key: key);
+  const Register_Info({
+    Key? key,
+    // String? emailController, String? passwordController
+  }) : super(key: key);
 
   @override
   _Register_InfoState createState() => _Register_InfoState();
 }
 
 class _Register_InfoState extends State<Register_Info> {
-  late DateTime _dateTime;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  var user = FirebaseAuth.instance.currentUser;
+  TextEditingController fnameController = TextEditingController();
+  TextEditingController lnameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  DateTime? _dateTime;
   String getText() {
     if (_dateTime == null) {
       return 'Select DateTime';
     } else {
-      return DateFormat('dd-MM-yyyy').format(_dateTime);
+      return DateFormat('dd-MM-yyyy').format(_dateTime!);
     }
   }
 
@@ -66,12 +72,63 @@ class _Register_InfoState extends State<Register_Info> {
                 ),
               ],
             ),
+
+            //Profile Frame
             Container(
               margin: const EdgeInsets.only(top: 200.0),
               child: Stack(
                 children: [
-                  Profile_frame(),
-                  Profile_avatar(),
+                  Container(
+                    margin: const EdgeInsets.only(top: 55.0),
+                    width: MediaQuery.of(context).size.width,
+                    height: 1140.0,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF1E5BA),
+                      border: Border.all(
+                        width: 3,
+                        color: Colors.white,
+                      ),
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(65),
+                        topLeft: Radius.circular(65),
+                      ),
+                    ),
+                  ),
+
+                  //Profile Avatar
+                  Center(
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 70,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            radius: 65,
+                            backgroundImage: NetworkImage(
+                                'https://media.discordapp.net/attachments/797533903832743936/939938331083554906/rambo2__130821152859.png'),
+                          ),
+                        ),
+                        CircleAvatar(
+                          radius: 70,
+                          backgroundColor: Colors.transparent,
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 20,
+                              child: Text(
+                                "+",
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[700]),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   Center(
                     child: Container(
                       margin: const EdgeInsets.only(top: 160.0),
@@ -79,9 +136,91 @@ class _Register_InfoState extends State<Register_Info> {
                       color: Colors.transparent,
                       child: Column(
                         children: [
-                          First_name(),
+                          //First Name
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "First Name\n",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.4),
+                                      spreadRadius: 1,
+                                      offset: Offset(
+                                          0, 3), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: TextField(
+                                  controller: fnameController,
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: BorderSide(
+                                        width: 0,
+                                        style: BorderStyle.none,
+                                      ),
+                                    ),
+                                    hintText: 'Ex. Janejira',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
 
-                          Last_name(),
+                          //Last Name
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20.0),
+                              ),
+                              Text(
+                                "Last Name\n",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.4),
+                                      spreadRadius: 1,
+                                      offset: Offset(
+                                          0, 3), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: BorderSide(
+                                        width: 0,
+                                        style: BorderStyle.none,
+                                      ),
+                                    ),
+                                    hintText: 'Ex. Sabaidee',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
 
                           Phone_number(),
 
@@ -102,12 +241,7 @@ class _Register_InfoState extends State<Register_Info> {
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 child: ElevatedButton(
-                                  child: Text(getText()
-                                      // _dateTime == null
-                                      //       ? "Pick a Date"
-                                      //       : formatter.format(_dateTime)
-                                      //   _dateTime.toString()
-                                      ),
+                                  child: Text(getText()),
                                   style: ButtonStyle(
                                       shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(
@@ -128,7 +262,117 @@ class _Register_InfoState extends State<Register_Info> {
 
                           Jobs(),
 
-                          Finish_Button(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 40.0),
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.4),
+                                            spreadRadius: 1,
+                                            offset: Offset(0,
+                                                3), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Color(0xFFAD8002)),
+                                          shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(25.0),
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () async {
+                                          user!.delete();
+                                          await _auth.signOut();
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(
+                                          //     builder: (context) => Login(),
+                                          //   ),
+                                          // );
+                                          Navigator.popAndPushNamed(
+                                              context, '/login');
+                                        },
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    color: Colors.blue,
+                                    width: 40,
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.4),
+                                            spreadRadius: 1,
+                                            offset: Offset(0,
+                                                3), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Color(0xFFFFC34A)),
+                                          shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(25.0),
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      createCircleScreen()));
+                                        },
+                                        child: Text(
+                                          "Confirm",
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -617,6 +861,7 @@ class First_name extends StatelessWidget {
             ],
           ),
           child: TextField(
+            // controller: fnameController,
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
