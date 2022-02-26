@@ -101,8 +101,10 @@ class EnterCircleID extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                     Navigator.push(context, MaterialPageRoute(builder: (context) => InputCircleScreen()));
-
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => InputCircleScreen()));
                   },
                   child: Text('Click here!',
                       style: TextStyle(
@@ -120,7 +122,7 @@ class EnterCircleID extends StatelessWidget {
         Column(
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 36),
+              padding: EdgeInsets.symmetric(horizontal: 26),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -146,8 +148,10 @@ class EnterCircleID extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                           Navigator.push(context, MaterialPageRoute(builder: (context) => Random_id()));
-
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Random_id()));
                         },
                         child: Text(
                           "Create",
