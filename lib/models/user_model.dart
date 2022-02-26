@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:famfam/Homepage/date.dart';
 
 class UserModel {
-  final int id;
+  final int? id;
   final String uid;
+  final String profileImage;
   final String fname;
   final String lname;
   final String phone;
@@ -13,8 +14,9 @@ class UserModel {
   final String personalID;
   final String jobs;
   UserModel({
-    required this.id,
+    this.id,
     required this.uid,
+    required this.profileImage,
     required this.fname,
     required this.lname,
     required this.phone,
@@ -27,6 +29,7 @@ class UserModel {
   UserModel copyWith({
     int? id,
     String? uid,
+    String? profileImage,
     String? fname,
     String? lname,
     String? phone,
@@ -38,6 +41,7 @@ class UserModel {
     return UserModel(
       id: id ?? this.id,
       uid: uid ?? this.uid,
+      profileImage: profileImage ?? this.profileImage,
       fname: fname ?? this.fname,
       lname: lname ?? this.lname,
       phone: phone ?? this.phone,
@@ -52,6 +56,7 @@ class UserModel {
     return {
       'id': id,
       'uid': uid,
+      'profileImage': profileImage,
       'fname': fname,
       'lname': lname,
       'phone': phone,
@@ -66,6 +71,7 @@ class UserModel {
     return UserModel(
       id: map['id']?.toInt() ?? 0,
       uid: map['uid'] ?? '',
+      profileImage: map['profileImage'] ?? '',
       fname: map['fname'] ?? '',
       lname: map['lname'] ?? '',
       phone: map['phone'] ?? '',
@@ -83,7 +89,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, fname: $fname, lname: $lname, phone: $phone, birth: $birth, address: $address, personalID: $personalID, jobs: $jobs)';
+    return 'UserModel(id: $id, uid: $uid, profileImage: $profileImage, fname: $fname, lname: $lname, phone: $phone, birth: $birth, address: $address, personalID: $personalID, jobs: $jobs)';
   }
 
   @override
@@ -93,6 +99,7 @@ class UserModel {
     return other is UserModel &&
         other.id == id &&
         other.uid == uid &&
+        other.profileImage == profileImage &&
         other.fname == fname &&
         other.lname == lname &&
         other.phone == phone &&
@@ -106,6 +113,7 @@ class UserModel {
   int get hashCode {
     return id.hashCode ^
         uid.hashCode ^
+        profileImage.hashCode ^
         fname.hashCode ^
         lname.hashCode ^
         phone.hashCode ^

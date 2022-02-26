@@ -6,8 +6,10 @@ class SQLiteHelper {
   final String nameDatabase = 'famfam.db';
   final int version = 1;
   final String tableDatabase = 'user';
+
   final String columnID = 'id';
   final String userID = 'uid';
+  final String profileImage = 'profileImage';
   final String columnFullname = 'fname';
   final String columnLastname = 'lname';
   final String columnPhone = 'phone';
@@ -21,12 +23,19 @@ class SQLiteHelper {
   }
 
   Future<Null> initialDatabase() async {
+    // user
     await openDatabase(
       join(await getDatabasesPath(), nameDatabase),
       onCreate: (db, version) => db.execute(
-          'CREATE TABLE $tableDatabase ($columnID INTEGER PRIMARY KEY, $userID TEXT, $columnFullname TEXT, $columnLastname TEXT, $columnPhone TEXT, $columnBirth DATETIME,  $columnAddress TEXT, $columnPersonalID TEXT, $columnJobs TEXT,)'),
+          "CREATE TABLE $tableDatabase ($columnID INTEGER PRIMARY KEY, $userID TEXT, $profileImage TEXT, $columnFullname TEXT, $columnLastname TEXT, $columnPhone TEXT, $columnBirth DATETIME,  $columnAddress TEXT, $columnPersonalID TEXT, $columnJobs TEXT)"),
       version: version,
     );
+    // await openDatabase(
+    //   join(await getDatabasesPath(), nameDatabase),
+    //   onCreate: (db, version) => db.execute(
+    //       "CREATE TABLE $tableDatabase ($columnID INTEGER PRIMARY KEY, $userID TEXT, $profileImage TEXT, $columnFullname TEXT, $columnLastname TEXT, $columnPhone TEXT, $columnBirth DATETIME,  $columnAddress TEXT, $columnPersonalID TEXT, $columnJobs TEXT)"),
+    //   version: version,
+    // );
   }
 
   Future<Database> connectedDatabase() async {
@@ -43,5 +52,12 @@ class SQLiteHelper {
       results.add(model);
     }
     return results;
+  }
+
+  Future<Null> insertValueTOSQLite(UserModel userModel) async {
+    Database database = await connectedDatabase();
+    await database.insert(tableDatabase, userModel.toMap()).then((value) {
+      print('#### Insert value name ==>> ${userModel.fname}');
+    });
   }
 }
