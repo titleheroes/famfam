@@ -753,6 +753,7 @@ class VoteRandomBody extends StatelessWidget {
   Future openDialog(BuildContext context) => showDialog(
       context: context,
       builder: (context) {
+        TextEditingController topicController = TextEditingController();
         return Center(
           child: Material(
             type: MaterialType.transparency,
@@ -812,7 +813,7 @@ class VoteRandomBody extends StatelessWidget {
                       //   borderRadius: BorderRadius.circular(30),
                       // ),
                       child: (TextFormField(
-                        // controller: ,
+                        controller: topicController,
                         minLines: 3,
                         maxLines: 3,
                         keyboardType: TextInputType.multiline,
