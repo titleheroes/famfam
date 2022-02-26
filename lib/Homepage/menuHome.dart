@@ -57,7 +57,9 @@ class _MenuHomeState extends State<menuHome> {
               height: 15,
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                // Navigator.pushNamed(context, '/checkin');
+              },
               leading: Icon(
                 Icons.gps_fixed,
                 color: Colors.white,

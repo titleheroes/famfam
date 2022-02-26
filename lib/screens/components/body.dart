@@ -461,27 +461,32 @@ class VoteRandomBody extends StatelessWidget {
             Scaffold(
               backgroundColor: Colors.transparent,
               appBar: PreferredSize(
-                preferredSize: Size.fromHeight(55.0),
+                preferredSize: Size.fromHeight(80),
                 child: AppBar(
-                  title: Text(
-                    'Vote & Random',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  actions: [
-                    IconButton(
-                      icon: SvgPicture.asset(
-                        "assets/icons/ham-menu.svg",
-                        height: 30,
+                  leading: Transform.translate(
+                    offset: Offset(0, 12),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.navigate_before_rounded,
+                        color: Colors.black,
+                        size: 40,
                       ),
                       onPressed: () {},
                     ),
-                  ],
+                  ),
+                  elevation: 0,
+                  centerTitle: true,
+                  backgroundColor: Colors.white,
+                  title: Transform.translate(
+                    offset: Offset(0, 12),
+                    child: Text(
+                      "Vote & Random",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 30,
+                      ),
+                    ),
+                  ),
                 ),
               ),
               body: Column(
@@ -534,72 +539,82 @@ class VoteRandomBody extends StatelessWidget {
                             height: 640,
                             child: TabBarView(
                               children: [
-                                Padding(
+                                Container(
+                                  // height: MediaQuery.of(context).size.height,
                                   padding: const EdgeInsets.only(top: 12.0),
-                                  child: Container(
-                                    //height: 100,
-                                    //width: 100,
-                                    decoration: BoxDecoration(
-                                        //color: Colors.pink.shade200,
-                                        //borderRadius: BorderRadius.circular(30),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 560,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        decoration: BoxDecoration(
+                                          color: Colors.pink.shade200,
+                                          //borderRadius: BorderRadius.circular(30),
                                         ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        SvgPicture.asset(
-                                          "assets/icons/leaf-fall.svg",
-                                          height: 85,
-                                          color: Colors.black.withOpacity(0.4),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            SvgPicture.asset(
+                                              "assets/icons/leaf-fall.svg",
+                                              height: 85,
+                                              color:
+                                                  Colors.black.withOpacity(0.4),
+                                            ),
+                                            SizedBox(
+                                              height: 1,
+                                            ),
+                                            Text(
+                                              "No POLL is going on right now.",
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.5),
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        SizedBox(
-                                          height: 1,
-                                        ),
-                                        Text(
-                                          "No POLL is going on right now.",
-                                          style: TextStyle(
-                                            color:
-                                                Colors.black.withOpacity(0.5),
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Container(
-                                            height: size.height * 0.066,
-                                            width: size.width * 0.864,
-                                            child: ElevatedButton(
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all<
-                                                            Color>(
-                                                        Color(0xFFF9EE6D)),
-                                                shape:
-                                                    MaterialStateProperty.all(
-                                                  RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            90.0),
-                                                  ),
+                                        // jjj
+                                      ),
+                                      Container(
+                                        alignment: Alignment.bottomCenter,
+                                        color: Colors.black,
+                                        // child: Align(
+                                        //   alignment: Alignment.bottomCenter,
+                                        child: Container(
+                                          height: size.height * 0.066,
+                                          width: size.width * 0.864,
+                                          child: ElevatedButton(
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                      Color>(Color(0xFFF9EE6D)),
+                                              shape: MaterialStateProperty.all(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          90.0),
                                                 ),
                                               ),
-                                              child: Text(
-                                                'Create poll',
-                                                style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.black),
-                                              ),
-                                              onPressed: () {
-                                                openDialog(context);
-                                              },
                                             ),
+                                            child: Text(
+                                              'Create poll',
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black),
+                                            ),
+                                            onPressed: () {
+                                              openDialog(context);
+                                            },
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                        // ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Padding(
@@ -641,7 +656,6 @@ class VoteRandomBody extends StatelessWidget {
                             ),
                           ),
                         ),
-                        //CircleBotSheet(size: size),
                       ],
                     ),
                   ),
@@ -753,82 +767,61 @@ class VoteRandomBody extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Center(
-                    child: Text(
-                      'Create Poll',
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    'Participants',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  //SizedBox(height: 10),
-                  Row(
+                  Stack(
                     children: [
-                      //ต้องทำให้รูปกดได้ด้วย
-
-                      // ElevatedButton(
-                      //   child: Image.asset(
-                      //       "assets/images/face1.png"),
-                      //   onPressed: () {},
-                      // ),
-                      Image.asset(
-                        "assets/images/face1.png",
-                        height: 100,
-                        width: 50,
-                        color: Colors.black,
+                      Center(
+                        child: Text(
+                          'Create Poll',
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black),
+                        ),
                       ),
-                      Image.asset(
-                        "assets/images/face2.png",
-                        height: 100,
-                        width: 50,
-                      ),
-                      Image.asset(
-                        "assets/images/face3.png",
-                        height: 100,
-                        width: 50,
-                      ),
-                      Image.asset(
-                        "assets/images/face4.png",
-                        height: 100,
-                        width: 50,
+                      Positioned(
+                        right: 0,
+                        top: -6,
+                        child: InkResponse(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: CircleAvatar(
+                            child: Icon(
+                              Icons.close,
+                              color: Colors.black,
+                              size: 30,
+                            ),
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
                       ),
                     ],
                   ),
+                  SizedBox(height: 15),
                   Text(
                     'Topic',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
                     ),
                   ),
                   SizedBox(height: 10),
                   Container(
-                    //margin: EdgeInsets.only(top: 40),
-                    //width: size.width * 0.831,
-
                     child: (Container(
-                      decoration: BoxDecoration(
-                        //color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        // boxShadow: [
-                        //   const BoxShadow(
-                        //     color: Colors.black,
-                        //   ),
-                        // ]
-                      ),
-                      child: (TextField(
+                      // decoration: BoxDecoration(
+                      //   borderRadius: BorderRadius.circular(30),
+                      // ),
+                      child: (TextFormField(
+                        // controller: ,
+                        minLines: 3,
+                        maxLines: 3,
+                        keyboardType: TextInputType.multiline,
                         style: TextStyle(fontSize: 20, height: 1.5),
                         decoration: InputDecoration(
+                          hintText: 'Enter a poll question',
+                          hintStyle: TextStyle(
+                            fontSize: 20.0,
+                          ),
                           filled: true,
                           fillColor: Colors.white,
                           contentPadding: EdgeInsets.symmetric(
@@ -844,14 +837,11 @@ class VoteRandomBody extends StatelessWidget {
                             borderSide: BorderSide(
                                 color: Color(0xFFF9EE6D), width: 2.0),
                           ),
-                          hintText: 'Enter a poll question',
-                          hintStyle: TextStyle(
-                            fontSize: 20.0,
-                          ),
                         ),
                       )),
                     )),
                   ),
+                  SizedBox(height: 10),
                   Text(
                     'Options',
                     style: TextStyle(

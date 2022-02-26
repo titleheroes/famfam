@@ -32,6 +32,7 @@ void main() async {
         '/ticktik': (context) => TickTikScreen(),
         '/todolist': (context) => ToDoListScreen(),
         '/voterandom': (context) => VoteRandomScreen(),
+        '/checkin': (context) => CheckIn(),
       },
     ),
   );
