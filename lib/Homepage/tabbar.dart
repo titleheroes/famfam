@@ -15,11 +15,7 @@ class tabbar extends StatefulWidget {
 }
 
 class _tabbarState extends State<tabbar> {
-  final List<String> names = <String>[
-    'Fix my car',
-    'Clean bed room',
-    'buy PS5'
-  ];
+  final List<String> names = <String>[];
   final List<int> icon = <int>[1, 2, 3];
 
   TextEditingController nameController = TextEditingController();
