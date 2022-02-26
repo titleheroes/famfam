@@ -159,7 +159,7 @@ class _BodyState extends State<Body> {
 
 
 
-
+                                /*
                                 SizedBox(height: 20,),
 
                                 Container(
@@ -173,7 +173,7 @@ class _BodyState extends State<Body> {
                                     color: Color(0xFFF9F6C6)), 
                                 ),
 
-                                
+                                */
   
                               
                              
