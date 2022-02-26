@@ -118,19 +118,19 @@ class _HomePageState extends State<HomePage> {
             }),
 
         //open drawer
-        GestureDetector(
-          onHorizontalDragUpdate: (e) {
-            if (e.delta.dx < 0) {
-              setState(() {
-                value = 1;
-              });
-            } else {
-              setState(() {
-                value = 0;
-              });
-            }
-          },
-        )
+        // GestureDetector(
+        //   onHorizontalDragUpdate: (e) {
+        //     if (e.delta.dx < 0) {
+        //       setState(() {
+        //         value = 1;
+        //       });
+        //     } else {
+        //       setState(() {
+        //         value = 0;
+        //       });
+        //     }
+        //   },
+        // )
       ],
     ));
   }

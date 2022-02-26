@@ -70,16 +70,6 @@ class _addListState extends State<addList> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(children: <Widget>[
-        // Padding(
-        //   padding: EdgeInsets.all(20),
-        //   child: TextField(
-        //     controller: nameController,
-        //     decoration: InputDecoration(
-        //       border: OutlineInputBorder(),
-        //       labelText: 'Contact Name',
-        //     ),
-        //   ),
-        // ),
         RaisedButton(
           child: Text('Add'),
           onPressed: () {

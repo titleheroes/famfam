@@ -1,3 +1,6 @@
+import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/check-in/Checkin.dart';
+import 'package:famfam/settingPage/settingPage.dart';
 import 'package:flutter/material.dart';
 
 final Color backgroundColor = Color(0xFFE7C581);
@@ -19,7 +22,10 @@ class _MenuHomeState extends State<menuHome> {
             child: ListView(
           children: [
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomePage()));
+              },
               leading: Icon(
                 Icons.home,
                 color: Colors.white,
@@ -37,9 +43,7 @@ class _MenuHomeState extends State<menuHome> {
               height: 15,
             ),
             ListTile(
-              onTap: () {
-                Colors.amber;
-              },
+              onTap: () {},
               leading: Icon(
                 Icons.note_rounded,
                 color: Colors.white,
@@ -57,7 +61,10 @@ class _MenuHomeState extends State<menuHome> {
               height: 15,
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CheckIn()));
+              },
               leading: Icon(
                 Icons.gps_fixed,
                 color: Colors.white,
@@ -111,7 +118,10 @@ class _MenuHomeState extends State<menuHome> {
               height: 15,
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => settingPage()));
+              },
               leading: Icon(
                 Icons.settings,
                 color: Colors.white,
