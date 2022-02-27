@@ -27,7 +27,6 @@ void main() async {
         '/register': (context) => Register(),
         '/registerinfo': (context) => Register_Info(),
         '/login': (context) => Login(),
-        '/pinpost': (context) => PinScreen(),
       },
     ),
   );

@@ -60,11 +60,20 @@ dependencies:
   firebase_storage: ^10.2.8
   flutter_spinkit: ^5.1.0
   fluttertoast: ^8.0.8
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
   sqflite: ^2.0.2
   image_picker: ^0.8.4+9
   lite_rolling_switch: ^0.1.1
   flutter_slidable: ^1.2.0
   get_it: ^7.2.0
+=======
+>>>>>>> parent of 0cf775f (sqlite helper)
+=======
+>>>>>>> parent of 0cf775f (sqlite helper)
+=======
+>>>>>>> parent of 0cf775f (sqlite helper)
 
 dev_dependencies:
   flutter_test:
