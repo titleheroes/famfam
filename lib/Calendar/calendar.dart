@@ -732,7 +732,8 @@ class _CalendarState extends State<Calendar> {
                         _eventController.clear();
                         _eventController1.clear();
                         _eventController2.clear();
-                        // setState(() {});
+                        setState(() {});
+                        isChecked = false;
                         return;
                       },
                     ),
