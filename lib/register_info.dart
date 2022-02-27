@@ -5,6 +5,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'dart:io';
 import 'dart:math';
 
@@ -47,6 +48,11 @@ import 'package:famfam/login.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
 >>>>>>> parent of 0cf775f (sqlite helper)
 =======
+>>>>>>> parent of 2bd146a (insert to sqlite)
+=======
+import 'package:famfam/login.dart';
+import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 >>>>>>> parent of 2bd146a (insert to sqlite)
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -241,7 +247,11 @@ class _Register_InfoState extends State<Register_Info> {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 //First Name
+=======
+                          //First Name
+>>>>>>> parent of 2bd146a (insert to sqlite)
 =======
                           //First Name
 >>>>>>> parent of 2bd146a (insert to sqlite)
@@ -334,6 +344,7 @@ class _Register_InfoState extends State<Register_Info> {
 =======
                           First_name(),
 
+<<<<<<< HEAD
                           Last_name(),
 >>>>>>> parent of 0cf775f (sqlite helper)
 
@@ -362,6 +373,10 @@ class _Register_InfoState extends State<Register_Info> {
 
                           Phone_number(),
 
+=======
+                          Phone_number(),
+
+>>>>>>> parent of 2bd146a (insert to sqlite)
                           // Birthdate
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -412,7 +427,10 @@ class _Register_InfoState extends State<Register_Info> {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Finish Button
+=======
+>>>>>>> parent of 2bd146a (insert to sqlite)
 =======
 >>>>>>> parent of 2bd146a (insert to sqlite)
                           Column(
@@ -573,7 +591,10 @@ class _Register_InfoState extends State<Register_Info> {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 2bd146a (insert to sqlite)
 =======
 >>>>>>> parent of 2bd146a (insert to sqlite)
 class Finish_Button extends StatelessWidget {
@@ -1038,6 +1059,10 @@ class First_name extends StatelessWidget {
           ),
           child: TextField(
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+            // controller: fnameController,
+>>>>>>> parent of 2bd146a (insert to sqlite)
 =======
             // controller: fnameController,
 >>>>>>> parent of 2bd146a (insert to sqlite)
@@ -1061,7 +1086,10 @@ class First_name extends StatelessWidget {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of 0cf775f (sqlite helper)
+=======
+>>>>>>> parent of 2bd146a (insert to sqlite)
 =======
 >>>>>>> parent of 2bd146a (insert to sqlite)
 DropdownMenuItem<String> buildMenuItem(String item) => DropdownMenuItem(
