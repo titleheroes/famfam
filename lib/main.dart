@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:famfam/constants.dart';
+import 'package:famfam/register.dart';
 import 'package:famfam/screens/ticktik_screen.dart';
 //import 'package:flutter_famfam/screens/circle_screen.dart';
 import 'package:famfam/screens/todolist_screens.dart';
@@ -51,14 +52,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Fam app",
-      theme: ThemeData(
-        scaffoldBackgroundColor: wBackgroundColor,
-        primaryColor: kPrimaryColor,
-        textTheme: Theme.of(context).textTheme.apply(bodyColor: kTextColor),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+        debugShowCheckedModeBanner: false,
+        title: "Fam app",
+        theme: ThemeData(
+          scaffoldBackgroundColor: wBackgroundColor,
+          primaryColor: kPrimaryColor,
+          textTheme: Theme.of(context).textTheme.apply(bodyColor: kTextColor),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
         navigatorKey: locator<NavigationService>().navigatorKey,
         onGenerateRoute: (settings) {
           switch (settings.name) {
@@ -80,11 +81,10 @@ class MyApp extends StatelessWidget {
                       ));
             case 'home':
             default:
-              return MaterialPageRoute(builder: (context) => HomePage());
+              return MaterialPageRoute(builder: (context) => Login());
           }
         },
         // กำหนดให้เริ่มต้นที่หน้า home
-        initialRoute: 'home'
-    );
+        initialRoute: 'home');
   }
 }
