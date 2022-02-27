@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/Homepage/tabbar.dart';
-import 'package:intl/intl.dart';
 
 class Date extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    DateTime date = DateTime.now();
     return Container(
       height: 150,
       padding: const EdgeInsets.all(10),
@@ -18,7 +16,7 @@ class Date extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 10, 30, 0),
             child: Center(
               child: Column(
                 children: [
@@ -26,7 +24,7 @@ class Date extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 5),
                     child: Container(
                       child: Text(
-                        DateFormat('EEEE').format(date),
+                        "Monday",
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w800,
@@ -37,7 +35,7 @@ class Date extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 5),
                     child: Container(
-                      child: Text(DateFormat('d').format(date),
+                      child: Text("10",
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.w400,
@@ -46,8 +44,8 @@ class Date extends StatelessWidget {
                   ),
                   Container(
                     child: Text(
-                      DateFormat('MMMM, yyyy').format(date),
-                      style: TextStyle(fontSize: 16),
+                      "  Feb 2022",
+                      style: TextStyle(fontSize: 18),
                     ),
                   )
                 ],
@@ -59,8 +57,8 @@ class Date extends StatelessWidget {
           const VerticalDivider(
             width: 20,
             thickness: 1.5,
-            indent: 10,
-            endIndent: 10,
+            indent: 15,
+            endIndent: 15,
             color: Color(0xfff707070),
           ),
           //end line
@@ -69,7 +67,7 @@ class Date extends StatelessWidget {
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(5, 10, 10, 10),
+                padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
                 child: Container(
                   height: 50,
                   width: 180,
@@ -130,7 +128,7 @@ class Date extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(5, 0, 10, 10),
+                padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
                 child: Container(
                   height: 50,
                   width: 180,
