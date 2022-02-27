@@ -129,6 +129,7 @@ class Register extends StatelessWidget {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     SizedBox(
                       width: 250,
                       height: 50,
@@ -220,6 +221,8 @@ class Register extends StatelessWidget {
 >>>>>>> parent of 0cf775f (sqlite helper)
 =======
 >>>>>>> parent of 0cf775f (sqlite helper)
+=======
+>>>>>>> parent of 0cf775f (sqlite helper)
                 SizedBox(
                   width: 250,
                   height: 50,
@@ -233,6 +236,9 @@ class Register extends StatelessWidget {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 0cf775f (sqlite helper)
+=======
 >>>>>>> parent of 0cf775f (sqlite helper)
 =======
 >>>>>>> parent of 0cf775f (sqlite helper)
