@@ -62,8 +62,7 @@ class _MenuHomeState extends State<menuHome> {
             ),
             ListTile(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CheckIn()));
+                Navigator.pushNamed(context, '/checkin');
               },
               leading: Icon(
                 Icons.gps_fixed,
@@ -82,7 +81,9 @@ class _MenuHomeState extends State<menuHome> {
               height: 15,
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, ('/voterandom'));
+              },
               leading: Icon(
                 Icons.casino,
                 color: Colors.white,

@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:famfam/pinpost_screen/body.dart';
-import 'package:famfam/Homepage/menuHome.dart';
-import 'package:intl/intl.dart';
+import 'package:famfam/constants.dart';
 
-class PinBotSheet extends StatelessWidget {
+class TicBotSheet extends StatelessWidget {
   final Size size;
-  const PinBotSheet({
+  const TicBotSheet({
     Key? key,
     required this.size,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    
     return Stack(
       children: [
         Container(
@@ -32,7 +29,7 @@ class PinBotSheet extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'Pin your Post!',
+                '+ Add TickTic ',
                 style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
@@ -43,7 +40,7 @@ class PinBotSheet extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(62.0))),
-                    backgroundColor: Colors.white,
+                    backgroundColor: Color(0xFFFFFFFF),
                     context: context,
                     isScrollControlled: true,
                     enableDrag: false,
@@ -76,7 +73,7 @@ class PinBotSheet extends StatelessWidget {
                                           SizedBox(height: 45),
                                           Center(
                                             child: Text(
-                                              'Add Pin Post',
+                                              'Add TickTic to Circle',
                                               style: TextStyle(
                                                   fontSize: 24,
                                                   fontWeight: FontWeight.w600,
@@ -85,11 +82,12 @@ class PinBotSheet extends StatelessWidget {
                                           ),
                                           SizedBox(height: 30),
                                           Text(
-                                            'What\'s on your mind',
+                                            'Topic',
                                             style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black),
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                            ),
                                           ),
                                           SizedBox(height: size.height * 0.021),
                                           Container(
@@ -98,20 +96,16 @@ class PinBotSheet extends StatelessWidget {
 
                                             child: (Container(
                                               decoration: BoxDecoration(
-                                                  //color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(30),
-                                                  // boxShadow: [
-                                                  //   const BoxShadow(
-                                                  //     color: Colors.black,
-                                                  //   ),
-                                                  // ]
-                                                  ),
-                                              //height: 300,    
+                                                //color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                // boxShadow: [
+                                                //   const BoxShadow(
+                                                //     color: Colors.black,
+                                                //   ),
+                                                // ]
+                                              ),
                                               child: (TextField(
-                                                keyboardType:
-                                                        TextInputType.multiline,
-                                                    maxLines: 8,
                                                 style: TextStyle(
                                                     fontSize: 20, height: 1.5),
                                                 decoration: InputDecoration(
@@ -126,7 +120,7 @@ class PinBotSheet extends StatelessWidget {
                                                       OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            18.0),
+                                                            23.0),
                                                     borderSide: BorderSide(
                                                         color:
                                                             Color(0xFFF9EE6D),
@@ -136,13 +130,13 @@ class PinBotSheet extends StatelessWidget {
                                                       OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            18.0),
+                                                            23.0),
                                                     borderSide: BorderSide(
                                                         color:
                                                             Color(0xFFF9EE6D),
                                                         width: 2.0),
                                                   ),
-                                                  hintText: 'Write your Pin Post',
+                                                  hintText: 'Ex. Shopping',
                                                   hintStyle: TextStyle(
                                                     fontSize: 20.0,
                                                   ),
@@ -156,14 +150,63 @@ class PinBotSheet extends StatelessWidget {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                
-                                                //SizedBox(height: size.height * 0.021),
+                                                Text("Listing",
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                                SizedBox(
+                                                    height:
+                                                        size.height * 0.021),
+                                                Container(
+                                                  child: (TextField(
+                                                    textAlignVertical:
+                                                        TextAlignVertical.top,
+                                                    keyboardType:
+                                                        TextInputType.multiline,
+                                                    maxLines: 3,
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        height: 1.5),
+                                                    decoration: InputDecoration(
+                                                      filled: true,
+                                                      fillColor: Colors.white,
+                                                      // contentPadding:
+                                                      //     EdgeInsets.symmetric(
+                                                      //         vertical: 10,
+                                                      //         horizontal: 20),
 
-
-                                                
-
-
-                                                SizedBox(height: size.height * 0.007),
+                                                      //border: InputBorder.none,
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(30.0),
+                                                        borderSide: BorderSide(
+                                                            color: Color(
+                                                                0xFFF9EE6D),
+                                                            width: 2.0),
+                                                      ),
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(30.0),
+                                                        borderSide: BorderSide(
+                                                            color: Color(
+                                                                0xFFF9EE6D),
+                                                            width: 2.0),
+                                                      ),
+                                                      hintText:
+                                                          'Ex. มาม่า, สบู่, ไข่, นม',
+                                                      hintStyle: TextStyle(
+                                                        fontSize: 20.0,
+                                                      ),
+                                                    ),
+                                                  )),
+                                                ),
+                                                SizedBox(
+                                                    height: size.height * 0.04),
                                                 Center(
                                                     child: Container(
                                                   width: 208,
@@ -185,10 +228,7 @@ class PinBotSheet extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ),
-                                                    onPressed: () {
-                                                      print('Yes');
-                                                      
-                                                    },
+                                                    onPressed: () {},
                                                     child: Text(
                                                       "Confirm",
                                                       style: TextStyle(
