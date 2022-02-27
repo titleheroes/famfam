@@ -12,6 +12,7 @@ import 'package:famfam/loading.dart';
 import 'package:famfam/login.dart';
 import 'package:famfam/register_info.dart';
 import 'package:famfam/welcome.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/register.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
       //home: CircleScreen(),
       //home: ToDoListScreen(),
       //home: TickTikScreen(),
-      home: VoteRandomScreen(),
+      // home: VoteRandomScreen(),
     );
   }
 }

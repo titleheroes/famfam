@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, annotate_overrides, use_key_in_widget_constructors
 
+import 'package:famfam/Homepage/HomePage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/components/text_field_container.dart';
 import 'package:famfam/constants.dart';
@@ -446,9 +448,17 @@ class TickBody extends StatelessWidget {
   }
 }
 
-class VoteRandomBody extends StatelessWidget {
+class VoteRandomBody extends StatefulWidget {
   const VoteRandomBody({Key? key}) : super(key: key);
 
+  @override
+  _VoteRandomBodyState createState() => _VoteRandomBodyState();
+}
+
+class _VoteRandomBodyState extends State<VoteRandomBody> {
+  final List<String> topicPoll = <String>[];
+  final List<String> topicRandom = <String>[];
+  var user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -471,7 +481,13 @@ class VoteRandomBody extends StatelessWidget {
                         color: Colors.black,
                         size: 40,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                        // Navigator.pushReplacement(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => HomePage(user)));
+                      },
                     ),
                   ),
                   elevation: 0,
@@ -489,177 +505,306 @@ class VoteRandomBody extends StatelessWidget {
                   ),
                 ),
               ),
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 29, right: 29),
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFFF9EE6D).withOpacity(0.44),
-                            borderRadius: BorderRadius.circular(19),
-                          ),
-                          height: 66,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: TabBar(
-                              indicator: BoxDecoration(
-                                color: Color(0xFFFFC34A),
-                                borderRadius: BorderRadius.circular(19),
-                                // boxShadow: [
-                                //   BoxShadow(
-                                //     color: Colors.grey.shade400,
-                                //     blurRadius: 5.0,
-                                //     offset: Offset(0, 3),
-                                //   ),
-                                // ],
+              body: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 29, right: 29),
+                      child: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF9EE6D).withOpacity(0.44),
+                              borderRadius: BorderRadius.circular(19),
+                            ),
+                            height: 66,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: TabBar(
+                                indicator: BoxDecoration(
+                                  color: Color(0xFFFFC34A),
+                                  borderRadius: BorderRadius.circular(19),
+                                  // boxShadow: [
+                                  //   BoxShadow(
+                                  //     color: Colors.grey.shade400,
+                                  //     blurRadius: 5.0,
+                                  //     offset: Offset(0, 3),
+                                  //   ),
+                                  // ],
+                                ),
+                                labelStyle: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                unselectedLabelStyle: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w400),
+                                labelColor: Colors.black87,
+                                unselectedLabelColor: Color(0xFFA5A59D),
+                                tabs: [
+                                  Tab(text: 'Vote'),
+                                  Tab(text: 'Random'),
+                                ],
                               ),
-                              labelStyle: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              unselectedLabelStyle: TextStyle(
-                                  fontSize: 18.0, fontWeight: FontWeight.w400),
-                              labelColor: Colors.black87,
-                              unselectedLabelColor: Color(0xFFA5A59D),
-                              tabs: [
-                                Tab(text: 'Vote'),
-                                Tab(text: 'Random'),
-                              ],
                             ),
                           ),
-                        ),
-                        SingleChildScrollView(
-                          child: SizedBox(
-                            height: 640,
-                            child: TabBarView(
-                              children: [
-                                Container(
-                                  // height: MediaQuery.of(context).size.height,
-                                  padding: const EdgeInsets.only(top: 12.0),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 560,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        decoration: BoxDecoration(
-                                          color: Colors.pink.shade200,
-                                          //borderRadius: BorderRadius.circular(30),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SvgPicture.asset(
-                                              "assets/icons/leaf-fall.svg",
-                                              height: 85,
-                                              color:
-                                                  Colors.black.withOpacity(0.4),
-                                            ),
-                                            SizedBox(
-                                              height: 1,
-                                            ),
-                                            Text(
-                                              "No POLL is going on right now.",
-                                              style: TextStyle(
-                                                color: Colors.black
-                                                    .withOpacity(0.5),
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        // jjj
-                                      ),
-                                      Container(
-                                        alignment: Alignment.bottomCenter,
-                                        color: Colors.black,
-                                        // child: Align(
-                                        //   alignment: Alignment.bottomCenter,
-                                        child: Container(
-                                          height: size.height * 0.066,
-                                          width: size.width * 0.864,
-                                          child: ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all<
-                                                      Color>(Color(0xFFF9EE6D)),
-                                              shape: MaterialStateProperty.all(
-                                                RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          90.0),
-                                                ),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              'Create poll',
-                                              style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.black),
-                                            ),
-                                            onPressed: () {
-                                              openDialog(context);
-                                            },
-                                          ),
-                                        ),
-                                        // ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 12.0),
-                                  child: Container(
-                                    //height: 100,
-                                    //width: 100,
-                                    decoration: BoxDecoration(
-                                        //color: Colors.pink,
-                                        //borderRadius: BorderRadius.circular(30),
-                                        ),
+                          SingleChildScrollView(
+                            child: SizedBox(
+                              height: 640,
+                              child: TabBarView(
+                                children: [
+                                  Container(
+                                    height: MediaQuery.of(context).size.height,
+                                    padding: const EdgeInsets.only(top: 12.0),
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        SvgPicture.asset(
-                                          "assets/icons/leaf-fall.svg",
-                                          height: 85,
-                                          color: Colors.black.withOpacity(0.4),
+                                      children: [
+                                        Container(
+                                          height: 560,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.864,
+                                          decoration: BoxDecoration(
+                                            color: Colors.pink.shade200,
+                                            //borderRadius: BorderRadius.circular(30),
+                                          ),
+                                          child: Builder(builder: (context) {
+                                            return topicPoll.isEmpty
+                                                ? Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      SvgPicture.asset(
+                                                        "assets/icons/leaf-fall.svg",
+                                                        height: 85,
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 1,
+                                                      ),
+                                                      Text(
+                                                        "No POLL is going on right now.",
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.5),
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    shrinkWrap: true,
+                                                    itemCount: topicPoll.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return Text('bruh');
+                                                    },
+                                                  );
+                                          }),
                                         ),
-                                        SizedBox(
-                                          height: 1,
-                                        ),
-                                        Text(
-                                          "No RANDOM is going on right now.",
-                                          style: TextStyle(
-                                            color:
-                                                Colors.black.withOpacity(0.5),
-                                            fontSize: 18,
+                                        Expanded(
+                                          child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.66,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.864,
+                                              child: ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          Color(0xFFF9EE6D)),
+                                                  shape:
+                                                      MaterialStateProperty.all(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              90.0),
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  'Create poll',
+                                                  style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black),
+                                                ),
+                                                onPressed: () {
+                                                  openDialogPoll(context);
+                                                },
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
-                              ],
+
+                                  Container(
+                                    height: MediaQuery.of(context).size.height,
+                                    padding: const EdgeInsets.only(top: 12.0),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 560,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.864,
+                                          decoration: BoxDecoration(
+                                            color: Colors.pink.shade200,
+                                            //borderRadius: BorderRadius.circular(30),
+                                          ),
+                                          child: Builder(builder: (context) {
+                                            return topicRandom.isEmpty
+                                                ? Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      SvgPicture.asset(
+                                                        "assets/icons/leaf-fall.svg",
+                                                        height: 85,
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 1,
+                                                      ),
+                                                      Text(
+                                                        "No Random is going on right now.",
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.5),
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    shrinkWrap: true,
+                                                    itemCount:
+                                                        topicRandom.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return Text('bruh');
+                                                    },
+                                                  );
+                                          }),
+                                        ),
+                                        Expanded(
+                                          child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.66,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.864,
+                                              child: ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          Color(0xFFF9EE6D)),
+                                                  shape:
+                                                      MaterialStateProperty.all(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              90.0),
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  'Create Random',
+                                                  style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black),
+                                                ),
+                                                onPressed: () {
+                                                  openDialogRandom(context);
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(top: 12.0),
+                                  //   child: Container(
+                                  //     //height: 100,
+                                  //     //width: 100,
+                                  //     decoration: BoxDecoration(
+                                  //         //color: Colors.pink,
+                                  //         //borderRadius: BorderRadius.circular(30),
+                                  //         ),
+                                  //     child: Column(
+                                  //       mainAxisAlignment:
+                                  //           MainAxisAlignment.center,
+                                  //       crossAxisAlignment:
+                                  //           CrossAxisAlignment.center,
+                                  //       children: <Widget>[
+                                  //         SvgPicture.asset(
+                                  //           "assets/icons/leaf-fall.svg",
+                                  //           height: 85,
+                                  //           color: Colors.black.withOpacity(0.4),
+                                  //         ),
+                                  //         SizedBox(
+                                  //           height: 1,
+                                  //         ),
+                                  //         Text(
+                                  //           "No RANDOM is going on right now.",
+                                  //           style: TextStyle(
+                                  //             color:
+                                  //                 Colors.black.withOpacity(0.5),
+                                  //             fontSize: 18,
+                                  //           ),
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -667,93 +812,494 @@ class VoteRandomBody extends StatelessWidget {
       ),
     );
   }
+}
 
-  // Future openDialog(BuildContext context) => showDialog(
-  //       context: context,
-  //       builder: (context) => AlertDialog(
+// Future openDialog(BuildContext context) => showDialog(
+//       context: context,
+//       builder: (context) => AlertDialog(
 
-  //         title: Column(
-  //           //crossAxisAlignment: CrossAxisAlignment.center,
-  //           children: <Widget>[
-  //             Center(
-  //               child: Text(
-  //                 'Create Poll',
-  //                 style: TextStyle(
-  //                     fontSize: 24,
-  //                     fontWeight: FontWeight.w600,
-  //                     color: Colors.black),
-  //               ),
-  //             ),
-  //             SizedBox(height: 30),
-  //             Text(
-  //               'Topic',
-  //               style: TextStyle(
-  //                 fontSize: 20,
-  //                 fontWeight: FontWeight.w600,
-  //                 color: Colors.black,
-  //               ),
-  //             ),
-  //             SizedBox(height: 10),
-  //             Container(
-  //               //margin: EdgeInsets.only(top: 40),
-  //               //width: size.width * 0.831,
+//         title: Column(
+//           //crossAxisAlignment: CrossAxisAlignment.center,
+//           children: <Widget>[
+//             Center(
+//               child: Text(
+//                 'Create Poll',
+//                 style: TextStyle(
+//                     fontSize: 24,
+//                     fontWeight: FontWeight.w600,
+//                     color: Colors.black),
+//               ),
+//             ),
+//             SizedBox(height: 30),
+//             Text(
+//               'Topic',
+//               style: TextStyle(
+//                 fontSize: 20,
+//                 fontWeight: FontWeight.w600,
+//                 color: Colors.black,
+//               ),
+//             ),
+//             SizedBox(height: 10),
+//             Container(
+//               //margin: EdgeInsets.only(top: 40),
+//               //width: size.width * 0.831,
 
-  //               child: (Container(
-  //                 decoration: BoxDecoration(
-  //                   //color: Colors.white,
-  //                   borderRadius: BorderRadius.circular(30),
-  //                   // boxShadow: [
-  //                   //   const BoxShadow(
-  //                   //     color: Colors.black,
-  //                   //   ),
-  //                   // ]
-  //                 ),
-  //                 child: (TextField(
-  //                   style: TextStyle(fontSize: 20, height: 1.5),
-  //                   decoration: InputDecoration(
-  //                     filled: true,
-  //                     fillColor: Colors.white,
-  //                     contentPadding:
-  //                         EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-  //                     //border: InputBorder.none,
-  //                     focusedBorder: OutlineInputBorder(
-  //                       borderRadius: BorderRadius.circular(23.0),
-  //                       borderSide:
-  //                           BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-  //                     ),
-  //                     enabledBorder: OutlineInputBorder(
-  //                       borderRadius: BorderRadius.circular(23.0),
-  //                       borderSide:
-  //                           BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-  //                     ),
-  //                     hintText: 'Ex. Shopping',
-  //                     hintStyle: TextStyle(
-  //                       fontSize: 20.0,
-  //                     ),
-  //                   ),
-  //                 )),
-  //               )),
-  //             ),
-  //           ],
-  //         ),
-  //         // title: Text('Create Poll'),
-  //         // content: TextField(
-  //         //   //autofocus: true,
-  //         //   decoration: InputDecoration(hintText: 'Enter your name'),
-  //         // ),
-  //         // actions: [
-  //         //   TextButton(
-  //         //     child: Text('SUBMIT'),
-  //         //     onPressed: () {},
-  //         //   )
-  //         // ],
-  //       ),
-  //     );
+//               child: (Container(
+//                 decoration: BoxDecoration(
+//                   //color: Colors.white,
+//                   borderRadius: BorderRadius.circular(30),
+//                   // boxShadow: [
+//                   //   const BoxShadow(
+//                   //     color: Colors.black,
+//                   //   ),
+//                   // ]
+//                 ),
+//                 child: (TextField(
+//                   style: TextStyle(fontSize: 20, height: 1.5),
+//                   decoration: InputDecoration(
+//                     filled: true,
+//                     fillColor: Colors.white,
+//                     contentPadding:
+//                         EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+//                     //border: InputBorder.none,
+//                     focusedBorder: OutlineInputBorder(
+//                       borderRadius: BorderRadius.circular(23.0),
+//                       borderSide:
+//                           BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+//                     ),
+//                     enabledBorder: OutlineInputBorder(
+//                       borderRadius: BorderRadius.circular(23.0),
+//                       borderSide:
+//                           BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+//                     ),
+//                     hintText: 'Ex. Shopping',
+//                     hintStyle: TextStyle(
+//                       fontSize: 20.0,
+//                     ),
+//                   ),
+//                 )),
+//               )),
+//             ),
+//           ],
+//         ),
+//         // title: Text('Create Poll'),
+//         // content: TextField(
+//         //   //autofocus: true,
+//         //   decoration: InputDecoration(hintText: 'Enter your name'),
+//         // ),
+//         // actions: [
+//         //   TextButton(
+//         //     child: Text('SUBMIT'),
+//         //     onPressed: () {},
+//         //   )
+//         // ],
+//       ),
+//     );
 
-  Future openDialog(BuildContext context) => showDialog(
-      context: context,
-      builder: (context) {
-        TextEditingController topicController = TextEditingController();
+Future openDialogPoll(BuildContext context) => showDialog(
+    context: context,
+    builder: (context) {
+      bool check123 = false, check1234 = false;
+      TextEditingController topicController = TextEditingController();
+      TextEditingController option1Controller = TextEditingController();
+      TextEditingController option2Controller = TextEditingController();
+      TextEditingController option3Controller = TextEditingController();
+      TextEditingController option4Controller = TextEditingController();
+      TextEditingController option5Controller = TextEditingController();
+      return StatefulBuilder(builder: (context, setState) {
+        return Center(
+          child: Material(
+            type: MaterialType.transparency,
+            child: SingleChildScrollView(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
+                padding: EdgeInsets.all(20),
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Stack(
+                      children: [
+                        Center(
+                          child: Text(
+                            'Create Poll',
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black),
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: -6,
+                          child: InkResponse(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: CircleAvatar(
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.black,
+                                size: 30,
+                              ),
+                              backgroundColor: Colors.transparent,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      'Topic',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+
+                    // Start -- TextField Topic
+                    TextFormField(
+                      controller: topicController,
+                      minLines: 3,
+                      maxLines: 3,
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(fontSize: 20, height: 1.5),
+                      decoration: InputDecoration(
+                        hintText: 'Enter a poll question',
+                        hintStyle: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        //border: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 190, 190, 186),
+                              width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide:
+                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                        ),
+                      ),
+                    ),
+                    // End -- TextField Topic
+
+                    SizedBox(height: 40),
+                    // Text(
+                    //   'Options',
+                    //   style: TextStyle(
+                    //     fontSize: 20,
+                    //     fontWeight: FontWeight.w600,
+                    //     color: Colors.black,
+                    //   ),
+                    // ),
+                    // SizedBox(height: 10),
+
+                    // Start -- TextField Option 1
+                    TextFormField(
+                      onChanged: (value) {
+                        if (value.isNotEmpty &&
+                            option2Controller.text.isNotEmpty &&
+                            option3Controller.text.isNotEmpty) {
+                          setState(
+                            () {
+                              check123 = true;
+                            },
+                          );
+                        } else {
+                          setState(
+                            () {
+                              check123 = false;
+                            },
+                          );
+                        }
+                      },
+                      controller: option1Controller,
+                      minLines: 1,
+                      maxLines: 1,
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(fontSize: 20, height: 1.5),
+                      decoration: InputDecoration(
+                        hintText: 'Option 1',
+                        hintStyle: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        //border: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 190, 190, 186),
+                              width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide:
+                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                        ),
+                      ),
+                    ),
+                    // End -- TextField Option 1
+
+                    SizedBox(height: 10),
+
+                    // Start -- TextField Option 2
+                    TextFormField(
+                      onChanged: (value) {
+                        if (option1Controller.text.isNotEmpty &&
+                            value.isNotEmpty &&
+                            option3Controller.text.isNotEmpty) {
+                          setState(
+                            () {
+                              check123 = true;
+                            },
+                          );
+                        } else {
+                          setState(
+                            () {
+                              check123 = false;
+                            },
+                          );
+                        }
+                      },
+                      controller: option2Controller,
+                      minLines: 1,
+                      maxLines: 1,
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(fontSize: 20, height: 1.5),
+                      decoration: InputDecoration(
+                        hintText: 'Option 2',
+                        hintStyle: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        //border: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 190, 190, 186),
+                              width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide:
+                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                        ),
+                      ),
+                    ),
+                    // End -- TextField Option 2
+
+                    SizedBox(height: 10),
+
+                    // Start -- TextField Option 3
+                    TextFormField(
+                      onChanged: (value) {
+                        if (option1Controller.text.isNotEmpty &&
+                            option2Controller.text.isNotEmpty &&
+                            value.isNotEmpty) {
+                          setState(
+                            () {
+                              check123 = true;
+                            },
+                          );
+                        } else {
+                          setState(
+                            () {
+                              check123 = false;
+                            },
+                          );
+                        }
+                      },
+                      controller: option3Controller,
+                      minLines: 1,
+                      maxLines: 1,
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(fontSize: 20, height: 1.5),
+                      decoration: InputDecoration(
+                        hintText: 'Option 3',
+                        hintStyle: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        //border: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 190, 190, 186),
+                              width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide:
+                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                        ),
+                      ),
+                    ),
+                    // End -- TextField Option 3
+
+                    SizedBox(height: 10),
+
+                    // Start -- TextField Option 4
+                    Visibility(
+                      visible: check123,
+                      child: TextFormField(
+                        onChanged: (value) {
+                          if (check123 == true && value != null) {
+                            setState(
+                              () {
+                                check1234 = true;
+                              },
+                            );
+                          } else {
+                            setState(
+                              () {
+                                check1234 = false;
+                              },
+                            );
+                          }
+                        },
+                        controller: option4Controller,
+                        minLines: 1,
+                        maxLines: 1,
+                        keyboardType: TextInputType.multiline,
+                        style: TextStyle(fontSize: 20, height: 1.5),
+                        decoration: InputDecoration(
+                          hintText: 'Option 4',
+                          hintStyle: TextStyle(
+                            fontSize: 20.0,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          //border: InputBorder.none,
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(23.0),
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 190, 190, 186),
+                                width: 2.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(23.0),
+                            borderSide: BorderSide(
+                                color: Color(0xFFF9EE6D), width: 2.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // End -- TextField Option 4
+
+                    SizedBox(height: 10),
+
+                    // Start -- TextField Option 5
+                    Visibility(
+                      visible: check1234,
+                      child: TextFormField(
+                        controller: option5Controller,
+                        minLines: 1,
+                        maxLines: 1,
+                        keyboardType: TextInputType.multiline,
+                        style: TextStyle(fontSize: 20, height: 1.5),
+                        decoration: InputDecoration(
+                          hintText: 'Option 5',
+                          hintStyle: TextStyle(
+                            fontSize: 20.0,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          //border: InputBorder.none,
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(23.0),
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 190, 190, 186),
+                                width: 2.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(23.0),
+                            borderSide: BorderSide(
+                                color: Color(0xFFF9EE6D), width: 2.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // End -- TextField Option 5
+
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.066,
+                          width: MediaQuery.of(context).size.width * 0.864,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color(0xFFF9EE6D)),
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(90.0),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              'Done',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                            onPressed: () {
+                              if (option1Controller.text != null) {
+                                if (option2Controller != null) {
+                                  if (option3Controller != null) {}
+                                }
+                              }
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      });
+    });
+
+Future openDialogRandom(BuildContext context) => showDialog(
+    context: context,
+    builder: (context) {
+      bool check123 = false, check1234 = false;
+      TextEditingController topicController = TextEditingController();
+      TextEditingController option1Controller = TextEditingController();
+      TextEditingController option2Controller = TextEditingController();
+      TextEditingController option3Controller = TextEditingController();
+      TextEditingController option4Controller = TextEditingController();
+      TextEditingController option5Controller = TextEditingController();
+      return StatefulBuilder(builder: (context, setState) {
         return Center(
           child: Material(
             type: MaterialType.transparency,
@@ -764,7 +1310,7 @@ class VoteRandomBody extends StatelessWidget {
               ),
               padding: EdgeInsets.all(20),
               width: MediaQuery.of(context).size.width * 0.9,
-              height: 400,
+              height: MediaQuery.of(context).size.height * 0.8,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -772,7 +1318,7 @@ class VoteRandomBody extends StatelessWidget {
                     children: [
                       Center(
                         child: Text(
-                          'Create Poll',
+                          'Create Random',
                           style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w600,
@@ -807,48 +1353,323 @@ class VoteRandomBody extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 10),
-                  Container(
-                    child: (Container(
-                      // decoration: BoxDecoration(
-                      //   borderRadius: BorderRadius.circular(30),
-                      // ),
-                      child: (TextFormField(
-                        controller: topicController,
-                        minLines: 3,
-                        maxLines: 3,
-                        keyboardType: TextInputType.multiline,
-                        style: TextStyle(fontSize: 20, height: 1.5),
-                        decoration: InputDecoration(
-                          hintText: 'Enter a poll question',
-                          hintStyle: TextStyle(
-                            fontSize: 20.0,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          //border: InputBorder.none,
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23.0),
-                            borderSide: BorderSide(
-                                color: Color(0xFFF9EE6D), width: 2.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23.0),
-                            borderSide: BorderSide(
-                                color: Color(0xFFF9EE6D), width: 2.0),
-                          ),
-                        ),
-                      )),
-                    )),
+
+                  // Start -- TextField Topic
+                  TextFormField(
+                    controller: topicController,
+                    minLines: 3,
+                    maxLines: 3,
+                    keyboardType: TextInputType.multiline,
+                    style: TextStyle(fontSize: 20, height: 1.5),
+                    decoration: InputDecoration(
+                      hintText: 'Enter a poll question',
+                      hintStyle: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //border: InputBorder.none,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 190, 190, 186),
+                            width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                      ),
+                    ),
                   ),
+                  // End -- TextField Topic
+
+                  SizedBox(height: 40),
+                  // Text(
+                  //   'Options',
+                  //   style: TextStyle(
+                  //     fontSize: 20,
+                  //     fontWeight: FontWeight.w600,
+                  //     color: Colors.black,
+                  //   ),
+                  // ),
+                  // SizedBox(height: 10),
+
+                  // Start -- TextField Option 1
+                  TextFormField(
+                    onChanged: (value) {
+                      if (value.isNotEmpty &&
+                          option2Controller.text.isNotEmpty &&
+                          option3Controller.text.isNotEmpty) {
+                        setState(
+                          () {
+                            check123 = true;
+                          },
+                        );
+                      } else {
+                        setState(
+                          () {
+                            check123 = false;
+                          },
+                        );
+                      }
+                    },
+                    controller: option1Controller,
+                    minLines: 1,
+                    maxLines: 1,
+                    keyboardType: TextInputType.multiline,
+                    style: TextStyle(fontSize: 20, height: 1.5),
+                    decoration: InputDecoration(
+                      hintText: 'Option 1',
+                      hintStyle: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //border: InputBorder.none,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 190, 190, 186),
+                            width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Option 1
+
                   SizedBox(height: 10),
-                  Text(
-                    'Options',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
+
+                  // Start -- TextField Option 2
+                  TextFormField(
+                    onChanged: (value) {
+                      if (option1Controller.text.isNotEmpty &&
+                          value.isNotEmpty &&
+                          option3Controller.text.isNotEmpty) {
+                        setState(
+                          () {
+                            check123 = true;
+                          },
+                        );
+                      } else {
+                        setState(
+                          () {
+                            check123 = false;
+                          },
+                        );
+                      }
+                    },
+                    controller: option2Controller,
+                    minLines: 1,
+                    maxLines: 1,
+                    keyboardType: TextInputType.multiline,
+                    style: TextStyle(fontSize: 20, height: 1.5),
+                    decoration: InputDecoration(
+                      hintText: 'Option 2',
+                      hintStyle: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //border: InputBorder.none,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 190, 190, 186),
+                            width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Option 2
+
+                  SizedBox(height: 10),
+
+                  // Start -- TextField Option 3
+                  TextFormField(
+                    onChanged: (value) {
+                      if (option1Controller.text.isNotEmpty &&
+                          option2Controller.text.isNotEmpty &&
+                          value.isNotEmpty) {
+                        setState(
+                          () {
+                            check123 = true;
+                          },
+                        );
+                      } else {
+                        setState(
+                          () {
+                            check123 = false;
+                          },
+                        );
+                      }
+                    },
+                    controller: option3Controller,
+                    minLines: 1,
+                    maxLines: 1,
+                    keyboardType: TextInputType.multiline,
+                    style: TextStyle(fontSize: 20, height: 1.5),
+                    decoration: InputDecoration(
+                      hintText: 'Option 3',
+                      hintStyle: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //border: InputBorder.none,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 190, 190, 186),
+                            width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Option 3
+
+                  SizedBox(height: 10),
+
+                  // Start -- TextField Option 4
+                  Visibility(
+                    visible: check123,
+                    child: TextFormField(
+                      onChanged: (value) {
+                        if (check123 == true && value != null) {
+                          setState(
+                            () {
+                              check1234 = true;
+                            },
+                          );
+                        } else {
+                          setState(
+                            () {
+                              check1234 = false;
+                            },
+                          );
+                        }
+                      },
+                      controller: option4Controller,
+                      minLines: 1,
+                      maxLines: 1,
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(fontSize: 20, height: 1.5),
+                      decoration: InputDecoration(
+                        hintText: 'Option 4',
+                        hintStyle: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        //border: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 190, 190, 186),
+                              width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide:
+                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Option 4
+
+                  SizedBox(height: 10),
+
+                  // Start -- TextField Option 5
+                  Visibility(
+                    visible: check1234,
+                    child: TextFormField(
+                      controller: option5Controller,
+                      minLines: 1,
+                      maxLines: 1,
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(fontSize: 20, height: 1.5),
+                      decoration: InputDecoration(
+                        hintText: 'Option 5',
+                        hintStyle: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        //border: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 190, 190, 186),
+                              width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide:
+                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Option 5
+
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.066,
+                        width: MediaQuery.of(context).size.width * 0.864,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color(0xFFF9EE6D)),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(90.0),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Done',
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black),
+                          ),
+                          onPressed: () {
+                            if (option1Controller.text != null) {
+                              if (option2Controller != null) {
+                                if (option3Controller != null) {}
+                              }
+                            }
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -857,4 +1678,4 @@ class VoteRandomBody extends StatelessWidget {
           ),
         );
       });
-}
+    });
