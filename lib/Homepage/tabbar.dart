@@ -227,8 +227,8 @@ class _tabbarState extends State<tabbar> {
                                         )),
                                   ),
                                 ),
-                                Expanded(
-                                    child: ListView.builder(
+                                
+                                     ListView.builder(
                                         padding: const EdgeInsets.all(8),
                                         itemCount: names.length,
                                         itemBuilder:
@@ -328,7 +328,7 @@ class _tabbarState extends State<tabbar> {
                                         //         ],
                                         //       )),
                                         // ),
-                                        )),
+                                        ),
 
                                 // Padding(
                                 //   padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),

@@ -1,6 +1,6 @@
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/Homepage/addList.dart';
-import 'package:famfam/check-in/Checkin.dart';
+
 import 'package:famfam/loading.dart';
 import 'package:famfam/login.dart';
 import 'package:famfam/register_info.dart';

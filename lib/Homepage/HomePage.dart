@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:famfam/Homepage/menuHome.dart';
 import 'package:famfam/Homepage/tabbar.dart';
-import 'package:famfam/check-in/Checkin.dart';
+
 import 'package:famfam/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:famfam/services/auth.dart';

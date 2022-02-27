@@ -36,9 +36,9 @@ dependencies:
   
   # image carousel slider
   cupertino_icons: ^1.0.2
-  google_maps_flutter: ^2.1.1
-  geolocator: ^8.0.5
-  location: ^4.2.0
+  # google_maps_flutter: ^2.1.1
+  # geolocator: ^8.0.5
+  # location: ^4.2.0
   roundcheckbox: ^2.0.4+1
   favorite_button: ^0.0.4
   #dots indicator

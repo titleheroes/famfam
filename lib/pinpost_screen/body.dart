@@ -23,6 +23,14 @@ class _BodyState extends State<Body> {
   }
 
   Widget build(BuildContext context) {
+    //final List<String> author = <String>['Me', 'Me'];
+    final List<String> names = <String>['Something Big', 'Something Smol'];
+    TextEditingController nameController = TextEditingController();
+    void addItemToList() {
+      setState(() {
+        names.insert(1, nameController.text);
+      });
+    }
 
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('dd/MM/yyyy – kk:mm').format(now);
@@ -34,8 +42,6 @@ class _BodyState extends State<Body> {
             decoration: BoxDecoration(color: backgroundColor),
           ),
           SafeArea(child: menuHome()),
-
-          
           TweenAnimationBuilder(
               tween: Tween<double>(begin: 0, end: value),
               duration: Duration(milliseconds: 500),
@@ -56,110 +62,230 @@ class _BodyState extends State<Body> {
                           children: [
                             Container(
                               //color: Colors.blue,
-                              height: size.height*0.09,
+                              height: size.height * 0.09,
                               child: (Row(
-                              children: [
-
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(30, 20, 0, 0),
-                                  child: Text(
-                                    "Pin Post",
-                                    style: TextStyle(
-                                        fontSize: 33,
-                                        fontWeight: FontWeight.w800),
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(30, 20, 0, 0),
+                                    child: Text(
+                                      "Pin Post",
+                                      style: TextStyle(
+                                          fontSize: 33,
+                                          fontWeight: FontWeight.w800),
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.fromLTRB(size.width*0.5, 20, 0, 0),
-                                    child: IconButton(
-                                        icon: Icon(
-                                          Icons.menu_open_rounded,
-                                          size: 40,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            value == 0 ? value = 1 : value = 0;
-                                          });
-                                          print(value);
-
-
-                                        }))
-
-
-
-                              ],
-                            )),
+                                  Container(
+                                      margin: EdgeInsets.fromLTRB(
+                                          size.width * 0.5, 20, 0, 0),
+                                      child: IconButton(
+                                          icon: Icon(
+                                            Icons.menu_open_rounded,
+                                            size: 40,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              value == 0
+                                                  ? value = 1
+                                                  : value = 0;
+                                            });
+                                            print(value);
+                                          }))
+                                ],
+                              )),
                             ),
-                            SizedBox(height: 20,),
-                            
+                            SizedBox(
+                              height: 20,
+                            ),
                             SingleChildScrollView(
-                            
-                            child: Container(
+                                child: Container(
                               //width: size.width * 0.85,
                               height: size.height * 0.75,
                               //color: Colors.red,
-                               child: (SingleChildScrollView(
-                               scrollDirection: Axis.vertical,
-                              child: Column(children: [
-                                  
-                                
+                              child: (SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Column(
+                                    children: [
 
+/*
+                                      Expanded(
+                                          child: ListView.builder(
+                                          
+                                              itemCount: names.length,
+                                              itemBuilder:
+                                                  (BuildContext context, int index) {
+                                                return Container(
+                                                  height: size.height * 0.2,
+                                                  width: size.width * 0.85,
+                                                  decoration: BoxDecoration(
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black
+                                                              .withOpacity(0.2),
+                                                          spreadRadius: 1,
+                                                          blurRadius: 10,
+                                                          offset: Offset(4, 8),
+                                                        ),
+                                                      ],
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                      color: Color(0xFFF9F6C6)),
+                                                  child: Column(
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                        .fromLTRB(
+                                                                    15,
+                                                                    15,
+                                                                    0,
+                                                                    0),
+                                                            child: (Image.asset(
+                                                              "assets/images/J-Profile.png",
+                                                              width: 40,
+                                                              height: 40,
+                                                            )),
+                                                          ),
+                                                          Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                        .fromLTRB(
+                                                                    10,
+                                                                    10,
+                                                                    0,
+                                                                    0),
+                                                            child: (Text(
+                                                              "Me",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize: 20),
+                                                            )),
+                                                          ),
+                                                          Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                        .fromLTRB(
+                                                                    130,
+                                                                    13,
+                                                                    0,
+                                                                    0),
+                                                            child: (Text(
+                                                              formattedDate,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.5)),
+                                                            )),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                                .fromLTRB(
+                                                            20, 0, 0, 0),
+                                                        width: size.width * 0.6,
+                                                        //color: Colors.red,
+                                                        child: Text(
+                                                          '${names[index]}',
+                                                          style: TextStyle(
+                                                              fontSize: 18),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                              
+                                              
+                                              )  
+                                              )
 
-                                /*  One Card */
-                                Container(
-                                  
-                                  height: size.height * 0.2,
-                                  width: size.width *0.85,
-                                  decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(color: Colors.black.withOpacity(0.2), spreadRadius: 1,blurRadius: 10,offset: Offset(4,8), ),
-                                    ],
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Color(0xFFF9F6C6)), 
+*/
 
-                                  child: Column(children: [
-                                    
-                                    Row(children: [
+                                      /*  One Card */
+
+                                      
                                       Container(
-                                        margin: const EdgeInsets.fromLTRB(15, 15, 0, 0),
-                                        child: ( Image.asset(
-                                                        "assets/images/J-Profile.png",width: 40, height: 40, )),
+                                        height: size.height * 0.2,
+                                        width: size.width * 0.85,
+                                        decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.2),
+                                                spreadRadius: 1,
+                                                blurRadius: 10,
+                                                offset: Offset(4, 8),
+                                              ),
+                                            ],
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: Color(0xFFF9F6C6)),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  margin:
+                                                      const EdgeInsets.fromLTRB(
+                                                          15, 15, 0, 0),
+                                                  child: (Image.asset(
+                                                    "assets/images/J-Profile.png",
+                                                    width: 40,
+                                                    height: 40,
+                                                  )),
+                                                ),
+                                                Container(
+                                                  margin:
+                                                      const EdgeInsets.fromLTRB(
+                                                          10, 10, 0, 0),
+                                                  child: (Text(
+                                                    "Me",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 20),
+                                                  )),
+                                                ),
+                                                Container(
+                                                  margin:
+                                                      const EdgeInsets.fromLTRB(
+                                                          130, 13, 0, 0),
+                                                  child: (Text(
+                                                    formattedDate,
+                                                    style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.5)),
+                                                  )),
+                                                ),
+                                              ],
+                                            ),
+                                            Container(
+                                              margin: const EdgeInsets.fromLTRB(
+                                                  20, 0, 0, 0),
+                                              width: size.width * 0.6,
+                                              //color: Colors.red,
+                                              child: Text(
+                                                'dataaaaaaaaa                           1.เอเอเอเอเอเอเอเอเอ                          2.บีบีบีบีบีบีบีบีบีบีบบีบีบี                       3.ซีซีซีซีซีซีซีซีซีซีซีซีซีซี      ',
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                     Container(
-                                        margin: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-                                        child: (Text("Me",style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 20),)),
-                                      ),
 
-                                      Container(
-                                        margin: const EdgeInsets.fromLTRB(130, 13, 0, 0),
-                                        child: (Text(formattedDate,style: TextStyle(color: Colors.black.withOpacity(0.5)),)),
-                                      ),
-                                      
-                                      
+                                     
+                                      /*  One Card */
 
-                                    ],
-                                      
-                                    ),
-                                    
-                                    Container(
-                                      margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                      width: size.width *0.6,
-                                      //color: Colors.red,
-                                      child: Text('dataaaaaaaaa                           1.เอเอเอเอเอเอเอเอเอ                          2.บีบีบีบีบีบีบีบีบีบีบบีบีบี                       3.ซีซีซีซีซีซีซีซีซีซีซีซีซีซี      '
-                                      
-                                      ,style: TextStyle(fontSize: 18),),
-                                    ),
-
-
-
-                                  ],),
-
-                                ),
-                                /*  One Card */
-
-
-
-                                /*
+                                      /*
                                 SizedBox(height: 20,),
 
                                 Container(
@@ -174,59 +300,292 @@ class _BodyState extends State<Body> {
                                 ),
 
                                 */
-  
-                              
-                             
-
-                              ],)
-                              
-                              )),
-
-
+                                    ],
+                                  ))),
                             )),
+                            SizedBox(
+                              height: 20,
+                            ),
 
+                            //bottomsheet
+                            Stack(
+                              children: [
+                                Container(
+                                  width: size.width * 0.864,
+                                  height: size.height * 0.066,
 
-                            SizedBox(height: 20,),
+                                  //color: Colors.pink,
 
+                                  child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Color(0xFFF9EE6D)),
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(90.0),
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Pin your Post!',
+                                        style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black),
+                                      ),
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.vertical(
+                                                        top: Radius.circular(
+                                                            62.0))),
+                                            backgroundColor: Colors.white,
+                                            context: context,
+                                            isScrollControlled: true,
+                                            enableDrag: false,
+                                            builder: (context) => Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 18),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      25.0),
+                                                          child: Container(
+                                                            height:
+                                                                size.height *
+                                                                    0.595,
+                                                            child: Container(
+                                                              width:
+                                                                  size.width *
+                                                                      0.84,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      //color: hexToColor("#F1E5BA"),
+                                                                      borderRadius:
+                                                                          BorderRadius
+                                                                              .only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        66),
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        66),
+                                                              )),
+                                                              child: Column(
+                                                                // mainAxisAlignment:
+                                                                //     MainAxisAlignment.center,
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: <
+                                                                    Widget>[
+                                                                  SizedBox(
+                                                                      height:
+                                                                          45),
+                                                                  Center(
+                                                                    child: Text(
+                                                                      'Add Pin Post',
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              24,
+                                                                          fontWeight: FontWeight
+                                                                              .w600,
+                                                                          color:
+                                                                              Colors.black),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      height:
+                                                                          30),
+                                                                  Text(
+                                                                    'What\'s on your mind',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            20,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600,
+                                                                        color: Colors
+                                                                            .black),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      height: size
+                                                                              .height *
+                                                                          0.021),
+                                                                  Container(
+                                                                    //margin: EdgeInsets.only(top: 40),
+                                                                    //width: size.width * 0.831,
 
+                                                                    child:
+                                                                        (Container(
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        //color: Colors.white,
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(30),
+                                                                        // boxShadow: [
+                                                                        //   const BoxShadow(
+                                                                        //     color: Colors.black,
+                                                                        //   ),
+                                                                        // ]
+                                                                      ),
+                                                                      //height: 300,
+                                                                      child:
+                                                                          (TextField(
+                                                                        controller:
+                                                                            nameController,
+                                                                        keyboardType:
+                                                                            TextInputType.multiline,
+                                                                        maxLines:
+                                                                            8,
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                20,
+                                                                            height:
+                                                                                1.5),
+                                                                        decoration:
+                                                                            InputDecoration(
+                                                                          filled:
+                                                                              true,
+                                                                          fillColor:
+                                                                              Colors.white,
+                                                                          contentPadding: EdgeInsets.symmetric(
+                                                                              vertical: 10,
+                                                                              horizontal: 20),
+                                                                          //border: InputBorder.none,
+                                                                          focusedBorder:
+                                                                              OutlineInputBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(18.0),
+                                                                            borderSide:
+                                                                                BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                                                                          ),
+                                                                          enabledBorder:
+                                                                              OutlineInputBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(18.0),
+                                                                            borderSide:
+                                                                                BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                                                                          ),
+                                                                          hintText:
+                                                                              'Write your Pin Post',
+                                                                          hintStyle:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                20.0,
+                                                                          ),
+                                                                        ),
+                                                                      )),
+                                                                    )),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      height: size
+                                                                              .height *
+                                                                          0.021),
+                                                                  Container(
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        //SizedBox(height: size.height * 0.021),
 
-                            PinBotSheet(size: size),
-
+                                                                        SizedBox(
+                                                                            height:
+                                                                                size.height * 0.007),
+                                                                        Center(
+                                                                            child:
+                                                                                Container(
+                                                                          width:
+                                                                              208,
+                                                                          height:
+                                                                              60,
+                                                                          child:
+                                                                              ElevatedButton(
+                                                                            style:
+                                                                                ButtonStyle(
+                                                                              backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFF9EE6D)),
+                                                                              shape: MaterialStateProperty.all(
+                                                                                RoundedRectangleBorder(
+                                                                                  borderRadius: BorderRadius.circular(90.0),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onPressed:
+                                                                                () {
+                                                                              print('Input: ' + nameController.text);
+                                                                              print(names);
+                                                                              addItemToList();
+                                                                              //Navigator.pop(context);
+                                                                            },
+                                                                            child:
+                                                                                Text(
+                                                                              "Confirm",
+                                                                              style: TextStyle(fontSize: 21, color: Colors.black),
+                                                                            ),
+                                                                          ),
+                                                                        ))
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          )),
+                                                      Padding(
+                                                        padding: EdgeInsets.only(
+                                                            bottom:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                    ],
+                                                  ),
+                                                ));
+                                      }),
+                                )
+                              ],
+                            )
+                            //bottomsheet
                           ],
                         )),
                       ),
-                    ))
-                    
-                    
-                    
-
-                    
-                    )));
+                    )))));
               }),
-
-              GestureDetector(
-          onHorizontalDragUpdate: (e) {
-            if (e.delta.dx < 0) {
-              setState(() {
-                value = 1;
-              });
-            } else {
-              setState(() {
-                value = 0;
-              });
-            }
-          },
-        )
+          GestureDetector(
+            onHorizontalDragUpdate: (e) {
+              if (e.delta.dx < 0) {
+                setState(() {
+                  value = 1;
+                });
+              } else {
+                setState(() {
+                  value = 0;
+                });
+              }
+            },
+          )
         ],
       ),
-      
-      
-    
-      
-      
-      
-      
     );
   }
 }
-
