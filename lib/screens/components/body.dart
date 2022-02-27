@@ -8,6 +8,7 @@ import 'package:famfam/constants.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:famfam/components/circlebottomsheet.dart';
 import 'package:famfam/components/tickbottomsheet.dart';
+import 'package:roundcheckbox/roundcheckbox.dart';
 
 import 'header_circle.dart';
 
@@ -285,6 +286,79 @@ class TodoBody extends StatelessWidget {
                                             fontSize: 18,
                                           ),
                                         ),
+                                        ///////////////////////////////////////////////////
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 10, 10, 10),
+                                          child: Container(
+                                              height: 70,
+                                              width: 350,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Color(0xfffFFC34A)),
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 0),
+                                                    child: RoundCheckBox(
+                                                      uncheckedColor:
+                                                          Colors.white,
+                                                      checkedColor: Colors.grey,
+                                                      onTap: (selected) {},
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(5, 10, 5, 5),
+                                                    child: Image.asset(
+                                                      "assets/images/Profile.png",
+                                                      width: 60,
+                                                      height: 60,
+                                                    ),
+                                                  ),
+                                                  const VerticalDivider(
+                                                    width: 20,
+                                                    thickness: 1.5,
+                                                    indent: 15,
+                                                    endIndent: 15,
+                                                    color: Colors.white,
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      // Container(
+                                                      //   width: 230,
+                                                      //   child: Text(
+                                                      //     "Martin",
+                                                      //     style: TextStyle(
+                                                      //         fontWeight:
+                                                      //             FontWeight
+                                                      //                 .normal,
+                                                      //         fontSize: 15),
+                                                      //   ),
+                                                      // ),
+                                                      // Container(
+                                                      //   width: 230,
+                                                      //   child: Text(
+                                                      //     "รดน้ำต้นไม้ให้พ่อด้วยฮะมุง",
+                                                      //     style: TextStyle(
+                                                      //         fontWeight:
+                                                      //             FontWeight
+                                                      //                 .normal,
+                                                      //         fontSize: 18),
+                                                      //   ),
+                                                      // ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ///////////////////////////////////////////////////
                                       ],
                                     ),
                                   ),
@@ -658,7 +732,6 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                       ],
                                     ),
                                   ),
-
                                   Container(
                                     height: MediaQuery.of(context).size.height,
                                     padding: const EdgeInsets.only(top: 12.0),
@@ -761,41 +834,6 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                       ],
                                     ),
                                   ),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.only(top: 12.0),
-                                  //   child: Container(
-                                  //     //height: 100,
-                                  //     //width: 100,
-                                  //     decoration: BoxDecoration(
-                                  //         //color: Colors.pink,
-                                  //         //borderRadius: BorderRadius.circular(30),
-                                  //         ),
-                                  //     child: Column(
-                                  //       mainAxisAlignment:
-                                  //           MainAxisAlignment.center,
-                                  //       crossAxisAlignment:
-                                  //           CrossAxisAlignment.center,
-                                  //       children: <Widget>[
-                                  //         SvgPicture.asset(
-                                  //           "assets/icons/leaf-fall.svg",
-                                  //           height: 85,
-                                  //           color: Colors.black.withOpacity(0.4),
-                                  //         ),
-                                  //         SizedBox(
-                                  //           height: 1,
-                                  //         ),
-                                  //         Text(
-                                  //           "No RANDOM is going on right now.",
-                                  //           style: TextStyle(
-                                  //             color:
-                                  //                 Colors.black.withOpacity(0.5),
-                                  //             fontSize: 18,
-                                  //           ),
-                                  //         ),
-                                  //       ],
-                                  //     ),
-                                  //   ),
-                                  // ),
                                 ],
                               ),
                             ),
@@ -814,88 +852,6 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
   }
 }
 
-// Future openDialog(BuildContext context) => showDialog(
-//       context: context,
-//       builder: (context) => AlertDialog(
-
-//         title: Column(
-//           //crossAxisAlignment: CrossAxisAlignment.center,
-//           children: <Widget>[
-//             Center(
-//               child: Text(
-//                 'Create Poll',
-//                 style: TextStyle(
-//                     fontSize: 24,
-//                     fontWeight: FontWeight.w600,
-//                     color: Colors.black),
-//               ),
-//             ),
-//             SizedBox(height: 30),
-//             Text(
-//               'Topic',
-//               style: TextStyle(
-//                 fontSize: 20,
-//                 fontWeight: FontWeight.w600,
-//                 color: Colors.black,
-//               ),
-//             ),
-//             SizedBox(height: 10),
-//             Container(
-//               //margin: EdgeInsets.only(top: 40),
-//               //width: size.width * 0.831,
-
-//               child: (Container(
-//                 decoration: BoxDecoration(
-//                   //color: Colors.white,
-//                   borderRadius: BorderRadius.circular(30),
-//                   // boxShadow: [
-//                   //   const BoxShadow(
-//                   //     color: Colors.black,
-//                   //   ),
-//                   // ]
-//                 ),
-//                 child: (TextField(
-//                   style: TextStyle(fontSize: 20, height: 1.5),
-//                   decoration: InputDecoration(
-//                     filled: true,
-//                     fillColor: Colors.white,
-//                     contentPadding:
-//                         EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-//                     //border: InputBorder.none,
-//                     focusedBorder: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(23.0),
-//                       borderSide:
-//                           BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-//                     ),
-//                     enabledBorder: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(23.0),
-//                       borderSide:
-//                           BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-//                     ),
-//                     hintText: 'Ex. Shopping',
-//                     hintStyle: TextStyle(
-//                       fontSize: 20.0,
-//                     ),
-//                   ),
-//                 )),
-//               )),
-//             ),
-//           ],
-//         ),
-//         // title: Text('Create Poll'),
-//         // content: TextField(
-//         //   //autofocus: true,
-//         //   decoration: InputDecoration(hintText: 'Enter your name'),
-//         // ),
-//         // actions: [
-//         //   TextButton(
-//         //     child: Text('SUBMIT'),
-//         //     onPressed: () {},
-//         //   )
-//         // ],
-//       ),
-//     );
-
 Future openDialogPoll(BuildContext context) => showDialog(
     context: context,
     builder: (context) {
@@ -906,11 +862,11 @@ Future openDialogPoll(BuildContext context) => showDialog(
       TextEditingController option3Controller = TextEditingController();
       TextEditingController option4Controller = TextEditingController();
       TextEditingController option5Controller = TextEditingController();
-      return StatefulBuilder(builder: (context, setState) {
-        return Center(
-          child: Material(
-            type: MaterialType.transparency,
-            child: SingleChildScrollView(
+      return AlertDialog(
+        content: StatefulBuilder(builder: (context, setState) {
+          return Center(
+            child: Material(
+              type: MaterialType.transparency,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -994,7 +950,7 @@ Future openDialogPoll(BuildContext context) => showDialog(
                     ),
                     // End -- TextField Topic
 
-                    SizedBox(height: 40),
+                    SizedBox(height: 20),
                     // Text(
                     //   'Options',
                     //   style: TextStyle(
@@ -1054,7 +1010,7 @@ Future openDialogPoll(BuildContext context) => showDialog(
                     ),
                     // End -- TextField Option 1
 
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
 
                     // Start -- TextField Option 2
                     TextFormField(
@@ -1105,7 +1061,7 @@ Future openDialogPoll(BuildContext context) => showDialog(
                     ),
                     // End -- TextField Option 2
 
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
 
                     // Start -- TextField Option 3
                     TextFormField(
@@ -1156,7 +1112,7 @@ Future openDialogPoll(BuildContext context) => showDialog(
                     ),
                     // End -- TextField Option 3
 
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
 
                     // Start -- TextField Option 4
                     Visibility(
@@ -1208,7 +1164,7 @@ Future openDialogPoll(BuildContext context) => showDialog(
                     ),
                     // End -- TextField Option 4
 
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
 
                     // Start -- TextField Option 5
                     Visibility(
@@ -1284,9 +1240,9 @@ Future openDialogPoll(BuildContext context) => showDialog(
                 ),
               ),
             ),
-          ),
-        );
-      });
+          );
+        }),
+      );
     });
 
 Future openDialogRandom(BuildContext context) => showDialog(
