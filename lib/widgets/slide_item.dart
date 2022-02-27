@@ -57,7 +57,7 @@ class SliderItem extends StatelessWidget {
                 child: Text("Get Start!"),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                      MaterialPageRoute(builder: (context) => Login()));
                 },
               ),
             )),
