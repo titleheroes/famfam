@@ -1,4 +1,6 @@
+import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -37,17 +39,17 @@ class CircleID extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var user = FirebaseAuth.instance.currentUser;
     Size size = MediaQuery.of(context).size;
     return Center(
         child: Column(
       //mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-                
         Container(
           margin: EdgeInsets.only(top: 40),
           height: size.height * 0.12 - 37,
-          width: size.width * 0.75 ,
+          width: size.width * 0.75,
           child: ElevatedButton(
             style: ButtonStyle(
               backgroundColor:
@@ -60,34 +62,29 @@ class CircleID extends StatelessWidget {
             ),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: "APCY2101"));
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar
-              (content: Text('Copied to clipboard')));
-
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text('Copied to clipboard')));
             },
             child: Text(
               "APCY2101",
-              style: TextStyle(fontSize: 34,fontWeight: FontWeight.w400, color: hexToColor('#000000')),
+              style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.w400,
+                  color: hexToColor('#000000')),
             ),
           ),
-           
-        ),      
+        ),
         SizedBox(height: 270),
-        
-
         Column(
-          
-          children: [          
+          children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 36),
               child: Row(
-                
                 children: <Widget>[
                   Expanded(
                     flex: 1,
-                    
                     child: Container(
                       height: size.height * 0.1 - 37,
-                    
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
@@ -99,7 +96,10 @@ class CircleID extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                           Navigator.push(context, MaterialPageRoute(builder: (context) => createCircleScreen()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => createCircleScreen()));
                         },
                         child: Text(
                           "Back",
@@ -115,7 +115,7 @@ class CircleID extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: Container(
-                      height: size.height * 0.1 - 37,                    
+                      height: size.height * 0.1 - 37,
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
@@ -126,7 +126,14 @@ class CircleID extends StatelessWidget {
                             ),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomePage(user),
+                              ),
+                              (Route<dynamic> route) => false);
+                        },
                         child: Text(
                           "Next",
                           style: TextStyle(fontSize: 21),

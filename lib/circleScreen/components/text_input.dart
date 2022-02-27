@@ -100,8 +100,10 @@ class EnterCircleID extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                           Navigator.push(context, MaterialPageRoute(builder: (context) => createCircleScreen()));
-
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => createCircleScreen()));
                         },
                         child: Text(
                           "Back",
@@ -139,10 +141,7 @@ class EnterCircleID extends StatelessWidget {
                             ),
                           ),
                         ),
-                        onPressed: () {
-
-
-                        },
+                        onPressed: () {},
                         child: Text(
                           "Next",
                           style: TextStyle(fontSize: 21),

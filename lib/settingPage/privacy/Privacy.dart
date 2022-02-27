@@ -3,7 +3,6 @@ import 'package:famfam/settingPage/settingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 class PrivacyEZ extends StatefulWidget {
   @override

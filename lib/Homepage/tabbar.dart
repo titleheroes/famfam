@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -244,8 +245,12 @@ class _tabbarState extends State<tabbar> {
                                                           .height /
                                                       8)),
                                           Container(
-                                            child: Image.asset(
-                                                'assets/images/leaf-fall.png'),
+                                            child: SvgPicture.asset(
+                                              "assets/icons/leaf-fall.svg",
+                                              height: 85,
+                                              color:
+                                                  Colors.black.withOpacity(0.4),
+                                            ),
                                           ),
                                           Text(
                                             "You don't have any list right now",

@@ -1,4 +1,5 @@
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/services/auth.dart';
 import 'package:famfam/settingPage/circle/circle.dart';
 import 'package:famfam/settingPage/create&join/create&join.dart';
 import 'package:famfam/settingPage/member/member.dart';
@@ -7,6 +8,7 @@ import 'package:famfam/settingPage/about/about.dart';
 import 'package:famfam/settingPage/help/help.dart';
 import 'package:famfam/settingPage/notification/notification.dart';
 import 'package:famfam/settingPage/privacy/Privacy.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -41,6 +43,8 @@ class _settingPageState extends State<settingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthService _auth = AuthService();
+    final User user = FirebaseAuth.instance.currentUser!;
     int length = circle.length;
     String family = 'Sabaidee';
     String imageProfile = 'assets/images/J-Profile.png';
@@ -64,7 +68,8 @@ class _settingPageState extends State<settingPage> {
                 ),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                      MaterialPageRoute(builder: (context) => HomePage(user)));
+                  // Navigator.pop(context);
                 },
               ),
               elevation: 0,
@@ -176,7 +181,9 @@ class _settingPageState extends State<settingPage> {
                             "Log out",
                             style: TextStyle(color: Colors.black),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            _auth.signOut(context);
+                          },
                         ),
                       ),
                     ]),

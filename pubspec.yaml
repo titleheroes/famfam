@@ -61,7 +61,6 @@ dependencies:
   polls: ^1.0.1
   sqflite: ^2.0.2
   image_picker: ^0.8.4+9
-  lite_rolling_switch: ^0.1.1
   flutter_slidable: ^1.2.0
   get_it: ^7.2.0
 

@@ -658,24 +658,23 @@ class _Register_InfoState extends State<Register_Info> {
     FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
     if (_imageFile == null) {
-      var imageFile = File("/assets/images/prfoile/.blank_profile.png");
+      imageFile = File("/assets/images/prfoile/.blank_profile.png");
     } else {
       imageFile = File(_imageFile!.path);
-    }
+      Reference storageReference = firebaseStorage
+          .ref()
+          .child('userProfile/' + fnameController.text + i.toString());
 
-    Reference storageReference = firebaseStorage
-        .ref()
-        .child('userProfile/' + fnameController.text + i.toString());
-
-    UploadTask uploadTask = storageReference.putFile(imageFile);
-    await uploadTask.whenComplete(() async {
-      var url = await storageReference.getDownloadURL();
-      setState(() {
-        urlImage = url.toString();
+      UploadTask uploadTask = storageReference.putFile(imageFile);
+      await uploadTask.whenComplete(() async {
+        var url = await storageReference.getDownloadURL();
+        setState(() {
+          urlImage = url.toString();
+        });
+      }).catchError((onError) {
+        print(onError);
       });
-    }).catchError((onError) {
-      print(onError);
-    });
+    }
   }
 
   void TakePhoto(ImageSource source) async {

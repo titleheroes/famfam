@@ -556,11 +556,10 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                         size: 40,
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
-                        // Navigator.pushReplacement(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => HomePage(user)));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(user)));
                       },
                     ),
                   ),
@@ -643,9 +642,9 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                   .width *
                                               0.864,
                                           decoration: BoxDecoration(
-                                            color: Colors.pink.shade200,
-                                            //borderRadius: BorderRadius.circular(30),
-                                          ),
+                                              // color: Colors.pink.shade200,
+                                              //borderRadius: BorderRadius.circular(30),
+                                              ),
                                           child: Builder(builder: (context) {
                                             return topicPoll.isEmpty
                                                 ? Column(
@@ -744,9 +743,9 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                   .width *
                                               0.864,
                                           decoration: BoxDecoration(
-                                            color: Colors.pink.shade200,
-                                            //borderRadius: BorderRadius.circular(30),
-                                          ),
+                                              // color: Colors.pink.shade200,
+                                              //borderRadius: BorderRadius.circular(30),
+                                              ),
                                           child: Builder(builder: (context) {
                                             return topicRandom.isEmpty
                                                 ? Column(
@@ -862,387 +861,385 @@ Future openDialogPoll(BuildContext context) => showDialog(
       TextEditingController option3Controller = TextEditingController();
       TextEditingController option4Controller = TextEditingController();
       TextEditingController option5Controller = TextEditingController();
-      return AlertDialog(
-        content: StatefulBuilder(builder: (context, setState) {
-          return Center(
-            child: Material(
-              type: MaterialType.transparency,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-                padding: EdgeInsets.all(20),
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Stack(
-                      children: [
-                        Center(
+      return StatefulBuilder(builder: (context, setState) {
+        return Center(
+          child: Material(
+            type: MaterialType.transparency,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+              padding: EdgeInsets.all(20),
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Stack(
+                    children: [
+                      Center(
+                        child: Text(
+                          'Create Poll',
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black),
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        top: -6,
+                        child: InkResponse(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: CircleAvatar(
+                            child: Icon(
+                              Icons.close,
+                              color: Colors.black,
+                              size: 30,
+                            ),
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    'Topic',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+
+                  // Start -- TextField Topic
+                  TextFormField(
+                    controller: topicController,
+                    minLines: 3,
+                    maxLines: 3,
+                    keyboardType: TextInputType.multiline,
+                    style: TextStyle(fontSize: 20, height: 1.5),
+                    decoration: InputDecoration(
+                      hintText: 'Enter a poll question',
+                      hintStyle: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //border: InputBorder.none,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 190, 190, 186),
+                            width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Topic
+
+                  SizedBox(height: 20),
+                  // Text(
+                  //   'Options',
+                  //   style: TextStyle(
+                  //     fontSize: 20,
+                  //     fontWeight: FontWeight.w600,
+                  //     color: Colors.black,
+                  //   ),
+                  // ),
+                  // SizedBox(height: 10),
+
+                  // Start -- TextField Option 1
+                  TextFormField(
+                    onChanged: (value) {
+                      if (value.isNotEmpty &&
+                          option2Controller.text.isNotEmpty &&
+                          option3Controller.text.isNotEmpty) {
+                        setState(
+                          () {
+                            check123 = true;
+                          },
+                        );
+                      } else {
+                        setState(
+                          () {
+                            check123 = false;
+                          },
+                        );
+                      }
+                    },
+                    controller: option1Controller,
+                    minLines: 1,
+                    maxLines: 1,
+                    keyboardType: TextInputType.multiline,
+                    style: TextStyle(fontSize: 20, height: 1.5),
+                    decoration: InputDecoration(
+                      hintText: 'Option 1',
+                      hintStyle: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //border: InputBorder.none,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 190, 190, 186),
+                            width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Option 1
+
+                  SizedBox(height: 15),
+
+                  // Start -- TextField Option 2
+                  TextFormField(
+                    onChanged: (value) {
+                      if (option1Controller.text.isNotEmpty &&
+                          value.isNotEmpty &&
+                          option3Controller.text.isNotEmpty) {
+                        setState(
+                          () {
+                            check123 = true;
+                          },
+                        );
+                      } else {
+                        setState(
+                          () {
+                            check123 = false;
+                          },
+                        );
+                      }
+                    },
+                    controller: option2Controller,
+                    minLines: 1,
+                    maxLines: 1,
+                    keyboardType: TextInputType.multiline,
+                    style: TextStyle(fontSize: 20, height: 1.5),
+                    decoration: InputDecoration(
+                      hintText: 'Option 2',
+                      hintStyle: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //border: InputBorder.none,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 190, 190, 186),
+                            width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Option 2
+
+                  SizedBox(height: 15),
+
+                  // Start -- TextField Option 3
+                  TextFormField(
+                    onChanged: (value) {
+                      if (option1Controller.text.isNotEmpty &&
+                          option2Controller.text.isNotEmpty &&
+                          value.isNotEmpty) {
+                        setState(
+                          () {
+                            check123 = true;
+                          },
+                        );
+                      } else {
+                        setState(
+                          () {
+                            check123 = false;
+                          },
+                        );
+                      }
+                    },
+                    controller: option3Controller,
+                    minLines: 1,
+                    maxLines: 1,
+                    keyboardType: TextInputType.multiline,
+                    style: TextStyle(fontSize: 20, height: 1.5),
+                    decoration: InputDecoration(
+                      hintText: 'Option 3',
+                      hintStyle: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //border: InputBorder.none,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 190, 190, 186),
+                            width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Option 3
+
+                  SizedBox(height: 15),
+
+                  // Start -- TextField Option 4
+                  Visibility(
+                    visible: check123,
+                    child: TextFormField(
+                      onChanged: (value) {
+                        if (check123 == true && value != null) {
+                          setState(
+                            () {
+                              check1234 = true;
+                            },
+                          );
+                        } else {
+                          setState(
+                            () {
+                              check1234 = false;
+                            },
+                          );
+                        }
+                      },
+                      controller: option4Controller,
+                      minLines: 1,
+                      maxLines: 1,
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(fontSize: 20, height: 1.5),
+                      decoration: InputDecoration(
+                        hintText: 'Option 4',
+                        hintStyle: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        //border: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 190, 190, 186),
+                              width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide:
+                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Option 4
+
+                  SizedBox(height: 15),
+
+                  // Start -- TextField Option 5
+                  Visibility(
+                    visible: check1234,
+                    child: TextFormField(
+                      controller: option5Controller,
+                      minLines: 1,
+                      maxLines: 1,
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(fontSize: 20, height: 1.5),
+                      decoration: InputDecoration(
+                        hintText: 'Option 5',
+                        hintStyle: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        //border: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 190, 190, 186),
+                              width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(23.0),
+                          borderSide:
+                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // End -- TextField Option 5
+
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.066,
+                        width: MediaQuery.of(context).size.width * 0.864,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color(0xFFF9EE6D)),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(90.0),
+                              ),
+                            ),
+                          ),
                           child: Text(
-                            'Create Poll',
+                            'Done',
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black),
                           ),
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: -6,
-                          child: InkResponse(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: CircleAvatar(
-                              child: Icon(
-                                Icons.close,
-                                color: Colors.black,
-                                size: 30,
-                              ),
-                              backgroundColor: Colors.transparent,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                    Text(
-                      'Topic',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-
-                    // Start -- TextField Topic
-                    TextFormField(
-                      controller: topicController,
-                      minLines: 3,
-                      maxLines: 3,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 20, height: 1.5),
-                      decoration: InputDecoration(
-                        hintText: 'Enter a poll question',
-                        hintStyle: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        //border: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 190, 190, 186),
-                              width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                        ),
-                      ),
-                    ),
-                    // End -- TextField Topic
-
-                    SizedBox(height: 20),
-                    // Text(
-                    //   'Options',
-                    //   style: TextStyle(
-                    //     fontSize: 20,
-                    //     fontWeight: FontWeight.w600,
-                    //     color: Colors.black,
-                    //   ),
-                    // ),
-                    // SizedBox(height: 10),
-
-                    // Start -- TextField Option 1
-                    TextFormField(
-                      onChanged: (value) {
-                        if (value.isNotEmpty &&
-                            option2Controller.text.isNotEmpty &&
-                            option3Controller.text.isNotEmpty) {
-                          setState(
-                            () {
-                              check123 = true;
-                            },
-                          );
-                        } else {
-                          setState(
-                            () {
-                              check123 = false;
-                            },
-                          );
-                        }
-                      },
-                      controller: option1Controller,
-                      minLines: 1,
-                      maxLines: 1,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 20, height: 1.5),
-                      decoration: InputDecoration(
-                        hintText: 'Option 1',
-                        hintStyle: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        //border: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 190, 190, 186),
-                              width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                        ),
-                      ),
-                    ),
-                    // End -- TextField Option 1
-
-                    SizedBox(height: 15),
-
-                    // Start -- TextField Option 2
-                    TextFormField(
-                      onChanged: (value) {
-                        if (option1Controller.text.isNotEmpty &&
-                            value.isNotEmpty &&
-                            option3Controller.text.isNotEmpty) {
-                          setState(
-                            () {
-                              check123 = true;
-                            },
-                          );
-                        } else {
-                          setState(
-                            () {
-                              check123 = false;
-                            },
-                          );
-                        }
-                      },
-                      controller: option2Controller,
-                      minLines: 1,
-                      maxLines: 1,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 20, height: 1.5),
-                      decoration: InputDecoration(
-                        hintText: 'Option 2',
-                        hintStyle: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        //border: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 190, 190, 186),
-                              width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                        ),
-                      ),
-                    ),
-                    // End -- TextField Option 2
-
-                    SizedBox(height: 15),
-
-                    // Start -- TextField Option 3
-                    TextFormField(
-                      onChanged: (value) {
-                        if (option1Controller.text.isNotEmpty &&
-                            option2Controller.text.isNotEmpty &&
-                            value.isNotEmpty) {
-                          setState(
-                            () {
-                              check123 = true;
-                            },
-                          );
-                        } else {
-                          setState(
-                            () {
-                              check123 = false;
-                            },
-                          );
-                        }
-                      },
-                      controller: option3Controller,
-                      minLines: 1,
-                      maxLines: 1,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 20, height: 1.5),
-                      decoration: InputDecoration(
-                        hintText: 'Option 3',
-                        hintStyle: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        //border: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 190, 190, 186),
-                              width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                        ),
-                      ),
-                    ),
-                    // End -- TextField Option 3
-
-                    SizedBox(height: 15),
-
-                    // Start -- TextField Option 4
-                    Visibility(
-                      visible: check123,
-                      child: TextFormField(
-                        onChanged: (value) {
-                          if (check123 == true && value != null) {
-                            setState(
-                              () {
-                                check1234 = true;
-                              },
-                            );
-                          } else {
-                            setState(
-                              () {
-                                check1234 = false;
-                              },
-                            );
-                          }
-                        },
-                        controller: option4Controller,
-                        minLines: 1,
-                        maxLines: 1,
-                        keyboardType: TextInputType.multiline,
-                        style: TextStyle(fontSize: 20, height: 1.5),
-                        decoration: InputDecoration(
-                          hintText: 'Option 4',
-                          hintStyle: TextStyle(
-                            fontSize: 20.0,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          //border: InputBorder.none,
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23.0),
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 190, 190, 186),
-                                width: 2.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23.0),
-                            borderSide: BorderSide(
-                                color: Color(0xFFF9EE6D), width: 2.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // End -- TextField Option 4
-
-                    SizedBox(height: 15),
-
-                    // Start -- TextField Option 5
-                    Visibility(
-                      visible: check1234,
-                      child: TextFormField(
-                        controller: option5Controller,
-                        minLines: 1,
-                        maxLines: 1,
-                        keyboardType: TextInputType.multiline,
-                        style: TextStyle(fontSize: 20, height: 1.5),
-                        decoration: InputDecoration(
-                          hintText: 'Option 5',
-                          hintStyle: TextStyle(
-                            fontSize: 20.0,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          //border: InputBorder.none,
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23.0),
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 190, 190, 186),
-                                width: 2.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23.0),
-                            borderSide: BorderSide(
-                                color: Color(0xFFF9EE6D), width: 2.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // End -- TextField Option 5
-
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.066,
-                          width: MediaQuery.of(context).size.width * 0.864,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color(0xFFF9EE6D)),
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(90.0),
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              'Done',
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black),
-                            ),
-                            onPressed: () {
-                              if (option1Controller.text != null) {
-                                if (option2Controller != null) {
-                                  if (option3Controller != null) {}
-                                }
+                          onPressed: () {
+                            if (option1Controller.text != null) {
+                              if (option2Controller != null) {
+                                if (option3Controller != null) {}
                               }
-                              Navigator.pop(context);
-                            },
-                          ),
+                            }
+                            Navigator.pop(context);
+                          },
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          );
-        }),
-      );
+          ),
+        );
+      });
     });
 
 Future openDialogRandom(BuildContext context) => showDialog(
@@ -1400,8 +1397,6 @@ Future openDialogRandom(BuildContext context) => showDialog(
                       ),
                     ),
                   ),
-                  // End -- TextField Option 1
-
                   SizedBox(height: 10),
 
                   // Start -- TextField Option 2
@@ -1592,6 +1587,9 @@ Future openDialogRandom(BuildContext context) => showDialog(
                     ),
                   ),
                   // End -- TextField Option 5
+
+                  SizedBox(height: 10),
+                  // End -- TextField Option 1
 
                   Expanded(
                     child: Align(

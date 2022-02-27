@@ -29,6 +29,38 @@ void main() async {
   setupLocator();
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Fam app",
+      theme: ThemeData(
+        scaffoldBackgroundColor: wBackgroundColor,
+        primaryColor: kPrimaryColor,
+        // textTheme: Theme.of(context).textTheme.apply(bodyColor: kTextColor),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      navigatorKey: locator<NavigationService>().navigatorKey,
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case 'members':
+            return MaterialPageRoute(builder: (context) => memberPage());
+          case 'members_in_circle_Owner':
+            return MaterialPageRoute(
+                builder: (context) => Profile(
+                      profileUser: 0,
+                      profileMem: 0,
+                      profileOwner: 1,
+                    ));
+          case 'members_in_circle_Member':
+            return MaterialPageRoute(
+                builder: (context) => Profile(
+                      profileUser: 0,
+                      profileMem: 1,
+                      profileOwner: 0,
+                    ));
+          case 'home':
+          // default:
+          //   return MaterialPageRoute(builder: (context) => Login());
+        }
+      },
       initialRoute: '/',
       routes: {
         '/': (context) => Loading(),
@@ -80,8 +112,8 @@ class MyApp extends StatelessWidget {
                         profileOwner: 0,
                       ));
             case 'home':
-            default:
-              return MaterialPageRoute(builder: (context) => Login());
+            // default:
+            //   return MaterialPageRoute(builder: (context) => Login());
           }
         },
         // กำหนดให้เริ่มต้นที่หน้า home

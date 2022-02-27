@@ -1,5 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geocode/geocode.dart';
 import 'package:famfam/check-in/tab_widget.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -18,6 +19,7 @@ class CheckIn extends StatefulWidget {
 }
 
 class _CheckInState extends State<CheckIn> {
+  final User user = FirebaseAuth.instance.currentUser!;
   String nameForCheckin = "JaneJira";
   var now = DateTime.now();
 
@@ -52,10 +54,10 @@ class _CheckInState extends State<CheckIn> {
                           size: 40,
                         ),
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => HomePage()));
+                                  builder: (context) => HomePage(user)));
                         },
                       ),
                     ),

@@ -1,6 +1,7 @@
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/check-in/Checkin.dart';
 import 'package:famfam/settingPage/settingPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 final Color backgroundColor = Color(0xFFE7C581);
@@ -11,6 +12,7 @@ class menuHome extends StatefulWidget {
 }
 
 class _MenuHomeState extends State<menuHome> {
+  final User user = FirebaseAuth.instance.currentUser!;
   double value = 0;
   @override
   Widget build(BuildContext context) {
@@ -23,8 +25,12 @@ class _MenuHomeState extends State<menuHome> {
           children: [
             ListTile(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(user),
+                  ),
+                );
               },
               leading: Icon(
                 Icons.home,
@@ -43,7 +49,9 @@ class _MenuHomeState extends State<menuHome> {
               height: 15,
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/pinpost');
+              },
               leading: Icon(
                 Icons.note_rounded,
                 color: Colors.white,

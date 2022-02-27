@@ -25,14 +25,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final User user = FirebaseAuth.instance.currentUser!;
-  String uid = "";
   double value = 0;
   String family = "Family Name";
   String name = "Janejira";
   final AuthService _auth = AuthService();
   @override
   void initState() {
-    uid = user.uid;
+    value = 0;
     super.initState();
   }
 
@@ -121,10 +120,9 @@ class _HomePageState extends State<HomePage> {
                                         size: 40,
                                       ),
                                       onPressed: () {
-                                        // setState(() {
-                                        //   value == 0 ? value = 1 : value = 0;
-                                        // });
-                                        _auth.signOut(context);
+                                        setState(() {
+                                          value == 0 ? value = 1 : value = 0;
+                                        });
                                       }))
                             ],
                           ),
