@@ -14,7 +14,7 @@ class PinScreen extends StatelessWidget {
       //   elevation: 0.0,
 
       // ),
-      endDrawer: Drawer(),
+      //endDrawer: Drawer(),
       
       body: Body(),
     );
