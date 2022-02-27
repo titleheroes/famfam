@@ -1,7 +1,8 @@
 import 'package:famfam/circleScreen/createCricle/body.dart';
-import 'package:famfam/HomeScreen.dart';
+import 'package:famfam/login.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Register_Info extends StatefulWidget {
   const Register_Info({Key? key}) : super(key: key);
@@ -11,57 +12,14 @@ class Register_Info extends StatefulWidget {
 }
 
 class _Register_InfoState extends State<Register_Info> {
-  String? value, value2, value3;
-  final day = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-    "25",
-    "26",
-    "27",
-    "28",
-    "29",
-    "30",
-    "31"
-  ];
-
-  final month = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
-
-  final year = [
-    "2021",
-    "2020",
-    "2019",
-    "2018",
-    "2017",
-    "2016",
-    "2015",
-    "2014",
-    "2013",
-    "2012",
-    "2011",
-    "2010",
-  ];
+  late DateTime _dateTime;
+  String getText() {
+    if (_dateTime == null) {
+      return 'Select DateTime';
+    } else {
+      return DateFormat('dd-MM-yyyy').format(_dateTime);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,103 +97,26 @@ class _Register_InfoState extends State<Register_Info> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(25.0),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.4),
-                                            spreadRadius: 1,
-                                            offset: Offset(0,
-                                                3), // changes position of shadow
-                                          ),
-                                        ],
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: ElevatedButton(
+                                  child: Text(getText()
+                                      // _dateTime == null
+                                      //       ? "Pick a Date"
+                                      //       : formatter.format(_dateTime)
+                                      //   _dateTime.toString()
                                       ),
-                                      child: DecoratedBox(
-                                        decoration: ShapeDecoration(
-                                          color: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0),
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20.0, vertical: 0.0),
-                                          child: DropdownButton<String>(
-                                            value: value,
-                                            items:
-                                                day.map(buildMenuItem).toList(),
-                                            onChanged: (value) => setState(
-                                                () => this.value = value),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    color: Colors.blue,
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: DecoratedBox(
-                                      decoration: ShapeDecoration(
-                                        color: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(25.0),
-                                          ),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20.0, vertical: 0.0),
-                                        child: DropdownButton<String>(
-                                          value: value2,
-                                          items:
-                                              month.map(buildMenuItem).toList(),
-                                          onChanged: (value2) => setState(
-                                              () => this.value2 = value2),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    color: Colors.blue,
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: DecoratedBox(
-                                      decoration: ShapeDecoration(
-                                        color: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(25.0),
-                                          ),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20.0, vertical: 0.0),
-                                        child: DropdownButton<String>(
-                                          value: value3,
-                                          items:
-                                              year.map(buildMenuItem).toList(),
-                                          onChanged: (value3) => setState(
-                                              () => this.value3 = value3),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(18.0),
+                                              side: BorderSide(
+                                                  color: Colors.red)))),
+                                  onPressed: () => pickDate(context),
+                                ),
+                              ),
                             ],
                           ),
 
@@ -257,6 +138,19 @@ class _Register_InfoState extends State<Register_Info> {
         ),
       ),
     );
+  }
+
+  Future pickDate(BuildContext context) async {
+    final initialDate = DateTime.now();
+    final newDate = await showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: DateTime(1940),
+        lastDate: DateTime.now());
+
+    if (newDate == null) return;
+
+    setState(() => _dateTime = newDate);
   }
 }
 
@@ -300,7 +194,8 @@ class Finish_Button extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()));
                   },
                   child: Text(
                     "Cancel",
@@ -308,9 +203,7 @@ class Finish_Button extends StatelessWidget {
                       fontSize: 22,
                       color: Colors.white,
                     ),
-                    
                   ),
-                  
                 ),
               ),
             ),
@@ -343,7 +236,10 @@ class Finish_Button extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) =>createCircleScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => createCircleScreen()));
                   },
                   child: Text(
                     "Confirm",
