@@ -1,4 +1,5 @@
 import 'package:another_flushbar/flushbar.dart';
+import 'package:famfam/Homepage/HomePage.dart';
 import 'package:geocode/geocode.dart';
 import 'package:famfam/check-in/tab_widget.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -18,6 +19,7 @@ class CheckIn extends StatefulWidget {
 
 class _CheckInState extends State<CheckIn> {
   String nameForCheckin = "JaneJira";
+  var now = DateTime.now();
 
   String address = "";
   late LocationData currentPosition;
@@ -49,7 +51,12 @@ class _CheckInState extends State<CheckIn> {
                           color: Colors.black,
                           size: 40,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()));
+                        },
                       ),
                     ),
                     elevation: 0,
@@ -139,6 +146,7 @@ class _CheckInState extends State<CheckIn> {
         scrollController: scrollController,
         nameForCheckin: nameForCheckin,
         addressCheckin: address,
+        timeCheckin: now.hour.toString() + ":" + now.minute.toString(),
       );
 
   void _onMapCreated(GoogleMapController controller) {
