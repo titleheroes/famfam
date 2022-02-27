@@ -166,28 +166,16 @@ class Register extends StatelessWidget {
                             //     ),
                             //   ),
                             // );
-                            try {
-                              await _auth
-                                  .createUserWithEmailAndPassword(
-                                      email: emailController.text.trim(),
-                                      password: passwordController.text.trim())
-                                  .then((user) {
-                                print("Sign up user successful.");
-                                Navigator.pushNamed(context, '/registerinfo');
-                              }).catchError((error) {
-                                Fluttertoast.showToast(
-                                    msg: error.message.toString(),
-                                    gravity: ToastGravity.BOTTOM);
-                              });
-                            } on FirebaseAuthException catch (authError) {
-                              Fluttertoast.showToast(
-                                  msg: authError.message.toString(),
-                                  gravity: ToastGravity.BOTTOM);
-                            } catch (e) {
-                              Fluttertoast.showToast(
-                                  msg: e.toString(),
-                                  gravity: ToastGravity.BOTTOM);
-                            }
+                            await _auth
+                                .createUserWithEmailAndPassword(
+                                    email: emailController.text.trim(),
+                                    password: passwordController.text.trim())
+                                .then((user) {
+                              print("Sign up user successful.");
+                              Navigator.pushNamed(context, '/registerinfo');
+                            }).catchError((error) {
+                              print(error.message);
+                            });
                           } else if (emailValid == false) {
                             Fluttertoast.showToast(
                                 msg: "This is not email format.",
