@@ -63,6 +63,7 @@ dependencies:
   image_picker: ^0.8.4+9
   flutter_slidable: ^1.2.0
   get_it: ^7.2.0
+  table_calendar: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
+  time_pickerr: ^1.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

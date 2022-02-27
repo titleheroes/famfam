@@ -19,38 +19,43 @@ class Date extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-            child: Center(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 5),
-                    child: Container(
-                      child: Text(
-                        DateFormat('EEEE').format(date),
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.red),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/calendar');
+              },
+              child: Center(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Container(
+                        child: Text(
+                          DateFormat('EEEE').format(date),
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.red),
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 5),
-                    child: Container(
-                      child: Text(DateFormat('d').format(date),
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.w400,
-                          )),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Container(
+                        child: Text(DateFormat('d').format(date),
+                            style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.w400,
+                            )),
+                      ),
                     ),
-                  ),
-                  Container(
-                    child: Text(
-                      DateFormat('MMMM, yyyy').format(date),
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  )
-                ],
+                    Container(
+                      child: Text(
+                        DateFormat('MMMM, yyyy').format(date),
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),

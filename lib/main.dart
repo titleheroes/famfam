@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:famfam/Calendar/calendar.dart';
 import 'package:famfam/constants.dart';
 import 'package:famfam/register.dart';
 import 'package:famfam/screens/ticktik_screen.dart';
@@ -73,6 +74,7 @@ void main() async {
         '/voterandom': (context) => VoteRandomScreen(),
         '/checkin': (context) => CheckIn(),
         '/pinpost': (context) => PinScreen(),
+        '/calendar': (context) => Calendar(),
       },
     ),
   );
