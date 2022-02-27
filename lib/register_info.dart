@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'dart:io';
 import 'dart:math';
 
@@ -11,6 +12,11 @@ import 'package:famfam/models/user_model.dart';
 import 'package:famfam/services/sqlite_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+=======
+import 'package:famfam/circleScreen/createCricle/body.dart';
+import 'package:famfam/login.dart';
+import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
+>>>>>>> parent of 0cf775f (sqlite helper)
 =======
 import 'package:famfam/circleScreen/createCricle/body.dart';
 import 'package:famfam/login.dart';
@@ -44,6 +50,7 @@ class _Register_InfoState extends State<Register_Info> {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   FirebaseAuth _auth = FirebaseAuth.instance;
   var user = FirebaseAuth.instance.currentUser;
   String? urlImage;
@@ -57,6 +64,9 @@ class _Register_InfoState extends State<Register_Info> {
   TextEditingController personalIDController = TextEditingController();
   TextEditingController jobsController = TextEditingController();
   DateTime? _dateTime;
+=======
+  late DateTime _dateTime;
+>>>>>>> parent of 0cf775f (sqlite helper)
 =======
   late DateTime _dateTime;
 >>>>>>> parent of 0cf775f (sqlite helper)
@@ -121,6 +131,7 @@ class _Register_InfoState extends State<Register_Info> {
               margin: const EdgeInsets.only(top: 200.0),
               child: Stack(
                 children: [
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -195,6 +206,10 @@ class _Register_InfoState extends State<Register_Info> {
                   Profile_frame(),
                   Profile_avatar(),
 >>>>>>> parent of 0cf775f (sqlite helper)
+=======
+                  Profile_frame(),
+                  Profile_avatar(),
+>>>>>>> parent of 0cf775f (sqlite helper)
                   Center(
                     child: Container(
                       margin: const EdgeInsets.only(top: 160.0),
@@ -202,6 +217,7 @@ class _Register_InfoState extends State<Register_Info> {
                       color: Colors.transparent,
                       child: Column(
                         children: [
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -292,6 +308,11 @@ class _Register_InfoState extends State<Register_Info> {
                           ),
 =======
                           First_name(),
+=======
+                          First_name(),
+
+                          Last_name(),
+>>>>>>> parent of 0cf775f (sqlite helper)
 
                           Last_name(),
 >>>>>>> parent of 0cf775f (sqlite helper)
@@ -532,6 +553,7 @@ class _Register_InfoState extends State<Register_Info> {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Finish Button
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -705,6 +727,9 @@ class _Register_InfoState extends State<Register_Info> {
                               )
                             ],
                           ),
+=======
+                          Finish_Button(),
+>>>>>>> parent of 0cf775f (sqlite helper)
 =======
                           Finish_Button(),
 >>>>>>> parent of 0cf775f (sqlite helper)
