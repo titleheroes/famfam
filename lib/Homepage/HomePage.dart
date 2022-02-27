@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:famfam/Homepage/menuHome.dart';
 import 'package:famfam/Homepage/tabbar.dart';
+import 'package:famfam/check-in/Checkin.dart';
 
 import 'package:famfam/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +18,6 @@ final Color backgroundColor = Color(0xFFE7C581);
 
 class HomePage extends StatefulWidget {
   var user = FirebaseAuth.instance.currentUser;
-  //HomePage(this.user, {Key? key}) : super(key: key);
   HomePage(this.user, {Key? key}) : super(key: key);
 
   @override
