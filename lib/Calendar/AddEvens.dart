@@ -1,11 +1,12 @@
-import 'dart:async';
-import 'package:famfam/circleScreen/createCricle/body.dart';
-import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
+// import 'dart:async';
+
+// import 'package:famfam/circleScreen/createCricle/body.dart';
+// import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:time_pickerr/time_pickerr.dart';
-import 'package:famfam/Calendar/calendar.dart';
+// import 'package:flutter/painting.dart';
+// import 'package:time_pickerr/time_pickerr.dart';
+// import 'package:famfam/Calendar/AddEvens.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'event.dart';
@@ -272,31 +273,28 @@ class _AddEvensState extends State<AddEvens> {
                             ],
                           ),
                         ),
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 50),
-                              child: Container(
-                                  height: 58,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 50),
+                          child: Container(
+                            height: 58,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0)),
+                            ),
+                            width: 320,
+                            child: TextField(
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(20.0)),
-                                  ),
-                                  width: 320,
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20))),
-                                      fillColor: Colors.white,
-                                      hintText: 'Write a title',
-                                    ),
-                                    autofocus: false,
-                                    obscureText: true,
-                                  )),
-                            )
-                          ],
+                                        BorderRadius.all(Radius.circular(20))),
+                                fillColor: Colors.white,
+                                hintText: 'Write a title',
+                              ),
+                              autofocus: false,
+                              // obscureText: true,
+                            ),
+                          ),
                         ),
                         SizedBox(
                           height: 15,
@@ -315,31 +313,27 @@ class _AddEvensState extends State<AddEvens> {
                             ],
                           ),
                         ),
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 50),
-                              child: Container(
-                                  height: 58,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20.0)),
-                                  ),
-                                  width: 320,
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20))),
-                                      fillColor: Colors.white,
-                                      hintText: 'Write your assign location',
-                                    ),
-                                    autofocus: false,
-                                    obscureText: true,
-                                  )),
-                            )
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.only(left: 50),
+                          child: Container(
+                              height: 58,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20.0)),
+                              ),
+                              width: 320,
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20))),
+                                  fillColor: Colors.white,
+                                  hintText: 'Write your assign location',
+                                ),
+                                autofocus: false,
+                                // obscureText: true,
+                              )),
                         ),
                         SizedBox(
                           height: 15,
@@ -358,33 +352,28 @@ class _AddEvensState extends State<AddEvens> {
                             ],
                           ),
                         ),
-                        Row(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 50, right: 50),
-                              child: Container(
-                                  height: 58,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20.0)),
-                                  ),
-                                  width: 320,
-                                  child: TextField(
-                                    // controller: _eventController,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20))),
-                                      fillColor: Colors.white,
-                                      hintText: 'Write your important note',
-                                    ),
-                                    autofocus: false,
-                                    obscureText: true,
-                                  )),
-                            )
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.only(left: 50, right: 50),
+                          child: Container(
+                              height: 58,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20.0)),
+                              ),
+                              width: 320,
+                              child: TextField(
+                                controller: _eventController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20))),
+                                  fillColor: Colors.white,
+                                  hintText: 'Write your important note',
+                                ),
+                                autofocus: false,
+                                // obscureText: true,
+                              )),
                         ),
                         SizedBox(
                           height: 25,
@@ -453,11 +442,8 @@ class _AddEvensState extends State<AddEvens> {
                                       ),
                                     ),
                                     onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const Calendar()));
+                                      Navigator.pop(context);
+                                      // Navigator.pop(context);
                                     },
                                     child: Text(
                                       "Add",

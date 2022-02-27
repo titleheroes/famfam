@@ -3,9 +3,9 @@
 import 'package:famfam/Calendar/event.dart';
 import 'package:famfam/Calendar/AddEvens.dart';
 
-// ignore: unused_import
-import 'package:famfam/Calendar/calendar.dart';
-// import 'package:famfam/circleScreen/createCricle/body.dart';
+// // ignore: unused_import
+// import 'package:famfam/Calendar/calendar.dart';
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -21,8 +21,13 @@ class _CalendarState extends State<Calendar> {
   CalendarFormat format = CalendarFormat.month;
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
+  TimeOfDay? time = const TimeOfDay(hour: 12, minute: 12);
+  TimeOfDay? time1 = const TimeOfDay(hour: 12, minute: 12);
+  bool isChecked = false;
 
   final TextEditingController _eventController = TextEditingController();
+  final TextEditingController _eventController1 = TextEditingController();
+  final TextEditingController _eventController2 = TextEditingController();
 
   @override
   void initState() {
@@ -256,32 +261,100 @@ class _CalendarState extends State<Calendar> {
                                 children: [
                                   Container(
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
                                       children: [
                                         SizedBox(
-                                          height: 15,
+                                          height: 5,
                                         ),
                                         ..._getEventsfromDay(selectedDay).map(
                                           (Event event) => ListTile(
                                             title: Padding(
                                               padding:
                                                   const EdgeInsets.fromLTRB(
-                                                      20, 5, 20, 5),
+                                                      10, 0, 20, 5),
                                               child: Container(
-                                                height: 50,
+                                                // height: 50,
                                                 decoration: BoxDecoration(
-                                                    color: Colors.white,
+                                                    color: Color(0xfffE7C581),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 50, top: 10),
-                                                  child: Text(
-                                                    event.title,
-                                                  ),
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 20,
+                                                                  top: 10),
+                                                          child: Text(
+                                                              "Title : ",
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize:
+                                                                      22)),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 20,
+                                                                  top: 10),
+                                                          child: Text(
+                                                            event.title,
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 22,
+                                                                color: Colors
+                                                                    .black),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 20,
+                                                                  top: 1,
+                                                                  bottom: 5),
+                                                          child: Text(
+                                                            "Location : ",
+                                                            style: TextStyle(
+                                                                color: Color(
+                                                                    0xfff707070)),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 20,
+                                                                  top: 1,
+                                                                  bottom: 5),
+                                                          child: Text(
+                                                            event.locations,
+                                                            style: TextStyle(
+                                                                color: Color(
+                                                                    0xfff707070)),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    // Text(
+                                                    //   event.locations,
+                                                    // ),
+                                                    // Text(
+                                                    //   event.note,
+                                                    // ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
@@ -291,7 +364,7 @@ class _CalendarState extends State<Calendar> {
                                     ),
                                   ),
                                   Container(
-                                    child: Text("2"),
+                                    child: Text(""),
                                   )
                                 ],
                               ),
@@ -302,69 +375,6 @@ class _CalendarState extends State<Calendar> {
                     ),
                   ),
                 ),
-
-                // child: Padding(
-                //     padding: EdgeInsets.zero,
-                // child: Column(
-                //   children: [
-                //     Container(
-                //       height: 30,
-                //     ),
-
-                //     Text(
-                //       "Activities",
-                //       style: TextStyle(
-                //         fontWeight: FontWeight.bold,
-                //         fontSize: 30,
-                //       ),
-                //     ),
-                //     Container(
-                //       child: Column(
-                //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //         children: [
-                //           SizedBox(
-                //             height: 15,
-                //           ),
-                //           ..._getEventsfromDay(selectedDay).map(
-                //             (Event event) => ListTile(
-                //               title: Padding(
-                //                 padding:
-                //                     const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                //                 child: Container(
-                //                   height: 50,
-                //                   decoration: BoxDecoration(
-                //                       color: Colors.white,
-                //                       borderRadius:
-                //                           BorderRadius.circular(10)),
-                //                   child: Padding(
-                //                     padding: const EdgeInsets.only(
-                //                         left: 50, top: 10),
-                //                     child: Text(
-                //                       event.title,
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //     )
-                //   ],
-                // )),
-
-                //   Column(
-                //   children: [
-                //     Container(),
-                //     ..._getEventsfromDay(selectedDay).map(
-                //       (Event event) => ListTile(
-                //         title: Text(
-                //           event.title,
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // )
               ),
             ],
           ),
@@ -372,54 +382,368 @@ class _CalendarState extends State<Calendar> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Color(0xfffA2A2A2),
-        // onPressed: () => showDialog(
-        //   context: context,
-        //   builder: (context) => AlertDialog(
-        //     backgroundColor: Colors.white,
-        //     title: const Text(
-        //       "Add Note",
-        //       textAlign: TextAlign.right,
-        //     ),
-        //     content: TextFormField(
-        //       controller: _eventController,
-        //     ),
-        //     actions: [
-        //       TextButton(
-        //         child: const Text("Cancel"),
-        //         onPressed: () => Navigator.pop(context),
-        //       ),
-        //       TextButton(
-        //         child: const Text("Ok"),
-        //         onPressed: () {
-        //           if (_eventController.text.isEmpty) {
-        //           } else {
-        //             if (selectedEvents[selectedDay] != null) {
-        //               selectedEvents[selectedDay]?.add(
-        //                 Event(
-        //                     title: _eventController.text,
-        //                     locations: _eventController.text),
-        //               );
-        //             } else {
-        //               selectedEvents[selectedDay] = [
-        //                 Event(
-        //                     title: _eventController.text,
-        //                     locations: _eventController.text)
-        //               ];
-        //             }
-        //           }
-        //           Navigator.pop(context);
-        //           _eventController.clear();
-        //           setState(() {});
-        //           return;
-        //         },
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddEvens()));
-        },
+        onPressed: () => showDialog(
+            context: context,
+            builder: (context) {
+              String contentText = "Content of Dialog";
+              return StatefulBuilder(builder: (context, setState) {
+                return AlertDialog(
+                  backgroundColor: Color(0xfffF6E5C7),
+                  title: Column(
+                    children: [
+                      Container(
+                        width: 500,
+                        child: Container(
+                          child: Text(
+                            "Add Note",
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: Container(
+                      width: size.width * 1,
+                      height: size.height / 2,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Hour",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 17,
+                                      color: Colors.black),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: Text(
+                                    "Minute",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 17,
+                                        color: Colors.black),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 50),
+                                  child: Text(
+                                    "Hour",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 17,
+                                        color: Colors.black),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: Text(
+                                    "Minute",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 17,
+                                        color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 9, 10, 0),
+                                  child: Container(
+                                    height: size.height * 0.1 - 37,
+                                    width: size.width * 0.02,
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.white),
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        TimeOfDay? newTime =
+                                            await showTimePicker(
+                                          context: context,
+                                          initialTime: time!,
+                                        );
+                                        if (newTime != null) {
+                                          setState(() {
+                                            time = newTime;
+                                          });
+                                        }
+                                      },
+                                      child: Text(
+                                        '${time!.hour.toString()}:${time!.minute.toString()}',
+                                        style: TextStyle(
+                                            fontSize: 25,
+                                            color: Colors.black54),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                "OR",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 9, 10, 0),
+                                  child: Container(
+                                    height: size.height * 0.1 - 37,
+                                    width: size.width * 0.02,
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.white),
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        TimeOfDay? newTime1 =
+                                            await showTimePicker(
+                                          context: context,
+                                          initialTime: time1!,
+                                        );
+                                        if (newTime1 != null) {
+                                          setState(() {
+                                            time1 = newTime1;
+                                          });
+                                        }
+                                      },
+                                      child: Text(
+                                        '${time1!.hour.toString()}:${time1!.minute.toString()}',
+                                        style: TextStyle(
+                                            fontSize: 25,
+                                            color: Colors.black54),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Title",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 20,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                ),
+                                child: TextField(
+                                  controller: _eventController,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    fillColor: Colors.white,
+                                    hintText: 'Write a title',
+                                  ),
+                                  autofocus: false,
+                                )),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Location",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 20,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                ),
+                                child: TextField(
+                                  controller: _eventController1,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    fillColor: Colors.white,
+                                    hintText: 'Write the location',
+                                  ),
+                                  autofocus: false,
+                                )),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Note",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 20,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                ),
+                                child: TextField(
+                                  controller: _eventController2,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    fillColor: Colors.white,
+                                    hintText: 'Write your important note',
+                                  ),
+                                  autofocus: false,
+                                )),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Container(
+                              height: size.height * 0.06,
+                              width: size.width * 0.73,
+                              decoration: BoxDecoration(
+                                  color: Color(0xfffE7C581),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 50),
+                                    child: Text(
+                                      "Repeating? ",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 60),
+                                    child: Checkbox(
+                                      value: isChecked,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          isChecked = value!;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    TextButton(
+                      child: const Text(
+                        "Add",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xfff2E6B44)),
+                      ),
+                      onPressed: () {
+                        if (_eventController.text.isEmpty) {
+                        } else {
+                          if (selectedEvents[selectedDay] != null) {
+                            selectedEvents[selectedDay]?.add(
+                              Event(
+                                  title: _eventController.text,
+                                  locations: _eventController1.text,
+                                  note: _eventController2.text),
+                            );
+                          } else {
+                            selectedEvents[selectedDay] = [
+                              Event(
+                                  title: _eventController.text,
+                                  locations: _eventController1.text,
+                                  note: _eventController2.text)
+                            ];
+                          }
+                        }
+                        Navigator.pop(context);
+                        _eventController.clear();
+                        _eventController1.clear();
+                        _eventController2.clear();
+                        // setState(() {});
+                        return;
+                      },
+                    ),
+                  ],
+                );
+              });
+            }),
+        // onPressed: () {
+        //   Navigator.push(
+        //       context, MaterialPageRoute(builder: (context) => AddEvens()));
+        // },
         label: const Text(
           "Add",
         ),
