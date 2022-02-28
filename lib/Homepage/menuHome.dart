@@ -98,31 +98,31 @@ class _MenuHomeState extends State<menuHome> {
                 size: 35,
               ),
               title: Text(
-                "Vote & Rand",
+                "Vote&Random",
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(
-              height: 15,
-            ),
-            ListTile(
-              onTap: () {},
-              leading: Icon(
-                Icons.wallet_giftcard_rounded,
-                color: Colors.white,
-                size: 35,
-              ),
-              title: Text(
-                "Rewardory",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
+            // SizedBox(
+            //   height: 15,
+            // ),
+            // ListTile(
+            //   onTap: () {},
+            //   leading: Icon(
+            //     Icons.wallet_giftcard_rounded,
+            //     color: Colors.white,
+            //     size: 35,
+            //   ),
+            //   title: Text(
+            //     "Rewardory",
+            //     style: TextStyle(
+            //         color: Colors.white,
+            //         fontSize: 25,
+            //         fontWeight: FontWeight.bold),
+            //   ),
+            // ),
             SizedBox(
               height: 15,
             ),
