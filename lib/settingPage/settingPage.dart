@@ -1,5 +1,4 @@
 import 'package:famfam/Homepage/HomePage.dart';
-import 'package:famfam/services/auth.dart';
 import 'package:famfam/settingPage/circle/circle.dart';
 import 'package:famfam/settingPage/create&join/create&join.dart';
 import 'package:famfam/settingPage/member/member.dart';
@@ -43,8 +42,6 @@ class _settingPageState extends State<settingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AuthService _auth = AuthService();
-    final User user = FirebaseAuth.instance.currentUser!;
     int length = circle.length;
     String family = 'Sabaidee';
     String imageProfile = 'assets/images/J-Profile.png';
@@ -68,8 +65,7 @@ class _settingPageState extends State<settingPage> {
                 ),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage(user)));
-                  // Navigator.pop(context);
+                      MaterialPageRoute(builder: (context) => HomePage(FirebaseAuth.instance.currentUser)));
                 },
               ),
               elevation: 0,
@@ -181,9 +177,7 @@ class _settingPageState extends State<settingPage> {
                             "Log out",
                             style: TextStyle(color: Colors.black),
                           ),
-                          onPressed: () {
-                            _auth.signOut(context);
-                          },
+                          onPressed: () {},
                         ),
                       ),
                     ]),
