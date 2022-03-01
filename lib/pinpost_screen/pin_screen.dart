@@ -21,7 +21,7 @@ class PinScreen extends StatefulWidget {
 class _BodyState extends State<PinScreen> {
   double value = 0;
   
-  final List<String> names = <String>['Test Post tho', ];
+  final List<String> names = <String>['Dummy Pin Post Right Here!', ];
   
   
 
@@ -32,6 +32,72 @@ class _BodyState extends State<PinScreen> {
       names.insert(0,nameController.text);
       
     });
+  }
+
+  void onDismissed(int index) {
+    setState(() {
+      names.removeAt(index);
+    });
+  }
+
+  Future<void> _displayTextInputDialog(BuildContext context,int index) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text('Are you sure you want to delete this Pin Post?'),
+          
+
+          actions: <Widget>[
+            
+            Center(
+              child: Row(
+                children: [
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: 5,
+                      ),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          
+                          minimumSize: Size(150, 40),
+                          backgroundColor: Color.fromARGB(255, 139, 139, 139),
+                          alignment: Alignment.center,
+                        ),
+                        child: Text('Cancel',style: TextStyle(color: Colors.white)),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 20
+                    ),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        
+                        minimumSize: Size(150, 40),
+                        backgroundColor: Color.fromARGB(255, 248, 102, 102),
+                        alignment: Alignment.center,
+                      ),
+                      child: Text('Delete',style: TextStyle(color: Colors.white)),
+                      onPressed: () {
+                        onDismissed(index);
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 
   Widget build(BuildContext context){
@@ -113,9 +179,6 @@ class _BodyState extends State<PinScreen> {
 
 
 
-
-                  //tabbar(),
-
  Expanded(
             child: ListView.builder(
               physics: BouncingScrollPhysics(),
@@ -124,54 +187,78 @@ class _BodyState extends State<PinScreen> {
               itemBuilder: (BuildContext context, int index) {
                 return 
                 
-                Container(
-                
-                width: size.width * 0.85,
-                padding: EdgeInsets.symmetric(
-                  vertical: 32,
-                  horizontal: 24,
-                ),
-                margin: EdgeInsets.only(
-                  bottom: 20,
-                ),
-            
-                decoration: BoxDecoration(
-                  color: Color(0xFFF9F6C6),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Stack(
                   children: [
-                  Row(children: [
-                    Image.asset("assets/images/J-Profile.png",width: 40, height: 40,),
-                    Padding(
-            padding: EdgeInsets.only(
-              left: 10,
-            ),
-            child: Text('Me',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-            
+                    
+                    Container(
+                    
+                    width: size.width * 0.85,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: 24,
                     ),
-                    Padding(
-            padding: EdgeInsets.only(
-              left: size.width * 0.25,
-            ),
-            child: Text(formattedDate,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
+                    margin: EdgeInsets.only(
+                      bottom: 20,
+                    ),
+                              
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 250, 245, 181),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Stack(
+                      children: [
+                        
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                          Row(children: [
+                            Image.asset("assets/images/J-Profile.png",width: 40, height: 40,),
+                            Padding(
+                                  padding: EdgeInsets.only(
+                                    left: 10,
+                                  ),
+                                  child: Text('Me',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                  
+                            ),
+                            Padding(
+                                  padding: EdgeInsets.only(
+                                    left: size.width * 0.225,
+                                  ),
+                                  child: Text(formattedDate,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
+                            )
+                                  
+                          ],),
+                          
+                                  
+                          Padding(
+                            padding: EdgeInsets.only(
+                                  top: 10,
+                            ),
+                            child: Text('${names[index]}',
+                            style: TextStyle(fontSize: 18,height: 1.5),),
+                          ),
+                                  
+                                  
+                        ],),
+                      ],
                     )
-            
-                  ],),
-                  
-            
-                  Padding(
-                    padding: EdgeInsets.only(
-            top: 10,
-                    ),
-                    child: Text('${names[index]}',
-                    style: TextStyle(fontSize: 18,height: 1.5),),
                   ),
-            
-            
-                ],)
-              );
+                  Positioned( 
+                    right: 0,
+                    top: 0,
+                    child: IconButton(onPressed: () {
+                      
+                      _displayTextInputDialog(context,index);
+                    }, 
+                    icon: Icon(Icons.close),
+                    iconSize: 30,
+                    splashColor: Colors.transparent, 
+                    highlightColor: Colors.transparent,  
+                    
+                    ),
+                  ),
+                  ],
+                );
               }
             )
           )
@@ -210,7 +297,7 @@ class _BodyState extends State<PinScreen> {
                           onPressed: () {
 
 
-                            //_displayTextInputDialog(context);
+                            
                             showModalBottomSheet(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.vertical(
