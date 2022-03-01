@@ -1,11 +1,10 @@
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/pinpost_screen/components/pinbottomsheet.dart';
-//import 'package:famfam/pinpost_screen/components/adder.dart';
 import 'package:famfam/pinpost_screen/components/card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-//import 'package:famfam/Homepage/tabbar.dart';
+import 'package:famfam/Homepage/tabbar.dart';
 import 'dart:math';
 import 'package:famfam/Homepage/date.dart';
 import 'package:intl/intl.dart';
@@ -30,15 +29,14 @@ class _BodyState extends State<PinScreen> {
 
   void addItemToList() {
     setState(() {
-      post.insert(0, nameController.text);
-      
+      post.insert(0, nameController.text);     
     });
   }
 
   Widget build(BuildContext context){
     //final List<String> author = <String>['Me', 'Me'];
     final User user = FirebaseAuth.instance.currentUser!;
-    final List<String> post = <String>['smol','big','aaa'];
+    final List<String> post = <String>['Latin words, consectetur, cites of the word, discovered the undoubtable source','smol','aaa'];
     TextEditingController nameController = TextEditingController();
 
     void addItemToList() {
@@ -151,25 +149,29 @@ class _BodyState extends State<PinScreen> {
             left: 24,
             right: 24,
             
-          
+
             
           ),
           child: Center(
             child: Stack(
               children: [
                 Column(children: [
-                  //tabbar(),
+
+
+                  tabbar(),
+
+
                   Expanded(
-                                          child: ListView.builder(
-                                              padding: const EdgeInsets.all(8),
-                                              itemCount: post.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return pincard(textdesc: '${post[index]}',);
-                                              }
+                    child: ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: post.length,
+                    itemBuilder:
+                    (BuildContext context,int index) {
+                      return pincard(textdesc: '${post[index]}',);
+                    }
                                            
-                                              )),
+                    ),
+                  ),
                   
           
                 ],),
