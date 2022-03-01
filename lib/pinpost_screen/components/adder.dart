@@ -61,27 +61,7 @@ class _tabbarState extends State<tabbar> {
           actions: <Widget>[
             Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.gps_fixed),
-                  onPressed: () {
-                    numicon = 1;
-                    print(numicon);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.ac_unit),
-                  onPressed: () {
-                    numicon = 2;
-                    print(numicon);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.access_alarm),
-                  onPressed: () {
-                    numicon = 3;
-                    print(numicon);
-                  },
-                ),
+                
               ],
             ),
             Row(
@@ -102,6 +82,7 @@ class _tabbarState extends State<tabbar> {
                   child: Text('Add'),
                   onPressed: () {
                     addItemToList();
+                    print(names);
                     print(nameController.text);
                     Navigator.pop(context);
                   },
@@ -175,6 +156,7 @@ class _tabbarState extends State<tabbar> {
                                   child: Expanded(
                                     flex: 1,
                                     child: Container(
+                                        color: Colors.red,
                                         height: 40,
                                         child: Row(
                                           children: [
@@ -195,6 +177,7 @@ class _tabbarState extends State<tabbar> {
                                               width: 10,
                                             ),
                                             Container(
+                                              color: Colors.red,
                                               child: ElevatedButton(
                                                 style: ButtonStyle(
                                                   backgroundColor:
@@ -294,13 +277,7 @@ class _tabbarState extends State<tabbar> {
                                                                     .centerLeft,
                                                                 child: Row(
                                                                   children: [
-                                                                    Container(
-                                                                        child: icon[index] ==
-                                                                                1
-                                                                            ? Icon(Icons.gps_fixed)
-                                                                            : icon[index] == 2
-                                                                                ? Icon(Icons.ac_unit)
-                                                                                : Icon(Icons.access_alarm)),
+                                                                    Container(    ),
                                                                     Padding(
                                                                         padding:
                                                                             EdgeInsets.only(right: 10)),
@@ -333,88 +310,10 @@ class _tabbarState extends State<tabbar> {
                                                           ),
                                                         ]));
                                               }
-                                              //          Padding(
-                                              //   padding:
-                                              //       const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                              //   child: Container(
-                                              //       height: 70,
-                                              //       decoration: BoxDecoration(
-                                              //           borderRadius: BorderRadius.circular(10),
-                                              //           color: Color(0xfffFFC34A)),
-                                              //       child: Row(
-                                              //         children: [
-                                              //           Padding(
-                                              //             padding: const EdgeInsets.fromLTRB(
-                                              //                 20, 10, 10, 10),
-                                              //             child: Icon(
-                                              //               IconData(0xea8c,
-                                              //                   fontFamily: 'MaterialIcons'),
-                                              //               color: Colors.red,
-                                              //               size: 30.0,
-                                              //             ),
-                                              //           ),
-                                              //           Container(
-                                              //             width: 250,
-                                              //             child: Text(
-                                              //               "ทำการบ้านวิชาSE",
-                                              //               style: TextStyle(
-                                              //                   fontWeight: FontWeight.normal,
-                                              //                   fontSize: 20),
-                                              //             ),
-                                              //           ),
-                                              //           Padding(
-                                              //             padding: const EdgeInsets.only(left: 0),
-                                              //             child: RoundCheckBox(
-                                              //               uncheckedColor: Colors.white,
-                                              //               checkedColor: Colors.grey,
-                                              //               onTap: (selected) {},
-                                              //             ),
-                                              //           ),
-                                              //         ],
-                                              //       )),
-                                              // ),
+                                           
                                               )),
 
-                                  // Padding(
-                                  //   padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                                  //   child: Container(
-                                  //       height: 70,
-                                  //       decoration: BoxDecoration(
-                                  //           borderRadius: BorderRadius.circular(10),
-                                  //           color: Color(0xfffFFC34A)),
-                                  //       child: Row(
-                                  //         children: [
-                                  //           Padding(
-                                  //             padding: const EdgeInsets.fromLTRB(
-                                  //                 20, 10, 10, 10),
-                                  //             child: Icon(
-                                  //               IconData(0xea8c,
-                                  //                   fontFamily: 'MaterialIcons'),
-                                  //               color: Colors.red,
-                                  //               size: 30.0,
-                                  //             ),
-                                  //           ),
-                                  //           Container(
-                                  //             width: 250,
-                                  //             child: Text(
-                                  //               "ส่งพัสดุ",
-                                  //               style: TextStyle(
-                                  //                   fontWeight: FontWeight.normal,
-                                  //                   fontSize: 20),
-                                  //             ),
-                                  //           ),
-                                  //           Padding(
-                                  //             padding:
-                                  //                 const EdgeInsets.only(right: 10),
-                                  //             child: RoundCheckBox(
-                                  //               uncheckedColor: Colors.white,
-                                  //               checkedColor: Colors.grey,
-                                  //               onTap: (selected) {},
-                                  //             ),
-                                  //           ),
-                                  //         ],
-                                  //       )),
-                                  // ),
+                                  
                                 )
                               ],
                             )),
