@@ -1,18 +1,12 @@
 import 'package:famfam/Homepage/HomePage.dart';
-import 'package:famfam/pinpost_screen/components/pinbottomsheet.dart';
-import 'package:famfam/pinpost_screen/components/card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:famfam/Homepage/tabbar.dart';
-import 'dart:math';
-import 'package:famfam/Homepage/date.dart';
 import 'package:intl/intl.dart';
 
 
 
 class PinScreen extends StatefulWidget {
-  //const PinScreen({Key? key}) : super(key: key);
+  const PinScreen({Key? key}) : super(key: key);
 
   @override
   State<PinScreen> createState() => _BodyState();
