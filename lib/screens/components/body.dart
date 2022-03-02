@@ -86,8 +86,43 @@ class Body extends StatelessWidget {
   }
 }
 
-class TodoBody extends StatelessWidget {
+class TodoBody extends StatefulWidget {
   const TodoBody({Key? key}) : super(key: key);
+
+  @override
+  State<TodoBody> createState() => _TodoBodyState();
+}
+
+class _TodoBodyState extends State<TodoBody> {
+  final List<String> addLtoC = <String>[];
+  final List<String> addDesc = <String>[];
+  final List<String> who = <String>[
+    'new-arunee.png',
+    'new-burin.png',
+    'new-mia.png',
+    'new-martin_ccexpress.png'
+  ];
+
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descController = TextEditingController();
+  int numwho = 0;
+  int iconimage = 0;
+
+  void addItemToList() {
+    setState(() {
+      addLtoC.insert(0, titleController.text);
+      addDesc.insert(0, descController.text);
+      titleController.text = '';
+      descController.text = '';
+    });
+  }
+
+  void onDismissed(int index) {
+    setState(() {
+      addLtoC.removeAt(index);
+      addDesc.removeAt(index);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -255,119 +290,225 @@ class TodoBody extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 12.0),
-                                  child: Container(
-                                    //height: 100,
-                                    //width: 100,
-                                    decoration: BoxDecoration(
-                                        //color: Colors.pink.shade700,
-                                        //borderRadius: BorderRadius.circular(30),
-                                        ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        SvgPicture.asset(
-                                          "assets/icons/leaf-fall.svg",
-                                          height: 85,
-                                          color: Colors.black.withOpacity(0.4),
-                                        ),
-                                        SizedBox(
-                                          height: 1,
-                                        ),
-                                        Text(
-                                          "You don't have any list right now.",
-                                          style: TextStyle(
-                                            color:
-                                                Colors.black.withOpacity(0.5),
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                        ///////////////////////////////////////////////////
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              10, 10, 10, 10),
+                                Container(
+                                  child: (addLtoC.isEmpty)
+                                      ? Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 12.0),
                                           child: Container(
-                                              height: 70,
-                                              width: 350,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  color: Color(0xfffFFC34A)),
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 0),
-                                                    child: RoundCheckBox(
-                                                      uncheckedColor:
-                                                          Colors.white,
-                                                      checkedColor: Colors.grey,
-                                                      onTap: (selected) {},
-                                                    ),
+                                            //height: 100,
+                                            //width: 100,
+                                            decoration: BoxDecoration(
+                                                //color: Colors.pink.shade700,
+                                                //borderRadius: BorderRadius.circular(30),
+                                                ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: <Widget>[
+                                                SvgPicture.asset(
+                                                  "assets/icons/leaf-fall.svg",
+                                                  height: 85,
+                                                  color: Colors.black
+                                                      .withOpacity(0.4),
+                                                ),
+                                                SizedBox(
+                                                  height: 1,
+                                                ),
+                                                Text(
+                                                  "You don't have any list right now.",
+                                                  style: TextStyle(
+                                                    color: Colors.black
+                                                        .withOpacity(0.5),
+                                                    fontSize: 18,
                                                   ),
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(5, 10, 5, 5),
-                                                    child: Image.asset(
-                                                      "assets/images/Profile.png",
-                                                      width: 60,
-                                                      height: 60,
-                                                    ),
-                                                  ),
-                                                  const VerticalDivider(
-                                                    width: 20,
-                                                    thickness: 1.5,
-                                                    indent: 15,
-                                                    endIndent: 15,
-                                                    color: Colors.white,
-                                                  ),
-                                                  Column(
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : Expanded(
+                                          child: ListView.builder(
+                                              padding: const EdgeInsets.all(8),
+                                              itemCount: addLtoC.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return Container(
+                                                  child: Column(
                                                     children: [
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      // Container(
-                                                      //   width: 230,
-                                                      //   child: Text(
-                                                      //     "Martin",
-                                                      //     style: TextStyle(
-                                                      //         fontWeight:
-                                                      //             FontWeight
-                                                      //                 .normal,
-                                                      //         fontSize: 15),
-                                                      //   ),
-                                                      // ),
-                                                      // Container(
-                                                      //   width: 230,
-                                                      //   child: Text(
-                                                      //     "รดน้ำต้นไม้ให้พ่อด้วยฮะมุง",
-                                                      //     style: TextStyle(
-                                                      //         fontWeight:
-                                                      //             FontWeight
-                                                      //                 .normal,
-                                                      //         fontSize: 18),
-                                                      //   ),
-                                                      // ),
+                                                      Container(
+                                                          height: 80,
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  bottom: 6),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            color: Color(
+                                                                0xfffFFC34A),
+                                                          ),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .fromLTRB(
+                                                                    10,
+                                                                    10,
+                                                                    10,
+                                                                    10),
+                                                            child: Row(
+                                                                // mainAxisAlignment:
+                                                                //     MainAxisAlignment
+                                                                //         .spaceBetween,
+                                                                children: <
+                                                                    Widget>[
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        left: 6,
+                                                                        right:
+                                                                            2),
+                                                                    child:
+                                                                        RoundCheckBox(
+                                                                      // size:
+                                                                      //     40,
+                                                                      uncheckedColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      checkedColor:
+                                                                          Colors
+                                                                              .grey,
+                                                                      onTap:
+                                                                          (selected) {
+                                                                        onDismissed(
+                                                                            index);
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                  const VerticalDivider(
+                                                                    width: 20,
+                                                                    thickness:
+                                                                        1.5,
+                                                                    indent: 5,
+                                                                    endIndent:
+                                                                        5,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                  RaisedButton(
+                                                                    color:
+                                                                        Color(
+                                                                      0xfffFFC34A,
+                                                                    ),
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            left:
+                                                                                0),
+                                                                    elevation:
+                                                                        0,
+                                                                    hoverElevation:
+                                                                        0,
+                                                                    focusElevation:
+                                                                        0,
+                                                                    highlightElevation:
+                                                                        0,
+                                                                    onPressed:
+                                                                        () {
+                                                                      descDialog(
+                                                                          context,
+                                                                          addLtoC[
+                                                                              index],
+                                                                          addDesc[
+                                                                              index]);
+                                                                    },
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        // SizedBox(
+                                                                        //   height:
+                                                                        //       10,
+                                                                        // ),
+                                                                        Text(
+                                                                          "Me to Martin",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.normal,
+                                                                            fontSize:
+                                                                                15,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              5,
+                                                                        ),
+                                                                        Text(
+                                                                          '${addLtoC[index]}',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.normal,
+                                                                          ),
+                                                                        ),
+                                                                        // Text(
+                                                                        //   '${addDesc[index]}',
+                                                                        //   style: TextStyle(
+                                                                        //       fontSize:
+                                                                        //           18),
+                                                                        // ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child:
+                                                                        Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .topRight,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets.fromLTRB(
+                                                                            0,
+                                                                            5,
+                                                                            5,
+                                                                            5),
+                                                                        child:
+                                                                            CircleAvatar(
+                                                                          radius:
+                                                                              25,
+                                                                          child:
+                                                                              Image.asset(
+                                                                            "assets/images/${who[index]}",
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ]),
+                                                          )),
                                                     ],
                                                   ),
-                                                ],
-                                              )),
+                                                );
+                                              }),
                                         ),
-                                        ///////////////////////////////////////////////////
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                )
                               ],
                             ),
                           ),
                         ),
-                        CircleBotSheet(size: size),
+                        addMyOrder(size, context),
                       ],
                     ),
                   ),
@@ -379,11 +520,349 @@ class TodoBody extends StatelessWidget {
       ),
     );
   }
+
+  Stack addMyOrder(Size size, BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          width: size.width * 0.864,
+          height: size.height * 0.066,
+
+          //color: Colors.pink,
+          child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Color(0xFFF9EE6D)),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(90.0),
+                  ),
+                ),
+              ),
+              child: Text(
+                '+ Add List ',
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black),
+              ),
+              onPressed: () {
+                showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(62.0))),
+                    backgroundColor: Color(0xFFFFFFFF),
+                    context: context,
+                    isScrollControlled: true,
+                    enableDrag: false,
+                    builder: (context) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 18),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25.0),
+                                  child: Container(
+                                    height: size.height * 0.595,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          //color: hexToColor("#F1E5BA"),
+                                          borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(66),
+                                        topRight: Radius.circular(66),
+                                      )),
+                                      child: Column(
+                                        // mainAxisAlignment:
+                                        //     MainAxisAlignment.center,
+
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+
+                                        children: <Widget>[
+                                          SizedBox(height: 45),
+                                          Center(
+                                            child: Text(
+                                              'Add List to Circle',
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                          SizedBox(height: 30),
+                                          Text(
+                                            'Title',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w600,
+                                              //color: Color(0xFFFFFFFF),
+                                            ),
+                                          ),
+                                          SizedBox(height: size.height * 0.021),
+                                          Container(
+                                            //margin: EdgeInsets.only(top: 40),
+                                            //width: size.width * 0.831,
+
+                                            child: (Container(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(60),
+                                                  boxShadow: [
+                                                    const BoxShadow(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ]),
+                                              child: (TextField(
+                                                controller: titleController,
+                                                style: TextStyle(
+                                                    fontSize: 20, height: 1.5),
+                                                decoration: InputDecoration(
+                                                  filled: true,
+                                                  fillColor: Color(0xFFF8F8F8),
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 10,
+                                                          horizontal: 20),
+                                                  //border: InputBorder.none,
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            60.0),
+                                                    borderSide: BorderSide(
+                                                        color:
+                                                            Color(0xFFF9EE6D),
+                                                        width: 2.0),
+                                                  ),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            60.0),
+                                                    borderSide: BorderSide(
+                                                        color:
+                                                            Color(0xFFF9EE6D),
+                                                        width: 2.0),
+                                                  ),
+                                                  hintText: 'Write the title',
+                                                  hintStyle: TextStyle(
+                                                    fontSize: 20.0,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              )),
+                                            )),
+                                          ),
+                                          SizedBox(height: size.height * 0.021),
+                                          Container(
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text("Description",
+                                                          style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600)),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.021),
+                                                  Container(
+                                                    // width: size.width * 0.58,
+                                                    // height:
+                                                    //     size.height * 0.054,
+                                                    child: (TextField(
+                                                      controller:
+                                                          descController,
+                                                      textAlignVertical:
+                                                          TextAlignVertical.top,
+                                                      keyboardType:
+                                                          TextInputType
+                                                              .multiline,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          height: 1.5),
+                                                      decoration:
+                                                          InputDecoration(
+                                                        filled: true,
+                                                        fillColor:
+                                                            Color(0xFFF8F8F8),
+                                                        contentPadding:
+                                                            EdgeInsets
+                                                                .symmetric(
+                                                                    vertical:
+                                                                        10,
+                                                                    horizontal:
+                                                                        20),
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      60.0),
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xFFF9EE6D),
+                                                              width: 2.0),
+                                                        ),
+                                                        enabledBorder:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      60.0),
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xFFF9EE6D),
+                                                              width: 2.0),
+                                                        ),
+                                                        hintText:
+                                                            'Write the description',
+                                                        hintStyle: TextStyle(
+                                                          fontSize: 20.0,
+                                                        ),
+                                                      ),
+                                                    )),
+                                                  ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.028),
+                                                  Text(
+                                                    'Who',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      //color: Color(0xFFFFFFFF),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.01),
+                                                  Row(
+                                                    children: [
+                                                      Wrap(
+                                                        direction:
+                                                            Axis.horizontal,
+                                                        children: List.generate(
+                                                            who.length,
+                                                            (index) {
+                                                          return Container(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 10),
+                                                            child: Column(
+                                                              children: [
+                                                                GestureDetector(
+                                                                  // padding:
+                                                                  //     EdgeInsets
+                                                                  //         .only(
+                                                                  //   top: 10,
+                                                                  //   bottom: 10,
+                                                                  // ),
+                                                                  onTap: () {
+                                                                    iconimage =
+                                                                        numwho;
+                                                                    print(
+                                                                        numwho);
+                                                                    numwho =
+                                                                        numwho +
+                                                                            1;
+                                                                  },
+                                                                  child: Image
+                                                                      .asset(
+                                                                    'assets/images/${who[index]}',
+                                                                    width: 55,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        }),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 11,
+                                                  ),
+                                                  Center(
+                                                    child: Container(
+                                                      width: 208,
+                                                      height: 60,
+                                                      child: ElevatedButton(
+                                                        style: ButtonStyle(
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all<Color>(Color(
+                                                                      0xFFF9EE6D)),
+                                                          shape:
+                                                              MaterialStateProperty
+                                                                  .all(
+                                                            RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          90.0),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          print(numwho);
+                                                          addItemToList();
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Text(
+                                                          "Confirm",
+                                                          style: TextStyle(
+                                                              fontSize: 21,
+                                                              color:
+                                                                  Colors.black),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ]),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom),
+                              ),
+                              SizedBox(height: 10),
+                            ],
+                          ),
+                        ));
+              }),
+        )
+      ],
+    );
+  }
 }
 
-class TickBody extends StatelessWidget {
+class TickBody extends StatefulWidget {
   const TickBody({Key? key}) : super(key: key);
 
+  @override
+  State<TickBody> createState() => _TickBodyState();
+}
+
+class _TickBodyState extends State<TickBody> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -427,93 +906,95 @@ class TickBody extends StatelessWidget {
                 ],
               ),
             ),
-            body: Column(
-              //crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 15,
-                ),
-                Center(
-                  child: Container(
-                    width: 368,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 5.0,
-                          offset: Offset(0, 3),
-                        ),
-                        BoxShadow(
-                          color: Colors.white,
-                          offset: Offset(-5, 0),
-                        ),
-                        BoxShadow(
-                          color: Colors.white,
-                          offset: Offset(5, 0),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        suffixIcon: Icon(
-                          Icons.search_sharp,
-                          color: Color(0xFFFFC34A),
-                        ),
-                        hintText: "Search TickTic",
-                        border: InputBorder.none,
-                        // hintStyle: TextStyle(
-                        //   color: Colors.black,
-                        // ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 15,
+            body: SingleChildScrollView(
+              child: Column(
+                //crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Center(
+                    child: Container(
+                      width: 368,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 5.0,
+                            offset: Offset(0, 3),
+                          ),
+                          BoxShadow(
+                            color: Colors.white,
+                            offset: Offset(-5, 0),
+                          ),
+                          BoxShadow(
+                            color: Colors.white,
+                            offset: Offset(5, 0),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(
+                            Icons.search_sharp,
+                            color: Color(0xFFFFC34A),
+                          ),
+                          hintText: "Search TickTic",
+                          border: InputBorder.none,
+                          // hintStyle: TextStyle(
+                          //   color: Colors.black,
+                          // ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 15,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SingleChildScrollView(
-                  child: SizedBox(
-                    height: 640,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Container(
-                        //height: 100,
-                        //width: 100,
-                        decoration: BoxDecoration(
-                            //color: Colors.pink.shade700,
-                            //borderRadius: BorderRadius.circular(30),
-                            ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            SvgPicture.asset(
-                              "assets/icons/leaf-fall.svg",
-                              height: 85,
-                              color: Colors.black.withOpacity(0.4),
-                            ),
-                            SizedBox(
-                              height: 1,
-                            ),
-                            Text(
-                              "You don't have any list right now.",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.5),
-                                fontSize: 18,
+                  SingleChildScrollView(
+                    child: SizedBox(
+                      height: 640,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Container(
+                          //height: 100,
+                          //width: 100,
+                          decoration: BoxDecoration(
+                              //color: Colors.pink.shade700,
+                              //borderRadius: BorderRadius.circular(30),
                               ),
-                            ),
-                          ],
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              SvgPicture.asset(
+                                "assets/icons/leaf-fall.svg",
+                                height: 85,
+                                color: Colors.black.withOpacity(0.4),
+                              ),
+                              SizedBox(
+                                height: 1,
+                              ),
+                              Text(
+                                "You don't have any list right now.",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                TicBotSheet(size: size),
-              ],
+                  TicBotSheet(size: size),
+                ],
+              ),
             ),
           ),
         ],
@@ -766,7 +1247,7 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                         height: 1,
                                                       ),
                                                       Text(
-                                                        "No Random is going on right now.",
+                                                        "No RANDOM is going on right now.",
                                                         style: TextStyle(
                                                           color: Colors.black
                                                               .withOpacity(0.5),
@@ -1315,7 +1796,7 @@ Future openDialogRandom(BuildContext context) => showDialog(
                     keyboardType: TextInputType.multiline,
                     style: TextStyle(fontSize: 20, height: 1.5),
                     decoration: InputDecoration(
-                      hintText: 'Enter a poll question',
+                      hintText: 'Enter a random problem',
                       hintStyle: TextStyle(
                         fontSize: 20.0,
                       ),
@@ -1633,3 +2114,109 @@ Future openDialogRandom(BuildContext context) => showDialog(
         );
       });
     });
+
+Future descDialog(BuildContext context, String title, String desc) =>
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Center(
+              child: Material(
+                type: MaterialType.transparency,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Stack(
+                        children: [
+                          Center(
+                            child: Text(
+                              title,
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                          ),
+                          // Positioned(
+                          //   right: 0,
+                          //   top: -6,
+                          //   child: InkResponse(
+                          //     onTap: () {
+                          //       Navigator.of(context).pop();
+                          //     },
+                          //     child: CircleAvatar(
+                          //       child: Icon(
+                          //         Icons.close,
+                          //         color: Colors.black,
+                          //         size: 30,
+                          //       ),
+                          //       backgroundColor: Colors.transparent,
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        'Description:',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        width: MediaQuery.of(context).size.height * 0.5,
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(49, 204, 204, 204),
+                          border: Border.all(
+                            color: Color(0xFFF9EE6D),
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20.0),
+                            topRight: const Radius.circular(20.0),
+                            bottomLeft: const Radius.circular(20.0),
+                            bottomRight: const Radius.circular(20.0),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 15, left: 15, right: 15, bottom: 15),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              desc,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.066,
+                            width: MediaQuery.of(context).size.width * 0.864,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });
