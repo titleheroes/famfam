@@ -28,6 +28,7 @@ class _CalendarState extends State<Calendar> {
   final TextEditingController _eventController = TextEditingController();
   final TextEditingController _eventController1 = TextEditingController();
   final TextEditingController _eventController2 = TextEditingController();
+  final TextEditingController _eventController3 = TextEditingController();
 
   @override
   void initState() {
@@ -271,91 +272,149 @@ class _CalendarState extends State<Calendar> {
                                               padding:
                                                   const EdgeInsets.fromLTRB(
                                                       10, 0, 20, 5),
-                                              child: Container(
-                                                // height: 50,
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xfffE7C581),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 20,
-                                                                  top: 10),
-                                                          child: Text(
-                                                              "Title : ",
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontSize:
-                                                                      22)),
+                                              child: Row(
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          left: 1,
                                                         ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
+                                                        child: Text(
+                                                          '${time!.hour.toString()}:${time!.minute.toString()}',
+                                                          style: TextStyle(
+                                                              fontSize: 15,
+                                                              color: Colors
+                                                                  .black54),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          left: 1,
+                                                        ),
+                                                        child: Text(
+                                                          "${time!.hour.toString()}:${time!.minute.toString()}",
+                                                          style: TextStyle(
+                                                              fontSize: 15,
+                                                              color: Colors
+                                                                  .black54),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 20),
+                                                    child: Container(
+                                                      width: size.width * 0.7,
+                                                      // height: 50,
+                                                      decoration: BoxDecoration(
+                                                          color: Color(
+                                                              0xfffE7C581),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10)),
+                                                      child: Column(
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left: 5,
+                                                                        top: 6),
+                                                                child: Text("",
+                                                                    style: TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w400,
+                                                                        fontSize:
+                                                                            19)),
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
                                                                   left: 20,
-                                                                  top: 10),
-                                                          child: Text(
-                                                            event.title,
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                fontSize: 22,
-                                                                color: Colors
-                                                                    .black),
+                                                                  top: 6,
+                                                                ),
+                                                                child: Text(
+                                                                  event.title,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          19,
+                                                                      color: Colors
+                                                                          .black),
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ),
-                                                      ],
+                                                          Row(
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            28,
+                                                                        top: 1,
+                                                                        bottom:
+                                                                            5),
+                                                                child: Icon(
+                                                                  IconData(
+                                                                      0xf009e,
+                                                                      fontFamily:
+                                                                          'MaterialIcons'),
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          245,
+                                                                          245,
+                                                                          245),
+                                                                  size: 13,
+                                                                ),
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left: 1,
+                                                                        top: 1,
+                                                                        bottom:
+                                                                            5),
+                                                                child: Text(
+                                                                  event
+                                                                      .locations,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Color(
+                                                                          0xfff707070)),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          // Text(
+                                                          //   event.locations,
+                                                          // ),
+                                                          // Text(
+                                                          //   event.note,
+                                                          // ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                    Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 20,
-                                                                  top: 1,
-                                                                  bottom: 5),
-                                                          child: Text(
-                                                            "Location : ",
-                                                            style: TextStyle(
-                                                                color: Color(
-                                                                    0xfff707070)),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 20,
-                                                                  top: 1,
-                                                                  bottom: 5),
-                                                          child: Text(
-                                                            event.locations,
-                                                            style: TextStyle(
-                                                                color: Color(
-                                                                    0xfff707070)),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    // Text(
-                                                    //   event.locations,
-                                                    // ),
-                                                    // Text(
-                                                    //   event.note,
-                                                    // ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
@@ -363,9 +422,7 @@ class _CalendarState extends State<Calendar> {
                                       ],
                                     ),
                                   ),
-                                  Container(
-                                    child: Text(""),
-                                  )
+                                  Container()
                                 ],
                               ),
                             )
@@ -717,14 +774,16 @@ class _CalendarState extends State<Calendar> {
                               Event(
                                   title: _eventController.text,
                                   locations: _eventController1.text,
-                                  note: _eventController2.text),
+                                  note: _eventController2.text,
+                                  time: _eventController3.text),
                             );
                           } else {
                             selectedEvents[selectedDay] = [
                               Event(
                                   title: _eventController.text,
                                   locations: _eventController1.text,
-                                  note: _eventController2.text)
+                                  note: _eventController2.text,
+                                  time: _eventController3.text)
                             ];
                           }
                         }
@@ -732,6 +791,7 @@ class _CalendarState extends State<Calendar> {
                         _eventController.clear();
                         _eventController1.clear();
                         _eventController2.clear();
+                        _eventController3.clear();
                         setState(() {});
                         isChecked = false;
                         return;
