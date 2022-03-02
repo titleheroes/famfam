@@ -112,6 +112,8 @@ class _TodoBodyState extends State<TodoBody> {
     setState(() {
       addLtoC.insert(0, titleController.text);
       addDesc.insert(0, descController.text);
+      titleController.text = '';
+      descController.text = '';
     });
   }
 
@@ -853,9 +855,14 @@ class _TodoBodyState extends State<TodoBody> {
   }
 }
 
-class TickBody extends StatelessWidget {
+class TickBody extends StatefulWidget {
   const TickBody({Key? key}) : super(key: key);
 
+  @override
+  State<TickBody> createState() => _TickBodyState();
+}
+
+class _TickBodyState extends State<TickBody> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -899,93 +906,95 @@ class TickBody extends StatelessWidget {
                 ],
               ),
             ),
-            body: Column(
-              //crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 15,
-                ),
-                Center(
-                  child: Container(
-                    width: 368,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 5.0,
-                          offset: Offset(0, 3),
-                        ),
-                        BoxShadow(
-                          color: Colors.white,
-                          offset: Offset(-5, 0),
-                        ),
-                        BoxShadow(
-                          color: Colors.white,
-                          offset: Offset(5, 0),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        suffixIcon: Icon(
-                          Icons.search_sharp,
-                          color: Color(0xFFFFC34A),
-                        ),
-                        hintText: "Search TickTic",
-                        border: InputBorder.none,
-                        // hintStyle: TextStyle(
-                        //   color: Colors.black,
-                        // ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 15,
+            body: SingleChildScrollView(
+              child: Column(
+                //crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Center(
+                    child: Container(
+                      width: 368,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 5.0,
+                            offset: Offset(0, 3),
+                          ),
+                          BoxShadow(
+                            color: Colors.white,
+                            offset: Offset(-5, 0),
+                          ),
+                          BoxShadow(
+                            color: Colors.white,
+                            offset: Offset(5, 0),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(
+                            Icons.search_sharp,
+                            color: Color(0xFFFFC34A),
+                          ),
+                          hintText: "Search TickTic",
+                          border: InputBorder.none,
+                          // hintStyle: TextStyle(
+                          //   color: Colors.black,
+                          // ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 15,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SingleChildScrollView(
-                  child: SizedBox(
-                    height: 640,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Container(
-                        //height: 100,
-                        //width: 100,
-                        decoration: BoxDecoration(
-                            //color: Colors.pink.shade700,
-                            //borderRadius: BorderRadius.circular(30),
-                            ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            SvgPicture.asset(
-                              "assets/icons/leaf-fall.svg",
-                              height: 85,
-                              color: Colors.black.withOpacity(0.4),
-                            ),
-                            SizedBox(
-                              height: 1,
-                            ),
-                            Text(
-                              "You don't have any list right now.",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.5),
-                                fontSize: 18,
+                  SingleChildScrollView(
+                    child: SizedBox(
+                      height: 640,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Container(
+                          //height: 100,
+                          //width: 100,
+                          decoration: BoxDecoration(
+                              //color: Colors.pink.shade700,
+                              //borderRadius: BorderRadius.circular(30),
                               ),
-                            ),
-                          ],
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              SvgPicture.asset(
+                                "assets/icons/leaf-fall.svg",
+                                height: 85,
+                                color: Colors.black.withOpacity(0.4),
+                              ),
+                              SizedBox(
+                                height: 1,
+                              ),
+                              Text(
+                                "You don't have any list right now.",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                TicBotSheet(size: size),
-              ],
+                  TicBotSheet(size: size),
+                ],
+              ),
             ),
           ),
         ],
@@ -1238,7 +1247,7 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                         height: 1,
                                                       ),
                                                       Text(
-                                                        "No Random is going on right now.",
+                                                        "No RANDOM is going on right now.",
                                                         style: TextStyle(
                                                           color: Colors.black
                                                               .withOpacity(0.5),
@@ -1787,7 +1796,7 @@ Future openDialogRandom(BuildContext context) => showDialog(
                     keyboardType: TextInputType.multiline,
                     style: TextStyle(fontSize: 20, height: 1.5),
                     decoration: InputDecoration(
-                      hintText: 'Enter a poll question',
+                      hintText: 'Enter a random problem',
                       hintStyle: TextStyle(
                         fontSize: 20.0,
                       ),

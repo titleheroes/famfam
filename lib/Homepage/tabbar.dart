@@ -26,6 +26,8 @@ class _tabbarState extends State<tabbar> {
     setState(() {
       names.insert(0, nameController.text);
       icon.insert(0, numicon);
+      nameController.text = '';
+      numicon = 0;
     });
   }
 
@@ -590,7 +592,10 @@ class _tabbarState extends State<tabbar> {
                                                 ),
                                               ),
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                  context, '/ticktik');
+                                            },
                                             child: Row(
                                               children: [
                                                 Padding(
