@@ -229,6 +229,7 @@ class _Register_InfoState extends State<Register_Info> {
                                   ],
                                 ),
                                 child: TextField(
+                                  controller: lnameController,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     filled: true,
