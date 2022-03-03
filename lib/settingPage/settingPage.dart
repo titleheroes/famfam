@@ -1,4 +1,5 @@
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/services/auth.dart';
 import 'package:famfam/settingPage/circle/circle.dart';
 import 'package:famfam/settingPage/create&join/create&join.dart';
 import 'package:famfam/settingPage/member/member.dart';
@@ -64,8 +65,11 @@ class _settingPageState extends State<settingPage> {
                   size: 40,
                 ),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage(FirebaseAuth.instance.currentUser)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              HomePage(FirebaseAuth.instance.currentUser)));
                 },
               ),
               elevation: 0,
@@ -177,7 +181,9 @@ class _settingPageState extends State<settingPage> {
                             "Log out",
                             style: TextStyle(color: Colors.black),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            AuthService().signOut(context);
+                          },
                         ),
                       ),
                     ]),
