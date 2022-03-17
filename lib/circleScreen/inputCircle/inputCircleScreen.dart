@@ -5,10 +5,8 @@ import './body.dart';
 
 class InputCircleScreen extends StatelessWidget {
   Widget build(BuildContext Context) {
-    
     return Scaffold(
       body: Body(),
-      
     );
   }
 }

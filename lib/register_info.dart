@@ -1,10 +1,15 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:async';
 
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:famfam/login.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
 import 'package:famfam/models/user_model.dart';
+import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/services/sqlite_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -121,8 +126,7 @@ class _Register_InfoState extends State<Register_Info> {
                           child: CircleAvatar(
                             radius: 65,
                             backgroundImage: _imageFile == null
-                                ? NetworkImage(
-                                        "https://media.discordapp.net/attachments/718002735475064874/946745190062891028/blank_profile.png?width=663&height=663")
+                                ? AssetImage('assets/images/blank.png')
                                     as ImageProvider
                                 : FileImage(File(_imageFile!.path)),
                           ),
@@ -575,10 +579,12 @@ class _Register_InfoState extends State<Register_Info> {
                                               String uid = getUID;
                                               String profileImage;
                                               if (urlImage == null) {
-                                                profileImage =
-                                                    'https://media.discordapp.net/attachments/718002735475064874/946745190062891028/blank_profile.png?width=663&height=663';
+                                                profileImage = Uri.encodeComponent(
+                                                    "https://firebasestorage.googleapis.com/v0/b/famfam-c881b.appspot.com/o/userProfile%2Fblank.png?alt=media&token=f93496ca-6fad-4bb7-b544-f3c67ddd002b");
                                               } else {
-                                                profileImage = urlImage!;
+                                                profileImage =
+                                                    Uri.encodeComponent(
+                                                        urlImage!);
                                               }
                                               print(urlImage);
                                               String fname =
@@ -593,20 +599,34 @@ class _Register_InfoState extends State<Register_Info> {
                                               String personalID =
                                                   personalIDController.text;
                                               String jobs = jobsController.text;
-                                              UserModel userModel = UserModel(
-                                                  uid: uid,
-                                                  profileImage: profileImage,
-                                                  fname: fname,
-                                                  lname: lname,
-                                                  phone: phone,
-                                                  birth: birth,
-                                                  address: address,
-                                                  personalID: personalID,
-                                                  jobs: jobs);
-                                              await SQLiteHelper()
-                                                  .insertValueTOSQLite(
-                                                      userModel)
+
+                                              // print('$birth');
+
+                                              String apiInsertUser =
+                                                  '${MyConstant.domain}/famfam/insertUser.php?isAdd=true&uid=$uid&profileImage=$profileImage&fname=$fname&lname=$lname&phone=$phone&birth=$birth&address=$address&personalID=$personalID&jobs=$jobs';
+                                              // UserModel userModel = UserModel(
+                                              //     uid: uid,
+                                              //     profileImage: profileImage,
+                                              //     fname: fname,
+                                              //     lname: lname,
+                                              //     phone: phone,
+                                              //     birth: birth,
+                                              //     address: address,
+                                              //     personalID: personalID,
+                                              //     jobs: jobs);
+                                              // await SQLiteHelper()
+                                              //     .insertValueTOSQLite(
+                                              //         userModel)
+                                              await Dio()
+                                                  .get(apiInsertUser)
                                                   .then((value) {
+                                                Navigator
+                                                    .pushNamedAndRemoveUntil(
+                                                        context,
+                                                        '/createcircle',
+                                                        (Route<dynamic>
+                                                                route) =>
+                                                            false);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
@@ -651,6 +671,16 @@ class _Register_InfoState extends State<Register_Info> {
     );
   }
 
+  Future<File> getImageFileFromAssets(String path) async {
+    final byteData = await rootBundle.load('assets/$path');
+
+    final file = File('${(await getTemporaryDirectory()).path}/$path');
+    await file.writeAsBytes(byteData.buffer
+        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+
+    return file;
+  }
+
   Future<void> uploadPictureToStorage() async {
     Random random = Random();
     int i = random.nextInt(10000);
@@ -659,23 +689,25 @@ class _Register_InfoState extends State<Register_Info> {
     FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
     if (_imageFile == null) {
-      imageFile = File("/assets/images/prfoile/.blank_profile.png");
+      return;
     } else {
       imageFile = File(_imageFile!.path);
-      Reference storageReference = firebaseStorage
-          .ref()
-          .child('userProfile/' + fnameController.text + i.toString());
-
-      UploadTask uploadTask = storageReference.putFile(imageFile);
-      await uploadTask.whenComplete(() async {
-        var url = await storageReference.getDownloadURL();
-        setState(() {
-          urlImage = url.toString();
-        });
-      }).catchError((onError) {
-        print(onError);
-      });
+      print(_imageFile!.path);
     }
+
+    Reference storageReference = firebaseStorage
+        .ref()
+        .child('userProfile/' + fnameController.text + i.toString());
+
+    UploadTask uploadTask = storageReference.putFile(imageFile);
+    await uploadTask.whenComplete(() async {
+      var url = await storageReference.getDownloadURL();
+      setState(() {
+        urlImage = url.toString();
+      });
+    }).catchError((onError) {
+      print(onError);
+    });
   }
 
   void TakePhoto(ImageSource source) async {
