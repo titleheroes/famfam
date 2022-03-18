@@ -76,9 +76,9 @@ class _HomePageState extends State<HomePage> {
   Future<Null> pullCircle() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? circle_id = preferences.getString('circle_id');
-    String? user_id = userModels[0].id;
+    String? member_id = userModels[0].id;
     String pullCircle =
-        '${MyConstant.domain}/famfam/getCircleWhereCircleIDUserID.php?isAdd=true&circle_id=$circle_id&user_id=$user_id';
+        '${MyConstant.domain}/famfam/getCircleWhereCircleIDuserID.php?isAdd=true&circle_id=$circle_id&member_id=$member_id';
     await Dio().get(pullCircle).then((value) async {
       for (var item in json.decode(value.data)) {
         CircleModel model = CircleModel.fromMap(item);

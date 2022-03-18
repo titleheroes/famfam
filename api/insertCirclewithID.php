@@ -18,19 +18,15 @@ if (!$link->set_charset("utf8")) {
 if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
 				
-		$name = $_GET['name'];
-		$uid = $_GET['uid'];
-		$profileImage = $_GET['profileImage'];
-		$fname = $_GET['fname'];
-		$lname = $_GET['lname'];
-		$phone = $_GET['phone'];
-		$birth = $_GET['birth'];
-		$address = $_GET['address'];
-		$personalID = $_GET['personalID'];
-		$jobs = $_GET['jobs'];
+		$circle_id = $_GET['circle_id'];
+		$circle_code = $_GET['circle_code'];
+		$circle_name = $_GET['circle_name'];
+		$host_id = $_GET['host_id'];
+		$member_id = $_GET['member_id'];
 		
 							
-		$sql = "INSERT INTO `user`(`id`, `uid`, `profileImage`, `fname`, `lname`, `phone`, `birth`, `address`, `personalID`, `jobs`) VALUES (Null,'$uid','$profileImage','$fname','$lname','$phone','$birth','$address','$personalID','$jobs')";
+		$sql = "INSERT INTO `circle`(`circle_id`, `circle_code`, `circle_name`, `host_id`,`member_id`) VALUES ('$circle_id','$circle_code','$circle_name','$host_id','$member_id')";
+		
 
 		$result = mysqli_query($link, $sql);
 

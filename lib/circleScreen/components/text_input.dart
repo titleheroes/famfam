@@ -200,9 +200,10 @@ class _EnterCircleIDState extends State<EnterCircleID> {
                                 String? circle_id = circleModels[0].circle_id;
                                 String? circle_name =
                                     circleModels[0].circle_name;
-                                String? user_id = userModels[0].id;
+                                String? host_id = circleModels[0].host_id;
+                                String? member_id = userModels[0].id;
                                 String apiInsertCircle =
-                                    "${MyConstant.domain}/famfam/insertCirclewithID.php?isAdd=true&circle_id=$circle_id&circle_code=$circle_code&circle_name=$circle_name&user_id=$user_id";
+                                    "${MyConstant.domain}/famfam/insertCirclewithID.php?isAdd=true&circle_id=$circle_id&circle_code=$circle_code&circle_name=$circle_name&host_id=$host_id&member_id=$member_id";
                                 await Dio()
                                     .get(apiInsertCircle)
                                     .then((value) async {

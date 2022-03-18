@@ -4,25 +4,29 @@ class CircleModel {
   final String? circle_id;
   final String circle_code;
   final String circle_name;
-  final String user_id;
+  final String host_id;
+  final String member_id;
   CircleModel({
     this.circle_id,
     required this.circle_code,
     required this.circle_name,
-    required this.user_id,
+    required this.host_id,
+    required this.member_id,
   });
 
   CircleModel copyWith({
     String? circle_id,
     String? circle_code,
     String? circle_name,
-    String? user_id,
+    String? host_id,
+    String? member_id,
   }) {
     return CircleModel(
       circle_id: circle_id ?? this.circle_id,
       circle_code: circle_code ?? this.circle_code,
       circle_name: circle_name ?? this.circle_name,
-      user_id: user_id ?? this.user_id,
+      host_id: host_id ?? this.host_id,
+      member_id: member_id ?? this.member_id,
     );
   }
 
@@ -31,7 +35,8 @@ class CircleModel {
       'circle_id': circle_id,
       'circle_code': circle_code,
       'circle_name': circle_name,
-      'user_id': user_id,
+      'host_id': host_id,
+      'member_id': member_id,
     };
   }
 
@@ -40,7 +45,8 @@ class CircleModel {
       circle_id: map['circle_id'],
       circle_code: map['circle_code'] ?? '',
       circle_name: map['circle_name'] ?? '',
-      user_id: map['user_id'] ?? '',
+      host_id: map['host_id'] ?? '',
+      member_id: map['member_id'] ?? '',
     );
   }
 
@@ -51,7 +57,7 @@ class CircleModel {
 
   @override
   String toString() {
-    return 'CircleModel(circle_id: $circle_id, circle_code: $circle_code, circle_name: $circle_name, user_id: $user_id)';
+    return 'CircleModel(circle_id: $circle_id, circle_code: $circle_code, circle_name: $circle_name, host_id: $host_id, member_id: $member_id)';
   }
 
   @override
@@ -62,7 +68,8 @@ class CircleModel {
         other.circle_id == circle_id &&
         other.circle_code == circle_code &&
         other.circle_name == circle_name &&
-        other.user_id == user_id;
+        other.host_id == host_id &&
+        other.member_id == member_id;
   }
 
   @override
@@ -70,6 +77,7 @@ class CircleModel {
     return circle_id.hashCode ^
         circle_code.hashCode ^
         circle_name.hashCode ^
-        user_id.hashCode;
+        host_id.hashCode ^
+        member_id.hashCode;
   }
 }
