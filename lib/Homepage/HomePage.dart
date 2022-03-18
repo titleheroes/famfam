@@ -48,8 +48,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Null> pullUserSQLID() async {
-    //
-
     final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
     String uid = getUID;
     String pullUser =
@@ -68,7 +66,6 @@ class _HomePageState extends State<HomePage> {
             userModels.add(model);
           });
         }
-        print(userModels[0].profileImage);
       }
     });
   }
