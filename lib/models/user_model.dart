@@ -1,15 +1,13 @@
 import 'dart:convert';
 
-import 'package:famfam/Homepage/date.dart';
-
 class UserModel {
-  final int? id;
+  final String? id;
   final String uid;
   final String profileImage;
   final String fname;
   final String lname;
   final String phone;
-  final DateTime birth;
+  final String birth;
   final String address;
   final String personalID;
   final String jobs;
@@ -27,13 +25,13 @@ class UserModel {
   });
 
   UserModel copyWith({
-    int? id,
+    String? id,
     String? uid,
     String? profileImage,
     String? fname,
     String? lname,
     String? phone,
-    DateTime? birth,
+    String? birth,
     String? address,
     String? personalID,
     String? jobs,
@@ -60,7 +58,7 @@ class UserModel {
       'fname': fname,
       'lname': lname,
       'phone': phone,
-      'birth': birth.millisecondsSinceEpoch,
+      'birth': birth,
       'address': address,
       'personalID': personalID,
       'jobs': jobs,
@@ -69,13 +67,13 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id']?.toInt() ?? 0,
+      id: map['id'],
       uid: map['uid'] ?? '',
       profileImage: map['profileImage'] ?? '',
       fname: map['fname'] ?? '',
       lname: map['lname'] ?? '',
       phone: map['phone'] ?? '',
-      birth: DateTime.fromMillisecondsSinceEpoch(map['birth']),
+      birth: map['birth'] ?? '',
       address: map['address'] ?? '',
       personalID: map['personalID'] ?? '',
       jobs: map['jobs'] ?? '',

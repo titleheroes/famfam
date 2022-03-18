@@ -1,13 +1,29 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/models/circle_model.dart';
+import 'package:famfam/models/user_model.dart';
 import 'package:famfam/register.dart';
+import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/welcome.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Login extends StatelessWidget {
-  final AuthService _auth = AuthService();
+class Login extends StatefulWidget {
   Login({Key? key}) : super(key: key);
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final AuthService _auth = AuthService();
+
   TextEditingController emailController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
 
   @override
@@ -140,8 +156,56 @@ class Login extends StatelessWidget {
                     ),
                     child: Text('Login'),
                     onPressed: () async {
-                      _auth.signin(context, emailController.text.trim(),
-                          passwordController.text.trim());
+                      List<UserModel> userModels = [];
+                      List<CircleModel> circleModels = [];
+
+                      _auth
+                          .signin(context, emailController.text.trim(),
+                              passwordController.text.trim())
+                          .then((value) async {
+                        //get UserID
+                        final String getUID =
+                            FirebaseAuth.instance.currentUser!.uid.toString();
+                        String uid = getUID;
+                        String pullUser =
+                            '${MyConstant.domain}/famfam/getUserWhereUID.php?isAdd=true&uid=$uid';
+                        await Dio().get(pullUser).then((value) async {
+                          for (var item in json.decode(value.data)) {
+                            UserModel model = UserModel.fromMap(item);
+                            setState(() {
+                              userModels.add(model);
+                            });
+                          }
+                        });
+
+                        //Get CircleID
+                        String? user_id = userModels[0].id;
+                        String pullCircle =
+                            '${MyConstant.domain}/famfam/getCircleWhereUserID.php?isAdd=true&user_id=$user_id';
+                        await Dio().get(pullCircle).then((value) async {
+                          for (var item in json.decode(value.data)) {
+                            CircleModel model = CircleModel.fromMap(item);
+
+                            setState(() {
+                              circleModels.add(model);
+                            });
+                          }
+                        });
+
+                        //set circle_id Preferences
+                        SharedPreferences preferences =
+                            await SharedPreferences.getInstance();
+                        preferences.setString(
+                            'circle_id', circleModels[0].circle_id!);
+
+                        //login
+                        var user = FirebaseAuth.instance.currentUser;
+                        print("signed in");
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(user)));
+                      });
                     },
                   ),
                 ),

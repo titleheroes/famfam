@@ -46,10 +46,13 @@ dependencies:
       url: git://github.com/Baseflow/baseflow_plugin_template.git
       ref: v2.0.0-nullsafety
   geocoding: ^2.0.2
+  uuid: ^3.0.6
+  shared_preferences: ^2.0.13
   dio: ^4.0.4
   geocode: 1.0.1
   another_flushbar: ^1.10.28
   sliding_up_panel: ^2.0.0+1
+  path_provider: ^2.0.9
   provider: ^6.0.2
   intl: ^0.17.0
   firebase_core: ^1.12.0
