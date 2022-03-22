@@ -1,11 +1,13 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/models/circle_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:famfam/services/my_constant.dart';
-
-
+import 'package:famfam/models/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PinScreen extends StatefulWidget {
   const PinScreen({Key? key}) : super(key: key);
@@ -15,6 +17,85 @@ class PinScreen extends StatefulWidget {
 }
 
 class _BodyState extends State<PinScreen> {
+  List<UserModel> userModels = [];
+  List<CircleModel> circleModels = [];
+  String circle_id = '';
+  String user_id = '';
+
+  @override
+  void initState(){
+    super.initState();
+    //print(UserModel.fromMap(Map()));
+    
+
+    pullUserSQLID().then((value) => pullCircle().then((value)  {
+          
+          circle_id = circleModels[0].circle_id!;
+          user_id = userModels[0].id!;
+          print('user_id = '+user_id);
+          print('circle_id = '+circle_id);
+          
+          
+    }));
+
+    
+
+    loadPinFromAPI();
+    
+
+
+  }
+
+  Future<Null> loadPinFromAPI() async{
+
+    setState(() {
+      
+    });
+    String apiGetPinWhereCircleID = '${MyConstant.domain}/famfam/getPinWhereCircleID.php?isAdd=true&circleID_pinpost=$user_id';
+    await Dio().get(apiGetPinWhereCircleID).then((value) => print('## Pinpost Data ==>> $value'));
+
+  }
+
+
+  Future<Null> pullUserSQLID() async {
+    final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
+    String uid = getUID;
+    String pullUser =
+        '${MyConstant.domain}/famfam/getUserWhereUID.php?isAdd=true&uid=$uid';
+    await Dio().get(pullUser).then((value) async {
+      if (value.toString() == null ||
+          value.toString() == 'null' ||
+          value.toString() == '') {
+        FirebaseAuth.instance.signOut();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.clear();
+      } else {
+        for (var item in json.decode(value.data)) {
+          UserModel model = UserModel.fromMap(item);         
+          setState(() {
+            userModels.add(model);
+          });
+        }
+      }
+    });
+  }
+
+  Future<Null> pullCircle() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? circle_id = preferences.getString('circle_id');
+    String? member_id = userModels[0].id;
+    String pullCircle =
+        '${MyConstant.domain}/famfam/getCircleWhereCircleIDuserID.php?isAdd=true&circle_id=$circle_id&member_id=$member_id';
+    await Dio().get(pullCircle).then((value) async {
+      for (var item in json.decode(value.data)) {
+        CircleModel model = CircleModel.fromMap(item);
+        setState(() {
+          circleModels.add(model);
+        });
+      }
+    });
+  }
+
   double value = 0;
   
   final List<String> names = <String>['Dummy Pin Post Right Here!', ];
@@ -46,7 +127,7 @@ class _BodyState extends State<PinScreen> {
     String pin_text = input_pin_text;
     print('## text = $pin_text');
 
-    String InsertPinpost = '${MyConstant.domain}/famfam/insertPin.php?isAdd=true&pin_text=$pin_text&author_id=1&circle_id=1' ;
+    String InsertPinpost = '${MyConstant.domain}/famfam/insertPin.php?isAdd=true&pin_text=$pin_text&author_id=39&circle_id=38' ;
 
     await Dio().get(InsertPinpost).then((value) {
       if(value.toString()=='true'){
@@ -483,11 +564,15 @@ class _BodyState extends State<PinScreen> {
                                                             ),
                                                           ),
                                                           onPressed: () {
+
+                                                            /*----------------- Here ---------------------------------*/ 
                                                             print('Input: ' + pinController.text);
-                                                            getPinpostFromCircle(pinController.text);
-                                                            //SendPinText(pinController.text);
+                                                            //print('Current circle_id: ' + circle_id );
+                                                            //getPinpostFromCircle(pinController.text);
+                                                            SendPinText(pinController.text);
                                                             //addItemToList();
-                                                            
+                                                            /*----------------- Here ---------------------------------*/ 
+
                                                             Navigator.pop(context);
                                                           },
                                                           child: Text(
