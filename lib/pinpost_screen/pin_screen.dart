@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:famfam/services/my_constant.dart';
 
 
 
@@ -17,13 +19,12 @@ class _BodyState extends State<PinScreen> {
   
   final List<String> names = <String>['Dummy Pin Post Right Here!', ];
   
-  
-
-  TextEditingController nameController = TextEditingController();
+ 
+  TextEditingController pinController = TextEditingController();
   
   void addItemToList() {
     setState(() {
-      names.insert(0,nameController.text);
+      names.insert(0,pinController.text);
       
     });
   }
@@ -33,6 +34,29 @@ class _BodyState extends State<PinScreen> {
       names.removeAt(index);
     });
   }
+
+  Future getPinpostFromCircle(String input_circle_id) async{
+    String circle_id = input_circle_id;
+    print('## circle_id = $circle_id');
+    String path = '${MyConstant.domain}/famfam/getPinWhereCircleID.php?isAdd=true&circleID_pinpost=$circle_id';
+    await Dio().get(path).then((value) => print('## Value ==>> $value'));
+  }
+
+  void SendPinText(String input_pin_text)async {
+    String pin_text = input_pin_text;
+    print('## text = $pin_text');
+
+    String InsertPinpost = '${MyConstant.domain}/famfam/insertPin.php?isAdd=true&pin_text=$pin_text&author_id=1&circle_id=1' ;
+
+    await Dio().get(InsertPinpost).then((value) {
+      if(value.toString()=='true'){
+        print('Pinpost Inserted');
+      }else{
+        print('Insert Error');
+      }
+    });
+  }
+
 
   Future<void> _displayTextInputDialog(BuildContext context,int index) async {
     return showDialog(
@@ -94,15 +118,17 @@ class _BodyState extends State<PinScreen> {
     );
   }
 
+  
+
   Widget build(BuildContext context){
     
     final User user = FirebaseAuth.instance.currentUser!;
     
-    TextEditingController nameController = TextEditingController();
+    TextEditingController pinController = TextEditingController();
 
     void addItemToList() {
       setState(() {
-      names.insert(0,nameController.text);
+      names.insert(0,pinController.text);
       print(names);
     });
     }
@@ -369,7 +395,7 @@ class _BodyState extends State<PinScreen> {
                                                     //height: 300,
                                                     child: (TextField(
                                                       controller:
-                                                          nameController,
+                                                          pinController,
                                                       keyboardType:
                                                           TextInputType
                                                               .multiline,
@@ -457,11 +483,10 @@ class _BodyState extends State<PinScreen> {
                                                             ),
                                                           ),
                                                           onPressed: () {
-                                                            print('Input: ' +
-                                                                nameController
-                                                                    .text);
-                                                            print(names);
-                                                            addItemToList();
+                                                            print('Input: ' + pinController.text);
+                                                            getPinpostFromCircle(pinController.text);
+                                                            //SendPinText(pinController.text);
+                                                            //addItemToList();
                                                             
                                                             Navigator.pop(context);
                                                           },
@@ -508,3 +533,4 @@ class _BodyState extends State<PinScreen> {
     );
   }
 }
+
