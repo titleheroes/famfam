@@ -1012,8 +1012,11 @@ class VoteRandomBody extends StatefulWidget {
 
 class _VoteRandomBodyState extends State<VoteRandomBody> {
   final List<String> topicPoll = <String>[];
-  final List<String> topicRandom = <String>[];
+  final List<String> topicRandom = <String>['pleng'];
   var user = FirebaseAuth.instance.currentUser;
+
+  // String polltopic;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -1264,7 +1267,158 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                         topicRandom.length,
                                                     itemBuilder:
                                                         (context, index) {
-                                                      return Text('bruh');
+                                                      return Container(
+                                                        child: Column(
+                                                          children: [
+                                                            Container(
+                                                                height: 170,
+                                                                margin: EdgeInsets
+                                                                    .only(
+                                                                        bottom:
+                                                                            6),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          252,
+                                                                          215,
+                                                                          94),
+                                                                ),
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          10,
+                                                                          10,
+                                                                          10,
+                                                                          10),
+                                                                  child: Row(
+                                                                      // mainAxisAlignment:
+                                                                      //     MainAxisAlignment
+                                                                      //         .spaceBetween,
+                                                                      children: <
+                                                                          Widget>[
+                                                                        Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.only(
+                                                                            left:
+                                                                                6,
+                                                                            right:
+                                                                                2,
+                                                                          ),
+                                                                        ),
+
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Row(
+                                                                              // mainAxisAlignment: MainAxisAlignment.,
+                                                                              children: [
+                                                                                Align(
+                                                                                  alignment: Alignment.topRight,
+                                                                                  child: Padding(
+                                                                                    padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
+                                                                                    child: CircleAvatar(
+                                                                                      radius: 28,
+                                                                                      child: Image.asset(
+                                                                                        "assets/images/new-mia.png",
+                                                                                        fit: BoxFit.cover,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(left: 10),
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: <Widget>[
+                                                                                      const Text(
+                                                                                        "Topic:",
+                                                                                        style: TextStyle(
+                                                                                          fontWeight: FontWeight.w500,
+                                                                                          fontSize: 16,
+                                                                                        ),
+                                                                                      ),
+                                                                                      SizedBox(
+                                                                                        height: 2,
+                                                                                      ),
+                                                                                      const Text(
+                                                                                        "ข้าวเย็นกินไรดีนะ",
+                                                                                        style: TextStyle(
+                                                                                          fontWeight: FontWeight.w500,
+                                                                                          fontSize: 18,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 10,
+                                                                            ),
+                                                                            Text(
+                                                                              "Result:",
+                                                                              style: TextStyle(
+                                                                                fontWeight: FontWeight.w500,
+                                                                                fontSize: 16,
+                                                                              ),
+                                                                            ),
+
+                                                                            Container(
+                                                                              height: 40,
+                                                                              width: size.width / 1.3,
+                                                                              margin: EdgeInsets.only(top: 7),
+                                                                              decoration: BoxDecoration(
+                                                                                borderRadius: BorderRadius.circular(20),
+                                                                                color: Color.fromARGB(255, 255, 255, 255),
+                                                                              ),
+                                                                              child: Center(
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.only(bottom: 5),
+                                                                                  child: Text(
+                                                                                    "กระเพาหมูกรอบ",
+                                                                                    style: TextStyle(
+                                                                                      fontWeight: FontWeight.w500,
+                                                                                      fontSize: 18,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+
+                                                                            // SizedBox(
+                                                                            //   height: 5,
+                                                                            // ),
+                                                                            // Text(
+                                                                            //   // '${addLtoC[index]}',
+                                                                            //   'tlew',
+                                                                            //   style: TextStyle(
+                                                                            //     fontSize: 18,
+                                                                            //     fontWeight: FontWeight.normal,
+                                                                            //   ),
+                                                                            // ),
+                                                                            // Text(
+                                                                            //   '${addDesc[index]}',
+                                                                            //   style: TextStyle(
+                                                                            //       fontSize:
+                                                                            //           18),
+                                                                            // ),
+                                                                          ],
+                                                                        ),
+                                                                        // ),
+                                                                        //
+                                                                      ]),
+                                                                )),
+                                                          ],
+                                                        ),
+                                                      );
                                                     },
                                                   );
                                           }),
