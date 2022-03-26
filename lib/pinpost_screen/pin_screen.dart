@@ -134,10 +134,13 @@ Future<Null> pullUserSQLID() async {
         print('Insert Error');
       }
     });
+    Navigator.pushNamed(context, '/pinpost');
+
   }
 
 
-  Future<void> _displayTextInputDialog(BuildContext context,int index) async {
+  Future<void> _displayDeleteDialog(BuildContext context,String pin_id) async {
+
     return showDialog(
       context: context,
       builder: (context) {
@@ -183,8 +186,12 @@ Future<Null> pullUserSQLID() async {
                       ),
                       child: Text('Delete',style: TextStyle(color: Colors.white)),
                       onPressed: () {
-                        onDismissed(index);
-                        Navigator.pop(context);
+
+                        DeletePinpost(pin_id);
+                        //onDismissed();
+
+
+                        //Navigator.pop(context);
                       },
                     ),
                   ),
@@ -195,6 +202,24 @@ Future<Null> pullUserSQLID() async {
         );
       },
     );
+  }
+
+  void DeletePinpost(String pin_id)async {
+    
+    String target_pin_id = pin_id;
+    String DeletePinpost = '${MyConstant.domain}/famfam/deletePinFromPinID.php?isAdd=true&pin_id=$target_pin_id' ;
+    
+    print('## target = $target_pin_id');
+
+    await Dio().get(DeletePinpost).then((value) {
+      if(value.toString()=='true'){
+        print('Pinpost Deleted');
+      }else{
+        print('Delete Error');
+      }
+    });
+    Navigator.pushNamed(context, '/pinpost');
+
   }
 
   
@@ -316,7 +341,7 @@ Future<Null> pullUserSQLID() async {
                                   padding: EdgeInsets.only(
                                     left: 10,
                                   ),
-                                  child: Text('Me',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                  child: Text('${pinpostModels[index].pin_id}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                                   
                             ),
                             Padding(
@@ -347,7 +372,7 @@ Future<Null> pullUserSQLID() async {
                     top: 0,
                     child: IconButton(onPressed: () {
                       
-                      _displayTextInputDialog(context,index);
+                      _displayDeleteDialog(context,pinpostModels[index].pin_id);
                     }, 
                     icon: Icon(Icons.close),
                     iconSize: 30,

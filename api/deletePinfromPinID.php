@@ -16,7 +16,7 @@ if (!$link) {
 			
 		$pin_id = $_GET['pin_id'];		
 									
-		$sql = "DELETE FROM circle WHERE pin_id = '$pin_id'";
+		$sql = "DELETE FROM pinpost WHERE pin_id = '$pin_id'";
 
 		$result = mysqli_query($link, $sql);
 
