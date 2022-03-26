@@ -1,12 +1,20 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:famfam/models/list_today_ido.dart';
+import 'package:famfam/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:famfam/services/my_constant.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class tabbar extends StatefulWidget {
   const tabbar({Key? key}) : super(key: key);
@@ -16,24 +24,109 @@ class tabbar extends StatefulWidget {
 }
 
 class _tabbarState extends State<tabbar> {
-  final List<String> names = <String>[];
+  final List<String> list_todo = <String>[];
   final List<int> icon = <int>[1, 2, 3];
 
   TextEditingController nameController = TextEditingController();
   int numicon = 0;
+  int num = 0;
+  List<UserModel> userModels = [];
+  List<list_today_Model> list_to_do_Models = [];
 
-  void addItemToList() {
+  void addItemToList(String text) {
     setState(() {
-      names.insert(0, nameController.text);
+      list_todo.insert(0, text);
       icon.insert(0, numicon);
-      nameController.text = '';
+      // nameController.text = '';
       numicon = 0;
     });
   }
 
   void onDismissed(int index) {
     setState(() {
-      names.removeAt(index);
+      list_todo.removeAt(index);
+      print('############list wanna delete ' + list_todo[index]);
+      DeleteDatatoday(list_to_do: list_todo[index]);
+      print('deleted successed');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pullUserSQLID();
+  }
+
+  void addItemfromStart() {
+    print(list_to_do_Models.length);
+    for (int i = 0; i < list_to_do_Models.length; i++) {
+      addItemToList(list_to_do_Models[i].list_to_do);
+    }
+  }
+
+  Future<Null> pullUserSQLID() async {
+    final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
+    String uid = getUID;
+    print('#### uid ' + getUID);
+    String pullUser =
+        '${MyConstant.domain}/famfam/getUserWhereUID.php?uid=$uid&isAdd=true';
+    await Dio().get(pullUser).then((value) async {
+      if (value.toString() == null ||
+          value.toString() == 'null' ||
+          value.toString() == '') {
+        FirebaseAuth.instance.signOut();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.clear();
+      } else {
+        for (var item in json.decode(value.data)) {
+          UserModel model = UserModel.fromMap(item);
+          print(item);
+          setState(() {
+            userModels.add(model);
+          });
+        }
+      }
+    });
+    await pullDataToday_IDO();
+    addItemfromStart();
+  }
+
+  Future<Null> pullDataToday_IDO() async {
+    String? member_id = userModels[0].id;
+    print('###UID_frompulldata ==> ' + '$member_id');
+    String pullData =
+        '${MyConstant.domain}/famfam/getDataToday_IDO.php?isAdd=true&user_id=$member_id';
+    await Dio().get(pullData).then((value) async {
+      for (var item in json.decode(value.data)) {
+        list_today_Model list_model = list_today_Model.fromMap(item);
+        print(item);
+        setState(() {
+          list_to_do_Models.add(list_model);
+        });
+      }
+    });
+  }
+
+  Future<Null> InsertDatatoday({String? list_to_do}) async {
+    String? member_id = userModels[0].id;
+    print('###UID ==> ' + '$member_id');
+    String APIinsertData =
+        '${MyConstant.domain}/famfam/insertDataToday_IDO.php?user_id=$member_id &list_to_do=$list_to_do&isAdd=true';
+    await Dio().get(APIinsertData).then((value) {
+      if (value.toString() == 'true') {
+        print('Insert Today I Do Successed');
+      }
+    });
+  }
+
+  Future<Null> DeleteDatatoday({String? list_to_do}) async {
+    String? member_id = userModels[0].id;
+    String APIDeleteData =
+        '${MyConstant.domain}/famfam/deleteDataToday_IDO.php?isAdd=true&user_id=$member_id&list_to_do=$list_to_do';
+    await Dio().get(APIDeleteData).then((value) {
+      if (value.toString() == 'true') {
+        print('Deleted Today I Do Successed');
+      }
     });
   }
 
@@ -100,8 +193,8 @@ class _tabbarState extends State<tabbar> {
                   color: Colors.amber,
                   child: Text('Add'),
                   onPressed: () {
-                    addItemToList();
-                    print(nameController.text);
+                    addItemToList(nameController.text);
+                    InsertDatatoday(list_to_do: nameController.text);
                     Navigator.pop(context);
                   },
                 ),
@@ -238,7 +331,7 @@ class _tabbarState extends State<tabbar> {
                                   ),
                                 ),
                                 Container(
-                                  child: (names.isEmpty)
+                                  child: (list_todo.isEmpty)
                                       ? Column(children: [
                                           Padding(
                                               padding: EdgeInsets.only(
@@ -264,7 +357,7 @@ class _tabbarState extends State<tabbar> {
                                       : Expanded(
                                           child: ListView.builder(
                                               padding: const EdgeInsets.all(8),
-                                              itemCount: names.length,
+                                              itemCount: list_todo.length,
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index) {
@@ -302,7 +395,7 @@ class _tabbarState extends State<tabbar> {
                                                                         padding:
                                                                             EdgeInsets.only(right: 10)),
                                                                     Text(
-                                                                      '${names[index]}',
+                                                                      '${list_todo[index]}',
                                                                       style: TextStyle(
                                                                           fontSize:
                                                                               18),
