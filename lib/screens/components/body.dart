@@ -1,14 +1,22 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, annotate_overrides, use_key_in_widget_constructors
 
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/models/random_model.dart';
+import 'package:famfam/models/user_model.dart';
+import 'package:famfam/services/my_constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/components/text_field_container.dart';
 import 'package:famfam/constants.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:famfam/components/circlebottomsheet.dart';
 import 'package:famfam/components/tickbottomsheet.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'header_circle.dart';
 
@@ -1011,9 +1019,32 @@ class VoteRandomBody extends StatefulWidget {
 }
 
 class _VoteRandomBodyState extends State<VoteRandomBody> {
+  List<UserModel> userModels = [];
+
   final List<String> topicPoll = <String>[];
-  final List<String> topicRandom = <String>['pleng'];
+  List<randomModel> topicRandom = [];
   var user = FirebaseAuth.instance.currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    pullAllRandom();
+  }
+
+  Future<Null> pullAllRandom() async {
+    String pullAllRandom =
+        '${MyConstant.domain}/famfam/getRandomAll.php?isAdd=true';
+    try {
+      await Dio().get(pullAllRandom).then((value) async {
+        for (var item in json.decode(value.data)) {
+          randomModel model = randomModel.fromMap(item);
+          setState(() {
+            topicRandom.add(model);
+          });
+        }
+      });
+    } catch (e) {}
+  }
 
   // String polltopic;
 
@@ -1326,10 +1357,12 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                     padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
                                                                                     child: CircleAvatar(
                                                                                       radius: 28,
-                                                                                      child: Image.asset(
-                                                                                        "assets/images/new-mia.png",
-                                                                                        fit: BoxFit.cover,
-                                                                                      ),
+                                                                                      backgroundImage: NetworkImage(topicRandom[index].user_profile),
+                                                                                      // child: Image.network(
+                                                                                      //   // "assets/images/new-mia.png",
+                                                                                      //   topicRandom[index].user_profile,
+                                                                                      //   fit: BoxFit.cover,
+                                                                                      // ),
                                                                                     ),
                                                                                   ),
                                                                                 ),
@@ -1348,8 +1381,9 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                       SizedBox(
                                                                                         height: 2,
                                                                                       ),
-                                                                                      const Text(
-                                                                                        "ข้าวเย็นกินไรดีนะ",
+                                                                                      Text(
+                                                                                        topicRandom[index].random_topic,
+                                                                                        // "ข้าวเย็นกินไรดีนะ",
                                                                                         style: TextStyle(
                                                                                           fontWeight: FontWeight.w500,
                                                                                           fontSize: 18,
@@ -1383,7 +1417,8 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                 child: Padding(
                                                                                   padding: const EdgeInsets.only(bottom: 5),
                                                                                   child: Text(
-                                                                                    "กระเพาหมูกรอบ",
+                                                                                    topicRandom[index].random_final,
+                                                                                    // "กระเพาหมูกรอบ",
                                                                                     style: TextStyle(
                                                                                       fontWeight: FontWeight.w500,
                                                                                       fontSize: 18,
@@ -1880,6 +1915,7 @@ Future openDialogPoll(BuildContext context) => showDialog(
 Future openDialogRandom(BuildContext context) => showDialog(
     context: context,
     builder: (context) {
+      List<UserModel> userModels = [];
       bool check123 = false, check1234 = false;
       TextEditingController topicController = TextEditingController();
       TextEditingController option1Controller = TextEditingController();
@@ -1887,6 +1923,7 @@ Future openDialogRandom(BuildContext context) => showDialog(
       TextEditingController option3Controller = TextEditingController();
       TextEditingController option4Controller = TextEditingController();
       TextEditingController option5Controller = TextEditingController();
+
       return StatefulBuilder(builder: (context, setState) {
         return Center(
           child: Material(
@@ -2243,19 +2280,143 @@ Future openDialogRandom(BuildContext context) => showDialog(
                             ),
                           ),
                           child: Text(
-                            'Done',
+                            'Hello',
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black),
                           ),
-                          onPressed: () {
-                            if (option1Controller.text != null) {
-                              if (option2Controller != null) {
-                                if (option3Controller != null) {}
+                          onPressed: () async {
+                            List<String> random_options = [];
+                            String random_summary;
+                            final String getUID = FirebaseAuth
+                                .instance.currentUser!.uid
+                                .toString();
+                            String uid = getUID;
+                            String pullUser =
+                                '${MyConstant.domain}/famfam/getUserWhereUID.php?isAdd=true&uid=$uid';
+                            await Dio().get(pullUser).then((value) async {
+                              if (value.toString() == null ||
+                                  value.toString() == 'null' ||
+                                  value.toString() == '') {
+                                FirebaseAuth.instance.signOut();
+                                SharedPreferences preferences =
+                                    await SharedPreferences.getInstance();
+                                preferences.clear();
+                              } else {
+                                for (var item in json.decode(value.data)) {
+                                  UserModel model = UserModel.fromMap(item);
+                                  setState(() {
+                                    userModels.add(model);
+                                  });
+                                }
+                              }
+                            });
+
+                            Future<Null> pushRandomToSQL(final_option) async {
+                              SharedPreferences preferences =
+                                  await SharedPreferences.getInstance();
+                              String user_id = userModels[0].id!;
+                              String user_profile = Uri.encodeComponent(
+                                  userModels[0].profileImage);
+                              String circle_id =
+                                  preferences.getString('circle_id')!;
+                              String random_topic = topicController.text;
+                              String random_final = final_option;
+                              String insertRandom =
+                                  '${MyConstant.domain}/famfam/insertRandom.php?isAdd=true&user_id=$user_id&user_profile=$user_profile&circle_id=$circle_id&random_topic=$random_topic&random_final=$random_final';
+                              await Dio().get(insertRandom).then((value) => {
+                                    Navigator.popAndPushNamed(
+                                        context, '/voterandom')
+                                  });
+                            }
+
+                            if (option1Controller.text != '') {
+                              if (option2Controller.text != '') {
+                                if (option3Controller.text != '') {
+                                  if (check123 == true) {
+                                    if (option4Controller.text != '') {
+                                      if (check1234 == true) {
+                                        if (option5Controller.text != '') {
+                                          random_options
+                                              .add(option1Controller.text);
+                                          random_options
+                                              .add(option2Controller.text);
+                                          random_options
+                                              .add(option3Controller.text);
+                                          random_options
+                                              .add(option4Controller.text);
+                                          random_options
+                                              .add(option5Controller.text);
+                                          random_summary =
+                                              (random_options..shuffle()).first;
+                                          pushRandomToSQL(random_summary);
+                                        } else if (option5Controller.text ==
+                                            '') {
+                                          random_options
+                                              .add(option1Controller.text);
+                                          random_options
+                                              .add(option2Controller.text);
+                                          random_options
+                                              .add(option3Controller.text);
+                                          random_options
+                                              .add(option4Controller.text);
+                                          random_summary =
+                                              (random_options..shuffle()).first;
+                                          pushRandomToSQL(random_summary);
+                                        }
+                                      }
+                                    } else if (option4Controller.text == '') {
+                                      random_options
+                                          .add(option1Controller.text);
+                                      random_options
+                                          .add(option2Controller.text);
+                                      random_options
+                                          .add(option3Controller.text);
+                                      random_summary =
+                                          (random_options..shuffle()).first;
+                                      pushRandomToSQL(random_summary);
+                                    }
+                                  }
+                                } else if (option3Controller.text == '') {
+                                  random_options.add(option1Controller.text);
+                                  random_options.add(option2Controller.text);
+                                  random_summary =
+                                      (random_options..shuffle()).first;
+                                  pushRandomToSQL(random_summary);
+                                }
+                              } else if (option2Controller.text == '') {
+                                if (option3Controller.text != '') {
+                                  random_options.add(option1Controller.text);
+                                  random_options.add(option3Controller.text);
+                                  random_summary =
+                                      (random_options..shuffle()).first;
+                                  pushRandomToSQL(random_summary);
+                                } else if (option3Controller.text == '') {
+                                  pushRandomToSQL(option1Controller.text);
+                                }
+                              }
+                            } else if (option1Controller.text == '') {
+                              if (option2Controller.text != '') {
+                                if (option3Controller.text != '') {
+                                  random_options.add(option2Controller.text);
+                                  random_options.add(option3Controller.text);
+                                  random_summary =
+                                      (random_options..shuffle()).first;
+                                  pushRandomToSQL(random_summary);
+                                } else if (option3Controller.text == '') {
+                                  pushRandomToSQL(option2Controller.text);
+                                }
+                              } else if (option2Controller.text == '') {
+                                if (option3Controller.text != '') {
+                                  pushRandomToSQL(option3Controller.text);
+                                } else if (option3Controller.text == '') {
+                                  Fluttertoast.showToast(
+                                      msg: "Please insert atleast one option",
+                                      gravity: ToastGravity.BOTTOM);
+                                }
                               }
                             }
-                            Navigator.pop(context);
                           },
                         ),
                       ),
