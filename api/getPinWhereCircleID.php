@@ -20,7 +20,7 @@ if (isset($_GET)) {
 				
 		$circleID_pinpost = $_GET['circleID_pinpost'];
 
-		$result = mysqli_query($link, "SELECT * FROM pinpost WHERE circle_id = '$circleID_pinpost'");
+		$result = mysqli_query($link, " SELECT * FROM pinpost WHERE circle_id = '$circleID_pinpost' ");
 
 		if ($result) {
 

@@ -2,11 +2,14 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/models/circle_model.dart';
+import 'package:famfam/widgets/circle_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/models/user_model.dart';
+import 'package:famfam/models/pinpost_model.dart';
+import 'package:famfam/widgets/slide_dots.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PinScreen extends StatefulWidget {
@@ -17,47 +20,41 @@ class PinScreen extends StatefulWidget {
 }
 
 class _BodyState extends State<PinScreen> {
+  
+  bool load = true;
+  bool? haveData;
   List<UserModel> userModels = [];
-  List<CircleModel> circleModels = [];
-  String circle_id = '';
-  String user_id = '';
+  List<PinpostModel> pinpostModels = [];
+  
+   
+  List<String> names = <String>['Dummy Pin Post Right Here!', 'zzzzzzzz', 'ssssss'];
+  TextEditingController pinController = TextEditingController();
+
 
   @override
   void initState(){
     super.initState();
-    //print(UserModel.fromMap(Map()));
+    pullUserSQLID().then((value)  {
+      getPinpostFromCircle();
+    });
     
-
-    pullUserSQLID().then((value) => pullCircle().then((value)  {
-          
-          circle_id = circleModels[0].circle_id!;
-          user_id = userModels[0].id!;
-          print('user_id = '+user_id);
-          print('circle_id = '+circle_id);
-          
-          
-    }));
-
-    
-
-    loadPinFromAPI();
-    
-
 
   }
-
-  Future<Null> loadPinFromAPI() async{
-
+  
+  void addItemToList() {
     setState(() {
+      names.insert(0,pinController.text);
       
     });
-    String apiGetPinWhereCircleID = '${MyConstant.domain}/famfam/getPinWhereCircleID.php?isAdd=true&circleID_pinpost=$user_id';
-    await Dio().get(apiGetPinWhereCircleID).then((value) => print('## Pinpost Data ==>> $value'));
-
   }
 
+  void onDismissed(int index) {
+    setState(() {
+      names.removeAt(index);
+    });
+  }
 
-  Future<Null> pullUserSQLID() async {
+Future<Null> pullUserSQLID() async {
     final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
     String uid = getUID;
     String pullUser =
@@ -80,54 +77,55 @@ class _BodyState extends State<PinScreen> {
     });
   }
 
-  Future<Null> pullCircle() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? circle_id = preferences.getString('circle_id');
-    String? member_id = userModels[0].id;
-    String pullCircle =
-        '${MyConstant.domain}/famfam/getCircleWhereCircleIDuserID.php?isAdd=true&circle_id=$circle_id&member_id=$member_id';
-    await Dio().get(pullCircle).then((value) async {
-      for (var item in json.decode(value.data)) {
-        CircleModel model = CircleModel.fromMap(item);
-        setState(() {
-          circleModels.add(model);
-        });
-      }
-    });
-  }
 
-  double value = 0;
-  
-  final List<String> names = <String>['Dummy Pin Post Right Here!', ];
-  
- 
-  TextEditingController pinController = TextEditingController();
-  
-  void addItemToList() {
-    setState(() {
-      names.insert(0,pinController.text);
-      
-    });
-  }
+  Future getPinpostFromCircle() async{
 
-  void onDismissed(int index) {
-    setState(() {
-      names.removeAt(index);
-    });
-  }
+    SharedPreferences preferences = await SharedPreferences.getInstance(); 
+    String circle_id = preferences.getString('circle_id')!;
+    String author_id = userModels[0].id!;
 
-  Future getPinpostFromCircle(String input_circle_id) async{
-    String circle_id = input_circle_id;
     print('## circle_id = $circle_id');
     String path = '${MyConstant.domain}/famfam/getPinWhereCircleID.php?isAdd=true&circleID_pinpost=$circle_id';
-    await Dio().get(path).then((value) => print('## Value ==>> $value'));
+    
+    await Dio().get(path).then((value){
+      //print(value);
+      
+      if(value.toString() == 'null'){
+        //No Data
+        setState(() {
+          load = false;
+          haveData = false;
+        });
+
+      } else {
+        //Have Data
+        for (var item in json.decode(value.data)) {
+          PinpostModel model = PinpostModel.fromMap(item);
+          print('Pintext ==>> ${model.pin_text}');
+
+          setState(() {
+            load = false;
+            haveData = true;
+            pinpostModels.add(model);
+          } );
+        }
+
+      }
+
+    });
+
   }
 
   void SendPinText(String input_pin_text)async {
+    SharedPreferences preferences = await SharedPreferences.getInstance(); 
+    String circle_id = preferences.getString('circle_id')!;
+    String author_id = userModels[0].id!;
+    String author_fname = userModels[0].fname;
     String pin_text = input_pin_text;
+    
     print('## text = $pin_text');
 
-    String InsertPinpost = '${MyConstant.domain}/famfam/insertPin.php?isAdd=true&pin_text=$pin_text&author_id=39&circle_id=38' ;
+    String InsertPinpost = '${MyConstant.domain}/famfam/insertPin.php?isAdd=true&pin_text=$pin_text&author_id=$author_id&circle_id=$circle_id' ;
 
     await Dio().get(InsertPinpost).then((value) {
       if(value.toString()=='true'){
@@ -260,7 +258,7 @@ class _BodyState extends State<PinScreen> {
 
 
 
-      body: SafeArea(
+      body: load ? CircleLoader() : SafeArea(
         child: Container(
           //color: Colors.pink,
           width: double.infinity,
@@ -284,7 +282,7 @@ class _BodyState extends State<PinScreen> {
             child: ListView.builder(
               physics: BouncingScrollPhysics(),
               padding: const EdgeInsets.all(8),
-              itemCount: names.length,
+              itemCount: pinpostModels.length,
               itemBuilder: (BuildContext context, int index) {
                 return 
                 
@@ -335,7 +333,7 @@ class _BodyState extends State<PinScreen> {
                             padding: EdgeInsets.only(
                                   top: 10,
                             ),
-                            child: Text('${names[index]}',
+                            child: Text('${pinpostModels[index].pin_text}',
                             style: TextStyle(fontSize: 18,height: 1.5),),
                           ),
                                   
@@ -363,6 +361,8 @@ class _BodyState extends State<PinScreen> {
               }
             )
           )
+
+          
 
           
                 ],),
@@ -614,7 +614,12 @@ class _BodyState extends State<PinScreen> {
             ),
           ),
         ),
-      ),
+
+      )
+      
+
+
+
     );
   }
 }
