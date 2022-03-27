@@ -8,16 +8,34 @@ class PinpostModel {
   final String date;
   final String author_id;
   final String pin_text;
-  
+  final String id;
+  final String uid;
+  final String profileImage;
+  final String fname;
+  final String lname;
+  final String phone;
+  final String birth;
+  final String address;
+  final String personalID;
+  final String jobs;
   PinpostModel({
     required this.pin_id,
     required this.circle_id,
     required this.date,
     required this.author_id,
     required this.pin_text,
+    required this.id,
+    required this.uid,
+    required this.profileImage,
+    required this.fname,
+    required this.lname,
+    required this.phone,
+    required this.birth,
+    required this.address,
+    required this.personalID,
+    required this.jobs,
   });
-
-
+  
 
   PinpostModel copyWith({
     String? pin_id,
@@ -25,6 +43,16 @@ class PinpostModel {
     String? date,
     String? author_id,
     String? pin_text,
+    String? id,
+    String? uid,
+    String? profileImage,
+    String? fname,
+    String? lname,
+    String? phone,
+    String? birth,
+    String? address,
+    String? personalID,
+    String? jobs,
   }) {
     return PinpostModel(
       pin_id: pin_id ?? this.pin_id,
@@ -32,6 +60,16 @@ class PinpostModel {
       date: date ?? this.date,
       author_id: author_id ?? this.author_id,
       pin_text: pin_text ?? this.pin_text,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      profileImage: profileImage ?? this.profileImage,
+      fname: fname ?? this.fname,
+      lname: lname ?? this.lname,
+      phone: phone ?? this.phone,
+      birth: birth ?? this.birth,
+      address: address ?? this.address,
+      personalID: personalID ?? this.personalID,
+      jobs: jobs ?? this.jobs,
     );
   }
 
@@ -43,6 +81,16 @@ class PinpostModel {
     result.addAll({'date': date});
     result.addAll({'author_id': author_id});
     result.addAll({'pin_text': pin_text});
+    result.addAll({'id': id});
+    result.addAll({'uid': uid});
+    result.addAll({'profileImage': profileImage});
+    result.addAll({'fname': fname});
+    result.addAll({'lname': lname});
+    result.addAll({'phone': phone});
+    result.addAll({'birth': birth});
+    result.addAll({'address': address});
+    result.addAll({'personalID': personalID});
+    result.addAll({'jobs': jobs});
   
     return result;
   }
@@ -54,6 +102,16 @@ class PinpostModel {
       date: map['date'] ?? '',
       author_id: map['author_id'] ?? '',
       pin_text: map['pin_text'] ?? '',
+      id: map['id'] ?? '',
+      uid: map['uid'] ?? '',
+      profileImage: map['profileImage'] ?? '',
+      fname: map['fname'] ?? '',
+      lname: map['lname'] ?? '',
+      phone: map['phone'] ?? '',
+      birth: map['birth'] ?? '',
+      address: map['address'] ?? '',
+      personalID: map['personalID'] ?? '',
+      jobs: map['jobs'] ?? '',
     );
   }
 
@@ -63,7 +121,7 @@ class PinpostModel {
 
   @override
   String toString() {
-    return 'PinpostModel(pin_id: $pin_id, circle_id: $circle_id, date: $date, author_id: $author_id, pin_text: $pin_text)';
+    return 'PinpostModel(pin_id: $pin_id, circle_id: $circle_id, date: $date, author_id: $author_id, pin_text: $pin_text, id: $id, uid: $uid, profileImage: $profileImage, fname: $fname, lname: $lname, phone: $phone, birth: $birth, address: $address, personalID: $personalID, jobs: $jobs)';
   }
 
   @override
@@ -75,7 +133,17 @@ class PinpostModel {
       other.circle_id == circle_id &&
       other.date == date &&
       other.author_id == author_id &&
-      other.pin_text == pin_text;
+      other.pin_text == pin_text &&
+      other.id == id &&
+      other.uid == uid &&
+      other.profileImage == profileImage &&
+      other.fname == fname &&
+      other.lname == lname &&
+      other.phone == phone &&
+      other.birth == birth &&
+      other.address == address &&
+      other.personalID == personalID &&
+      other.jobs == jobs;
   }
 
   @override
@@ -84,6 +152,19 @@ class PinpostModel {
       circle_id.hashCode ^
       date.hashCode ^
       author_id.hashCode ^
-      pin_text.hashCode;
+      pin_text.hashCode ^
+      id.hashCode ^
+      uid.hashCode ^
+      profileImage.hashCode ^
+      fname.hashCode ^
+      lname.hashCode ^
+      phone.hashCode ^
+      birth.hashCode ^
+      address.hashCode ^
+      personalID.hashCode ^
+      jobs.hashCode;
   }
-}
+  }
+ 
+  
+

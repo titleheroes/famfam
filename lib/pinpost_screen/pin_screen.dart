@@ -101,7 +101,7 @@ Future<Null> pullUserSQLID() async {
         //Have Data
         for (var item in json.decode(value.data)) {
           PinpostModel model = PinpostModel.fromMap(item);
-          print('Pintext ==>> ${model.pin_text}');
+          print('Pintext ==>> ${model.pin_text} by ${model.fname}' );
 
           setState(() {
             load = false;
@@ -241,6 +241,7 @@ Future<Null> pullUserSQLID() async {
 
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('dd/MM/yyyy – kk:mm').format(now);
+
     Size size = MediaQuery.of(context).size;
 
 
@@ -308,11 +309,16 @@ Future<Null> pullUserSQLID() async {
               physics: BouncingScrollPhysics(),
               padding: const EdgeInsets.all(8),
               itemCount: pinpostModels.length,
+
+
+
               itemBuilder: (BuildContext context, int index) {
-                return 
+                return
                 
-                Stack(
+                  Stack(
+
                   children: [
+                    
                     
                     Container(
                     
@@ -326,7 +332,7 @@ Future<Null> pullUserSQLID() async {
                     ),
                               
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 250, 245, 181),
+                      color: Color.fromARGB(255, 250, 244, 154),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Stack(
@@ -336,23 +342,29 @@ Future<Null> pullUserSQLID() async {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                           Row(children: [
-                            Image.asset("assets/images/J-Profile.png",width: 40, height: 40,),
+
+                            Container(
+                                    
+                                    child: CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.white,
+                                      backgroundImage:
+                                          NetworkImage(pinpostModels[index].profileImage),
+                                    ),
+                                  ),
+
                             Padding(
                                   padding: EdgeInsets.only(
                                     left: 10,
                                   ),
-                                  child: Text('${pinpostModels[index].pin_id}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                  child: Text('${pinpostModels[index].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                                   
                             ),
-                            Padding(
-                                  padding: EdgeInsets.only(
-                                    left: size.width * 0.225,
-                                  ),
-                                  child: Text(formattedDate,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
-                            )
+                            
                                   
                           ],),
-                          
+                          SizedBox(height: 5,),
+                          Text('${pinpostModels[index].date}',style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
                                   
                           Padding(
                             padding: EdgeInsets.only(
@@ -367,6 +379,9 @@ Future<Null> pullUserSQLID() async {
                       ],
                     )
                   ),
+
+
+                  if (userModels[0].id == pinpostModels[index].author_id) 
                   Positioned( 
                     right: 0,
                     top: 0,
@@ -381,9 +396,26 @@ Future<Null> pullUserSQLID() async {
                     
                     ),
                   ),
+
+                 
+
+
                   ],
                 );
+                
+                
+                
+                
+                
+
+
               }
+
+              
+
+
+
+
             )
           )
 
@@ -392,29 +424,30 @@ Future<Null> pullUserSQLID() async {
           
                 ],),
                 Positioned(
-                  bottom: 24,
-                  left: 15,
+                  bottom: 20,
+                  right: 5,
                   child:  //bottomsheet
                 Stack(
                   children: [
                     Container(
-                      width: size.width * 0.8,
-                      height: size.height * 0.066,
+                      //width: size.width * 0.8,
+                      width: size.width * 0.3,
+                      height: size.height * 0.08,
 
                       //color: Colors.pink,
 
                       child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                Color(0xFFF9EE6D)),
+                                Color.fromARGB(255, 243, 230, 90)),
                             shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(90.0),
+                                borderRadius: BorderRadius.circular(20.0),
                               ),
                             ),
                           ),
                           child: Text(
-                            'Pin your Post!',
+                            'Add Pin!',
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
