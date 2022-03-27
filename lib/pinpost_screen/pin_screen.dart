@@ -80,6 +80,10 @@ Future<Null> pullUserSQLID() async {
 
   Future getPinpostFromCircle() async{
 
+    if(pinpostModels.length !=0){
+      pinpostModels.clear();
+    }else{}
+
     SharedPreferences preferences = await SharedPreferences.getInstance(); 
     String circle_id = preferences.getString('circle_id')!;
     String author_id = userModels[0].id!;
@@ -134,7 +138,8 @@ Future<Null> pullUserSQLID() async {
         print('Insert Error');
       }
     });
-    Navigator.pushNamed(context, '/pinpost');
+    getPinpostFromCircle();
+    //Navigator.pushNamed(context, '/pinpost');
 
   }
 
@@ -191,7 +196,7 @@ Future<Null> pullUserSQLID() async {
                         //onDismissed();
 
 
-                        //Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                     ),
                   ),
@@ -218,7 +223,8 @@ Future<Null> pullUserSQLID() async {
         print('Delete Error');
       }
     });
-    Navigator.pushNamed(context, '/pinpost');
+    //Navigator.pushNamed(context, '/pinpost');
+    getPinpostFromCircle();
 
   }
 
@@ -313,6 +319,7 @@ Future<Null> pullUserSQLID() async {
 
 
               itemBuilder: (BuildContext context, int index) {
+                
                 return
                 
                   Stack(
@@ -364,7 +371,7 @@ Future<Null> pullUserSQLID() async {
                                   
                           ],),
                           SizedBox(height: 5,),
-                          Text('${pinpostModels[index].date}',style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
+                          Text('${pinpostModels[index].date} ',style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
                                   
                           Padding(
                             padding: EdgeInsets.only(
