@@ -245,9 +245,6 @@ Future<Null> pullUserSQLID() async {
 
     
 
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('dd/MM/yyyy – kk:mm').format(now);
-
     Size size = MediaQuery.of(context).size;
 
 
@@ -319,7 +316,10 @@ Future<Null> pullUserSQLID() async {
 
 
               itemBuilder: (BuildContext context, int index) {
-                
+                DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm").parse(pinpostModels[index].date);
+                String formattedDate = DateFormat('dd/MM/yyyy - kk:mm').format(tempDate);
+                //print(tempDate);
+
                 return
                 
                   Stack(
@@ -371,7 +371,7 @@ Future<Null> pullUserSQLID() async {
                                   
                           ],),
                           SizedBox(height: 5,),
-                          Text('${pinpostModels[index].date} ',style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
+                          Text(formattedDate,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
                                   
                           Padding(
                             padding: EdgeInsets.only(
