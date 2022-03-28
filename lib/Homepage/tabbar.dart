@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:famfam/screens/components/body.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -467,8 +468,14 @@ class _tabbarState extends State<tabbar> {
                                               ),
                                             ),
                                             onPressed: () {
-                                              Navigator.pushNamed(
-                                                  context, '/todolist');
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          TodoBody(
+                                                              tabSelected:
+                                                                  0))).then(
+                                                  (value) => setState(() {}));
                                             },
                                             child: Row(
                                               children: [

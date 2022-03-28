@@ -179,9 +179,9 @@ class _LoginState extends State<Login> {
                         });
 
                         //Get CircleID
-                        String? user_id = userModels[0].id;
+                        String? member_id = userModels[0].id;
                         String pullCircle =
-                            '${MyConstant.domain}/famfam/getCircleWhereUserID.php?isAdd=true&user_id=$user_id';
+                            '${MyConstant.domain}/famfam/getCircleWhereUserID.php?isAdd=true&member_id=$member_id';
                         await Dio().get(pullCircle).then((value) async {
                           for (var item in json.decode(value.data)) {
                             CircleModel model = CircleModel.fromMap(item);
