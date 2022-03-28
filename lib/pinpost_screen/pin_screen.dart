@@ -29,6 +29,7 @@ class _BodyState extends State<PinScreen> {
    
   List<String> names = <String>['Dummy Pin Post Right Here!', 'zzzzzzzz', 'ssssss'];
   TextEditingController pinController = TextEditingController();
+  
 
 
   @override
@@ -137,10 +138,104 @@ Future<Null> pullUserSQLID() async {
       }else{
         print('Insert Error');
       }
-    });
+    }
+    
+  );
     getPinpostFromCircle();
     //Navigator.pushNamed(context, '/pinpost');
 
+  }
+
+  Future<void> _displayEditDialog(BuildContext context, String pin_id, String pin_text) async {
+
+    TextEditingController pinEditController = TextEditingController();
+    pinEditController.text = "${pin_text}";
+    
+
+    
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text('Edit Pin Post'),
+          
+          content: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: TextFormField(
+                //initialValue: "${pin_text}",
+                controller: pinEditController,
+                decoration: InputDecoration(
+                  hintText: "${pin_text}",
+                  fillColor: Colors.white,
+                  filled: true,
+                ),
+              )),
+
+
+          actions: <Widget>[
+            
+            Center(
+              child: Row(
+                children: [
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: 2,
+                      ),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          
+                          minimumSize: Size(150, 40),
+                          backgroundColor: Color.fromARGB(255, 139, 139, 139),
+                          alignment: Alignment.center,
+                        ),
+                        child: Text('Cancel',style: TextStyle(color: Colors.white)),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 2
+                    ),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        
+                        minimumSize: Size(150, 40),
+                        backgroundColor: Color.fromARGB(255, 224, 222, 72),
+                        alignment: Alignment.center,
+                      ),
+                      child: Text('Edit',style: TextStyle(color: Colors.white)),
+                      onPressed: ()async {
+
+
+                        print('Edited text = '+pinEditController.text);
+                        String EditPinpost = '${MyConstant.domain}/famfam/editPinfromPinID.php?isAdd=true&pin_id=$pin_id&pin_text=${pinEditController.text}' ;
+                        await Dio().get(EditPinpost).then((value) {
+                            if(value.toString()=='true'){
+                              print('Pinpost Edited');
+                            }else{
+                              print('Edit Error');
+                            }
+                          }   
+                        );
+                        getPinpostFromCircle();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 
 
@@ -178,6 +273,7 @@ Future<Null> pullUserSQLID() async {
                       ),
                     ),
                   ),
+                  
                   Padding(
                     padding: EdgeInsets.only(
                       left: 20
@@ -217,7 +313,7 @@ Future<Null> pullUserSQLID() async {
     print('## target = $target_pin_id');
 
     await Dio().get(DeletePinpost).then((value) {
-      if(value.toString()=='true'){
+      if(value.toString()=='True'){
         print('Pinpost Deleted');
       }else{
         print('Delete Error');
@@ -392,16 +488,38 @@ Future<Null> pullUserSQLID() async {
                   Positioned( 
                     right: 0,
                     top: 0,
-                    child: IconButton(onPressed: () {
-                      
-                      _displayDeleteDialog(context,pinpostModels[index].pin_id);
-                    }, 
-                    icon: Icon(Icons.close),
-                    iconSize: 30,
-                    splashColor: Colors.transparent, 
-                    highlightColor: Colors.transparent,  
-                    
+
+                    child: Row(
+                      children: [
+
+                        IconButton(onPressed: () {
+                          
+                          _displayEditDialog(context,pinpostModels[index].pin_id,pinpostModels[index].pin_text);
+                        }, 
+                        icon: Icon(Icons.edit),
+                        iconSize: 30,
+                        splashColor: Colors.transparent, 
+                        highlightColor: Colors.transparent,  
+                        
+                        ),
+
+                        IconButton(onPressed: () {
+                          
+                          _displayDeleteDialog(context,pinpostModels[index].pin_id);
+                        }, 
+                        icon: Icon(Icons.close),
+                        iconSize: 30,
+                        splashColor: Colors.transparent, 
+                        highlightColor: Colors.transparent,  
+                        
+                        ),
+                      ],
+
+
                     ),
+
+
+
                   ),
 
                  

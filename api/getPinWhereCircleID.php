@@ -20,7 +20,7 @@ if (isset($_GET)) {
 				
 		$circleID_pinpost = $_GET['circleID_pinpost'];
 
-		$result = mysqli_query($link, " SELECT * FROM pinpost INNER JOIN user ON pinpost.author_id = user.id WHERE circle_id = '$circleID_pinpost' order by date ");
+		$result = mysqli_query($link, " SELECT * FROM pinpost INNER JOIN user ON pinpost.author_id = user.id WHERE circle_id = '$circleID_pinpost' order by date DESC ");
 
 		if ($result) {
 
