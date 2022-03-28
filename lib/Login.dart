@@ -1,8 +1,29 @@
-import 'package:famfam/register.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class HomeScreen extends StatelessWidget {
+import 'package:dio/dio.dart';
+import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/models/circle_model.dart';
+import 'package:famfam/models/user_model.dart';
+import 'package:famfam/register.dart';
+import 'package:famfam/services/my_constant.dart';
+import 'package:famfam/welcome.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:famfam/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class Login extends StatefulWidget {
+  Login({Key? key}) : super(key: key);
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final AuthService _auth = AuthService();
+
   TextEditingController emailController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
 
   @override
@@ -90,7 +111,7 @@ class HomeScreen extends StatelessWidget {
                       fillColor: Colors.white.withOpacity(0.8),
                       filled: true,
                     ),
-                    style: TextStyle(height: 0),
+                    // style: TextStyle(height: 0),
                   ),
                 ),
                 //Password
@@ -106,10 +127,10 @@ class HomeScreen extends StatelessWidget {
                       fillColor: Colors.white.withOpacity(0.8),
                       filled: true,
                     ),
-                    style: TextStyle(height: 0),
+                    // style: TextStyle(height: 0),
                   ),
                 ),
-                //Forfot password
+                //Forgot password
                 TextButton(
                   onPressed: () {},
                   // alignment: Alignment.centerRight,
@@ -133,12 +154,6 @@ class HomeScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)),
                     ),
-<<<<<<< Updated upstream:lib/HomeScreen.dart
-                    child: Text('Login'),
-                    onPressed: () {
-                      print(emailController.text);
-                      print(passwordController.text);
-=======
                     child: const Text('Login'),
                     onPressed: () async {
                       List<UserModel> userModels = [];
@@ -192,7 +207,6 @@ class HomeScreen extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => HomePage(user)));
                       });
->>>>>>> Stashed changes:lib/login.dart
                     },
                   ),
                 ),
@@ -208,10 +222,8 @@ class HomeScreen extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Register()));
+                            Navigator.pushReplacementNamed(
+                                context, "/register");
                           },
                           // alignment: Alignment.centerRight,
                           // padding: EdgeInsets.fromLTRB(0, 10, 25, 10),

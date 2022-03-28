@@ -1,7 +1,17 @@
-// ignore_for_file: prefer_const_constructors, file_names
+// ignore_for_file: prefer_const_constructors, file_names, non_constant_identifier_names
+import 'dart:convert';
 
-import 'package:famfam/Calendar/event.dart';
-import 'package:famfam/Calendar/AddEvens.dart';
+import 'package:dio/dio.dart';
+
+// import 'package:famfam/Calendar/event.dart';
+// import 'package:famfam/Calendar/AddEvens.dart';
+import 'package:famfam/models/circle_model.dart';
+import 'package:famfam/models/user_model.dart';
+import 'package:famfam/models/calendar_model.dart';
+import 'package:famfam/services/auth.dart';
+import 'package:famfam/services/my_constant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // // ignore: unused_import
 // import 'package:famfam/Calendar/calendar.dart';
@@ -17,32 +27,102 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  late Map<DateTime, List<Event>> selectedEvents;
+  List<UserModel> userModels = [];
+  List<CircleModel> circleModels = [];
+  late Map<DateTime, List<CalendarModel>> selectedEvents;
   CalendarFormat format = CalendarFormat.month;
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
-  TimeOfDay? time = const TimeOfDay(hour: 12, minute: 12);
-  TimeOfDay? time1 = const TimeOfDay(hour: 12, minute: 12);
+  TimeOfDay? time = TimeOfDay(hour: 12, minute: 12);
+  TimeOfDay? time1 = TimeOfDay(hour: 12, minute: 12);
   bool isChecked = false;
 
-  final TextEditingController _eventController = TextEditingController();
-  final TextEditingController _eventController1 = TextEditingController();
-  final TextEditingController _eventController2 = TextEditingController();
-  final TextEditingController _eventController3 = TextEditingController();
-
+  final TextEditingController _eventControllertitle = TextEditingController();
+  final TextEditingController _eventControllerlocation =
+      TextEditingController();
+  final TextEditingController _eventControllernote = TextEditingController();
   @override
   void initState() {
     selectedEvents = {};
     super.initState();
+    pullUserSQLID();
   }
 
-  List<Event> _getEventsfromDay(DateTime date) {
+  List<CalendarModel> _getEventsfromDay(DateTime date) {
     return selectedEvents[date] ?? [];
+  }
+
+  final User user = FirebaseAuth.instance.currentUser!;
+  double value = 0;
+  final AuthService _auth = AuthService();
+
+  void checkuserid() {
+    print("#########" + userModels[0].uid);
+    print(circleModels[0].circle_id);
+    print(selectedEvents);
+  }
+
+  Future<Null> insertCalendar() async {}
+
+  Future<Null> pullUserSQLID() async {
+    final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
+    String uid = getUID;
+    String pullUser =
+        '${MyConstant.domain}/famfam/getUserWhereUID.php?isAdd=true&uid=$uid';
+    await Dio().get(pullUser).then((value) async {
+      if (value.toString() == null ||
+          value.toString() == 'null' ||
+          value.toString() == '') {
+        FirebaseAuth.instance.signOut();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.clear();
+      } else {
+        for (var item in json.decode(value.data)) {
+          UserModel model = UserModel.fromMap(item);
+          setState(() {
+            userModels.add(model);
+          });
+        }
+      }
+    });
+    pullCircle();
+  }
+
+  Future<Null> pullCircle() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String circle_id = preferences.getString('circle_id')!;
+    String member_id = userModels[0].id!;
+    String pullCircle =
+        '${MyConstant.domain}/famfam/getCircleWhereCircleIDuserID.php?isAdd=true&circle_id=$circle_id&member_id=$member_id';
+    await Dio().get(pullCircle).then((value) async {
+      for (var item in json.decode(value.data)) {
+        CircleModel model = CircleModel.fromMap(item);
+        setState(() {
+          circleModels.add(model);
+        });
+      }
+    });
+  }
+
+  Future<Null> pullCalendar() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('id')!;
+
+    String pullCalendar =
+        '${MyConstant.domain}/famfam/getCalendarwhereUser.php?isAdd=true&id=$id';
+    await Dio().get(pullCalendar).then((value) {
+      for (var item in json.decode(value.data)) {
+        CalendarModel model = CalendarModel.fromMap(json.decode(value.data));
+        print("calendar title ==>> ${model.title}");
+      }
+    });
   }
 
   @override
   void dispose() {
-    _eventController.dispose();
+    _eventControllertitle.dispose();
+    _eventControllerlocation.dispose();
+    _eventControllernote.dispose();
     super.dispose();
   }
 
@@ -163,7 +243,8 @@ class _CalendarState extends State<Calendar> {
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(90.0),
                   ),
-                  todayTextStyle: TextStyle(color: Colors.red),
+                  todayTextStyle:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
                   selectedTextStyle: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.w600),
                   todayDecoration: BoxDecoration(
@@ -229,7 +310,7 @@ class _CalendarState extends State<Calendar> {
                 child: DefaultTabController(
                   length: 2,
                   child: SingleChildScrollView(
-                    child: Column(
+                    child: Row(
                       children: [
                         Column(
                           children: [
@@ -267,7 +348,7 @@ class _CalendarState extends State<Calendar> {
                                           height: 5,
                                         ),
                                         ..._getEventsfromDay(selectedDay).map(
-                                          (Event event) => ListTile(
+                                          (CalendarModel event) => ListTile(
                                             title: Padding(
                                               padding:
                                                   const EdgeInsets.fromLTRB(
@@ -300,7 +381,7 @@ class _CalendarState extends State<Calendar> {
                                                           left: 1,
                                                         ),
                                                         child: Text(
-                                                          "${time!.hour.toString()}:${time!.minute.toString()}",
+                                                          "${time1!.hour.toString()}:${time1!.minute.toString()}",
                                                           style: TextStyle(
                                                               fontSize: 15,
                                                               color: Colors
@@ -325,85 +406,106 @@ class _CalendarState extends State<Calendar> {
                                                                       10)),
                                                       child: Column(
                                                         children: [
-                                                          Row(
+                                                          Column(
                                                             children: [
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
+                                                              Row(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
                                                                             .only(
                                                                         left: 5,
                                                                         top: 6),
-                                                                child: Text("",
-                                                                    style: TextStyle(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .w400,
-                                                                        fontSize:
-                                                                            19)),
+                                                                    child: Text(
+                                                                        "",
+                                                                        style: TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.w400,
+                                                                            fontSize: 19)),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .only(
+                                                                      left: 20,
+                                                                      top: 6,
+                                                                    ),
+                                                                    child: Text(
+                                                                      event
+                                                                          .title,
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              19,
+                                                                          color:
+                                                                              Colors.black),
+                                                                    ),
+                                                                  ),
+                                                                  // Padding(
+                                                                  //   padding:
+                                                                  //       const EdgeInsets
+                                                                  //           .only(
+                                                                  //     left: 20,
+                                                                  //   ),
+                                                                  //   child: Icon(
+                                                                  //     IconData(
+                                                                  //         0xe1b9,
+                                                                  //         fontFamily:
+                                                                  //             'MaterialIcons'),
+                                                                  //     color: Color
+                                                                  //         .fromARGB(
+                                                                  //             255,
+                                                                  //             211,
+                                                                  //             11,
+                                                                  //             11),
+                                                                  //     size: 20,
+                                                                  //   ),
+                                                                  // ),
+                                                                ],
                                                               ),
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                  left: 20,
-                                                                  top: 6,
-                                                                ),
-                                                                child: Text(
-                                                                  event.title,
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          19,
-                                                                      color: Colors
-                                                                          .black),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
+                                                              Row(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
                                                                             .only(
                                                                         left:
                                                                             28,
                                                                         top: 1,
                                                                         bottom:
                                                                             5),
-                                                                child: Icon(
-                                                                  IconData(
-                                                                      0xf009e,
-                                                                      fontFamily:
-                                                                          'MaterialIcons'),
-                                                                  color: Color
-                                                                      .fromARGB(
+                                                                    child: Icon(
+                                                                      IconData(
+                                                                          0xf009e,
+                                                                          fontFamily:
+                                                                              'MaterialIcons'),
+                                                                      color: Color.fromARGB(
                                                                           255,
                                                                           245,
                                                                           245,
                                                                           245),
-                                                                  size: 13,
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
+                                                                      size: 13,
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
                                                                             .only(
                                                                         left: 1,
-                                                                        top: 1,
+                                                                        top: 0,
                                                                         bottom:
                                                                             5),
-                                                                child: Text(
-                                                                  event
-                                                                      .locations,
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                      color: Color(
-                                                                          0xfff707070)),
-                                                                ),
+                                                                    child: Text(
+                                                                      event
+                                                                          .location,
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              15,
+                                                                          color:
+                                                                              Color(0xfff707070)),
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ],
                                                           ),
+
                                                           // Text(
                                                           //   event.locations,
                                                           // ),
@@ -422,7 +524,19 @@ class _CalendarState extends State<Calendar> {
                                       ],
                                     ),
                                   ),
-                                  Container()
+                                  Container(
+                                      // child: Padding(
+                                      //   padding: const EdgeInsets.only(
+                                      //     left: 20,
+                                      //   ),
+                                      //   child: Icon(
+                                      //     IconData(0xe1b9,
+                                      //         fontFamily: 'MaterialIcons'),
+                                      //     color: Color.fromARGB(255, 211, 11, 11),
+                                      //     size: 20,
+                                      //   ),
+                                      // ),
+                                      )
                                 ],
                               ),
                             )
@@ -534,14 +648,14 @@ class _CalendarState extends State<Calendar> {
                                         ),
                                       ),
                                       onPressed: () async {
-                                        TimeOfDay? newTime =
+                                        TimeOfDay? time_start =
                                             await showTimePicker(
                                           context: context,
                                           initialTime: time!,
                                         );
-                                        if (newTime != null) {
+                                        if (time_start != null) {
                                           setState(() {
-                                            time = newTime;
+                                            time = time_start;
                                           });
                                         }
                                       },
@@ -580,14 +694,14 @@ class _CalendarState extends State<Calendar> {
                                         ),
                                       ),
                                       onPressed: () async {
-                                        TimeOfDay? newTime1 =
+                                        TimeOfDay? time_end =
                                             await showTimePicker(
                                           context: context,
                                           initialTime: time1!,
                                         );
-                                        if (newTime1 != null) {
+                                        if (time_end != null) {
                                           setState(() {
-                                            time1 = newTime1;
+                                            time1 = time_end;
                                           });
                                         }
                                       },
@@ -627,7 +741,7 @@ class _CalendarState extends State<Calendar> {
                                       BorderRadius.all(Radius.circular(10.0)),
                                 ),
                                 child: TextField(
-                                  controller: _eventController,
+                                  controller: _eventControllertitle,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(
@@ -662,7 +776,7 @@ class _CalendarState extends State<Calendar> {
                                       BorderRadius.all(Radius.circular(10.0)),
                                 ),
                                 child: TextField(
-                                  controller: _eventController1,
+                                  controller: _eventControllerlocation,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(
@@ -697,7 +811,7 @@ class _CalendarState extends State<Calendar> {
                                       BorderRadius.all(Radius.circular(10.0)),
                                 ),
                                 child: TextField(
-                                  controller: _eventController2,
+                                  controller: _eventControllernote,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(
@@ -748,50 +862,83 @@ class _CalendarState extends State<Calendar> {
                     ),
                   ),
                   actions: [
-                    TextButton(
-                      child: const Text(
-                        "Cancel",
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red),
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                    TextButton(
-                      child: const Text(
-                        "Add",
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xfff2E6B44)),
-                      ),
+                    FlatButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      color: Color.fromARGB(255, 170, 170, 170),
+                      child: Text('CANCEL'),
                       onPressed: () {
-                        if (_eventController.text.isEmpty) {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    FlatButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      color: Colors.amber,
+                      child: Text('ADD'),
+                      onPressed: () async {
+                        if (_eventControllertitle.text.isEmpty) {
                         } else {
+                          SharedPreferences preferences =
+                              await SharedPreferences.getInstance();
+
+                          String user_id = userModels[0].id!;
+                          String title = _eventControllertitle.text;
+                          String note = _eventControllernote.text;
+                          String location = _eventControllerlocation.text;
+                          DateTime date = selectedDay;
+                          TimeOfDay? time_start = time;
+                          TimeOfDay? time_end = time1;
+                          String repeating = '';
+                          String circle_id =
+                              preferences.getString('circle_id')!;
+                          print(user_id);
+                          print(circle_id);
+                          String insertCalendar =
+                              '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$date&time_start=$time_start&time_end=$time_end&repeating=$repeating&circle_id=$circle_id&user_id=$user_id';
+                          await Dio().get(insertCalendar).then((value) async {
+                            if (value.toString() == 'true') {
+                              print('Insert  Successed');
+                            }
+                          });
+                          print("checkinsert");
                           if (selectedEvents[selectedDay] != null) {
                             selectedEvents[selectedDay]?.add(
-                              Event(
-                                  title: _eventController.text,
-                                  locations: _eventController1.text,
-                                  note: _eventController2.text,
-                                  time: _eventController3.text),
+                              CalendarModel(
+                                title: _eventControllertitle.text,
+                                location: _eventControllerlocation.text,
+                                note: _eventControllernote.text,
+                                circle_id: preferences.getString('circle_id')!,
+                                date: '',
+                                repeating: '',
+                                time_end: time.toString(),
+                                time_start: time1.toString(),
+                                user_id: userModels[0].id!,
+                              ),
                             );
+                            print(selectedDay);
+                            print('check');
                           } else {
                             selectedEvents[selectedDay] = [
-                              Event(
-                                  title: _eventController.text,
-                                  locations: _eventController1.text,
-                                  note: _eventController2.text,
-                                  time: _eventController3.text)
+                              CalendarModel(
+                                title: _eventControllertitle.text,
+                                location: _eventControllerlocation.text,
+                                note: _eventControllernote.text,
+                                circle_id: preferences.getString('circle_id')!,
+                                repeating: '',
+                                date: '',
+                                time_end: time.toString(),
+                                time_start: time1.toString(),
+                                user_id: userModels[0].id!,
+                              )
                             ];
                           }
                         }
                         Navigator.pop(context);
-                        _eventController.clear();
-                        _eventController1.clear();
-                        _eventController2.clear();
-                        _eventController3.clear();
+                        _eventControllertitle.clear();
+                        _eventControllerlocation.clear();
+                        _eventControllernote.clear();
+
                         setState(() {});
                         isChecked = false;
                         return;
