@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, annotate_overrides, use_key_in_widget_constructors
 
+import 'dart:convert';
+
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/models/ticktick_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/components/text_field_container.dart';
@@ -9,8 +12,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:famfam/components/circlebottomsheet.dart';
 import 'package:famfam/components/tickbottomsheet.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
-
+import 'package:famfam/services/my_constant.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import 'header_circle.dart';
+import 'package:famfam/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:famfam/models/user_model.dart';
+import 'package:famfam/models/circle_model.dart';
 
 class Body extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -862,7 +872,157 @@ class TickBody extends StatefulWidget {
   State<TickBody> createState() => _TickBodyState();
 }
 
+List<UserModel> userModels = [];
+List<CircleModel> circleModels = [];
+List<ticktick_Model> ticktick_Models = [];
+List<ticktick_Model> tempticktick = [];
+int count_ticktickUid = 0;
+
+class List_showModel {
+  final String topic;
+  final String topic_id;
+
+  List_showModel(this.topic, this.topic_id);
+}
+
+class Product {
+  final String product_name;
+  final String product_id;
+  Product(this.product_name, this.product_id);
+}
+
 class _TickBodyState extends State<TickBody> {
+  List<List_showModel> listshow = [];
+  List<Product> products = [];
+  @override
+  void initState() {
+    super.initState();
+    pullUserSQLID().then((value) => pullCircle().then((value) {}));
+  }
+
+  Future<Null> pullUserSQLID() async {
+    final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
+    String uid = getUID;
+    print('#### uid ' + getUID);
+    String pullUser =
+        '${MyConstant.domain}/famfam/getUserWhereUID.php?uid=$uid&isAdd=true';
+    await Dio().get(pullUser).then((value) async {
+      if (value.toString() == null ||
+          value.toString() == 'null' ||
+          value.toString() == '') {
+        FirebaseAuth.instance.signOut();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.clear();
+      } else {
+        for (var item in json.decode(value.data)) {
+          UserModel model = UserModel.fromMap(item);
+          print(item);
+          setState(() {
+            userModels.add(model);
+          });
+        }
+      }
+    });
+  }
+
+  Future<Null> pullCircle() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? circle_id = preferences.getString('circle_id');
+    String? member_id = userModels[0].id;
+
+    String pullCircle =
+        '${MyConstant.domain}/famfam/getCircleWhereCircleIDuserID.php?isAdd=true&circle_id=$circle_id&member_id=$member_id';
+    await Dio().get(pullCircle).then((value) async {
+      for (var item in json.decode(value.data)) {
+        CircleModel model = CircleModel.fromMap(item);
+        setState(() {
+          circleModels.add(model);
+        });
+      }
+    });
+    await pullDataTicktick(circle_id: circle_id, member_id: member_id);
+    addDatafromstart();
+  }
+
+  Future<Null> pullDataTicktick({String? circle_id, String? member_id}) async {
+    count_ticktickUid = 0;
+    // print('#### circle_id ' + '${circle_id}');
+    // print('#### member_id ' + '${member_id}');
+    String pullData =
+        '${MyConstant.domain}/famfam/getTickTickWhereCircleID.php?isAdd=true&circle_id=$circle_id';
+    await Dio().get(pullData).then((value) async {
+      for (var item in json.decode(value.data)) {
+        ticktick_Model ticktick_models = ticktick_Model.fromMap(item);
+        print(item);
+        setState(() {
+          count_ticktickUid = count_ticktickUid + 1;
+          ticktick_Models.add(ticktick_models);
+        });
+      }
+    });
+    print('count_ticktickuid : ' + '$count_ticktickUid');
+  }
+
+  List<List_showModel> list_topic = [];
+  List<Product> list_product = [];
+
+  Future<Null> addDatafromstart() async {
+    int num = 1;
+    var arr = [];
+    for (int i = 0; i <= count_ticktickUid; i++) {
+      if (ticktick_Models[i].tick_uid == ticktick_Models[i + 1].tick_uid) {
+        print('## i : ' + ticktick_Models[i].tick_uid);
+        print('## i+1 : ' + ticktick_Models[i + 1].tick_uid);
+        String? product = ticktick_Models[i].ticklist_list;
+        String? product_id = ticktick_Models[i].tick_id;
+        arr.insert(0, product);
+        setState(() {
+          list_product.add(Product(product, product_id!));
+        });
+        num = num + 1;
+      } else if (i == count_ticktickUid - 1) {
+        String topic = ticktick_Models[i].tick_topic;
+        arr.insert(0, ticktick_Models[i].ticklist_list);
+        String? product = ticktick_Models[i].ticklist_list;
+        String? product_id = ticktick_Models[i].tick_id;
+        print(i);
+        String? id = ticktick_Models[i].tick_id;
+        print('id :' + '${id}');
+        print('topic :' + topic);
+        print('list : ' + '$arr');
+        print('num : ' + '$num');
+
+        setState(() {
+          list_topic.add(List_showModel(topic, id!));
+          list_product.add(Product(product, product_id!));
+        });
+        // print(list_topic);
+        break;
+      } else {
+        String topic = ticktick_Models[i].tick_topic;
+        // print(i);
+        String? product = ticktick_Models[i].ticklist_list;
+        String? product_id = ticktick_Models[i].tick_id;
+        arr.insert(0, ticktick_Models[i].ticklist_list);
+        String? id = ticktick_Models[i].tick_id;
+        print('id :' + '${id}');
+        print('topic :' + topic);
+        print('list : ' + '$arr');
+        print('num : ' + '$num');
+        setState(() {
+          list_topic.add(List_showModel(topic, id!));
+          list_product.add(Product(product, product_id!));
+        });
+        arr = [];
+        num = 1;
+      }
+    }
+  }
+
+  Widget getTextWidgets(List<String> strings) {
+    return new Row(children: strings.map((item) => new Text(item)).toList());
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -961,34 +1121,76 @@ class _TickBodyState extends State<TickBody> {
                       child: Padding(
                         padding: const EdgeInsets.only(top: 12.0),
                         child: Container(
-                          //height: 100,
-                          //width: 100,
-                          decoration: BoxDecoration(
-                              //color: Colors.pink.shade700,
-                              //borderRadius: BorderRadius.circular(30),
-                              ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              SvgPicture.asset(
-                                "assets/icons/leaf-fall.svg",
-                                height: 85,
-                                color: Colors.black.withOpacity(0.4),
-                              ),
-                              SizedBox(
-                                height: 1,
-                              ),
-                              Text(
-                                "You don't have any list right now.",
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.5),
-                                  fontSize: 18,
+                            //height: 100,
+                            //width: 100,
+                            decoration: BoxDecoration(
+                                //color: Colors.pink.shade700,
+                                //borderRadius: BorderRadius.circular(30),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
+                            child: Container(
+                                child: (list_topic.isEmpty)
+                                    ? Column(children: [
+                                        Padding(
+                                            padding: EdgeInsets.only(
+                                                top: MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    8)),
+                                        Container(
+                                          child: SvgPicture.asset(
+                                            "assets/icons/leaf-fall.svg",
+                                            height: 85,
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                          ),
+                                        ),
+                                        Text(
+                                          "You don't have any list right now",
+                                          style: TextStyle(
+                                              color: Colors.grey[500],
+                                              fontWeight: FontWeight.w500),
+                                        )
+                                      ])
+                                    : Expanded(
+                                        child: ListView.builder(
+                                            padding: const EdgeInsets.all(8),
+                                            itemCount: list_topic.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Container(
+                                                  height: 80,
+                                                  margin: EdgeInsets.all(2),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: Color(0xfffFFC34A),
+                                                  ),
+                                                  child: Column(children: [
+                                                    Text(
+                                                        '${list_topic[index].topic}'),
+                                                    // Text(
+                                                    //     '${list_product[index].product_name}')
+                                                    Text(
+                                                        '${list_product.length}'),
+                                                    Text(
+                                                        '${list_product[2].product_id}')
+                                                    // Container(
+                                                    //     child: ListView.builder(
+                                                    //         itemCount:
+                                                    //             list_product
+                                                    //                 .length,
+                                                    //         itemBuilder:
+                                                    //             (BuildContext
+                                                    //                     context,
+                                                    //                 int index) {
+                                                    //           return Container(
+                                                    //             child: Text(
+                                                    //                 '${list_product[index].product_name}'),
+                                                    //           );
+                                                    //         }))
+                                                  ]));
+                                            })))),
                       ),
                     ),
                   ),
@@ -999,6 +1201,350 @@ class _TickBodyState extends State<TickBody> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class TicBotSheet extends StatefulWidget {
+  final Size size;
+
+  TicBotSheet({
+    Key? key,
+    required this.size,
+  }) : super(key: key);
+
+  @override
+  State<TicBotSheet> createState() => _TicBotSheetState();
+}
+
+class _TicBotSheetState extends State<TicBotSheet> {
+  Future<Null> insertTickTick({String? topic, List<String>? arr}) async {
+    var uuid = Uuid();
+
+    String tick_uid = uuid.v1();
+    String member_id = userModels[0].id!;
+    String circle_id = circleModels[0].circle_id!;
+
+    String? tick_id;
+
+    // print('###ticktickleghth ' + '$count_ticktickUid');
+
+    // print('#### tick_uid ' + '${tick_uid}');
+    // print('#### uid ' + '${member_id}');
+    // print('#### topic :' + '${topic}');
+    // print('#### arr : ' + '${arr}');
+    // print('#### arr : ' + '${arr!.length}');
+    String ticklist = arr![0];
+    String insertTicklistData =
+        '${MyConstant.domain}/famfam/insertTickTick.php?isAdd=true&tick_uid=$tick_uid&circle_id=$circle_id&user_id=$member_id&tick_topic=$topic&ticklist_list=$ticklist';
+    await Dio().get(insertTicklistData).then((value) async {
+      print('push');
+      String pullDataticktick =
+          '${MyConstant.domain}/famfam/getTickTickWhereUID.php?isAdd=true&tick_uid=$tick_uid';
+      await Dio().get(pullDataticktick).then((value) async {
+        for (var item in json.decode(value.data)) {
+          ticktick_Model model = ticktick_Model.fromMap(item);
+          // print(item);
+
+          setState(() {
+            // count_ticktickUid = count_ticktickUid + 1;
+            tempticktick.add(model);
+            tick_id = model.tick_id;
+          });
+        }
+      }).then((value) async {
+        int i = 1;
+
+        print(tick_id);
+        for (i; i < arr.length; i++) {
+          print('i = ' + '$i');
+          String ticklist = arr[i];
+          String insertTicklistData =
+              '${MyConstant.domain}/famfam/insertTickTickWithID.php?isAdd=true&user_id=$member_id&tick_topic=$topic&ticklist_list=$ticklist&circle_id=$circle_id&tick_uid=$tick_uid&tick_id=$tick_id';
+          await Dio().get(insertTicklistData);
+        }
+      });
+      print('inserted ticklist successed');
+    });
+  }
+
+  final TextEditingController topicController = TextEditingController();
+
+  final TextEditingController listController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          width: widget.size.width * 0.864,
+          height: widget.size.height * 0.066,
+
+          //color: Colors.pink,
+
+          child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Color(0xFFF9EE6D)),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(90.0),
+                  ),
+                ),
+              ),
+              child: Text(
+                '+ Add TickTic ',
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black),
+              ),
+              onPressed: () {
+                showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(62.0))),
+                    backgroundColor: Color(0xFFFFFFFF),
+                    context: context,
+                    isScrollControlled: true,
+                    enableDrag: false,
+                    builder: (context) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 18),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25.0),
+                                  child: Container(
+                                    height: widget.size.height * 0.595,
+                                    child: Container(
+                                      width: widget.size.width * 0.84,
+                                      decoration: BoxDecoration(
+                                          //color: hexToColor("#F1E5BA"),
+                                          borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(66),
+                                        topRight: Radius.circular(66),
+                                      )),
+                                      child: Column(
+                                        // mainAxisAlignment:
+                                        //     MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          SizedBox(height: 45),
+                                          Center(
+                                            child: Text(
+                                              'Add TickTic to Circle',
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                          SizedBox(height: 30),
+                                          Text(
+                                            'Topic',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                              height:
+                                                  widget.size.height * 0.021),
+                                          Container(
+                                            //margin: EdgeInsets.only(top: 40),
+                                            //width: size.width * 0.831,
+
+                                            child: (Container(
+                                              decoration: BoxDecoration(
+                                                //color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                // boxShadow: [
+                                                //   const BoxShadow(
+                                                //     color: Colors.black,
+                                                //   ),
+                                                // ]
+                                              ),
+                                              child: (TextField(
+                                                style: TextStyle(
+                                                    fontSize: 20, height: 1.5),
+                                                decoration: InputDecoration(
+                                                  filled: true,
+                                                  fillColor: Colors.white,
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 10,
+                                                          horizontal: 20),
+                                                  //border: InputBorder.none,
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            23.0),
+                                                    borderSide: BorderSide(
+                                                        color:
+                                                            Color(0xFFF9EE6D),
+                                                        width: 2.0),
+                                                  ),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            23.0),
+                                                    borderSide: BorderSide(
+                                                        color:
+                                                            Color(0xFFF9EE6D),
+                                                        width: 2.0),
+                                                  ),
+                                                  hintText: 'Ex. Shopping',
+                                                  hintStyle: TextStyle(
+                                                    fontSize: 20.0,
+                                                  ),
+                                                ),
+                                                controller: topicController,
+                                              )),
+                                            )),
+                                          ),
+                                          SizedBox(
+                                              height:
+                                                  widget.size.height * 0.021),
+                                          Container(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Listing",
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                                SizedBox(
+                                                    height: widget.size.height *
+                                                        0.021),
+                                                Container(
+                                                  child: (TextField(
+                                                    textAlignVertical:
+                                                        TextAlignVertical.top,
+                                                    keyboardType:
+                                                        TextInputType.multiline,
+                                                    maxLines: 3,
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        height: 1.5),
+                                                    decoration: InputDecoration(
+                                                      filled: true,
+                                                      fillColor: Colors.white,
+                                                      // contentPadding:
+                                                      //     EdgeInsets.symmetric(
+                                                      //         vertical: 10,
+                                                      //         horizontal: 20),
+
+                                                      //border: InputBorder.none,
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(30.0),
+                                                        borderSide: BorderSide(
+                                                            color: Color(
+                                                                0xFFF9EE6D),
+                                                            width: 2.0),
+                                                      ),
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(30.0),
+                                                        borderSide: BorderSide(
+                                                            color: Color(
+                                                                0xFFF9EE6D),
+                                                            width: 2.0),
+                                                      ),
+                                                      hintText:
+                                                          'Ex. มาม่า, สบู่, ไข่, นม',
+                                                      hintStyle: TextStyle(
+                                                        fontSize: 20.0,
+                                                      ),
+                                                    ),
+                                                    controller: listController,
+                                                  )),
+                                                ),
+                                                SizedBox(
+                                                    height: widget.size.height *
+                                                        0.04),
+                                                Center(
+                                                    child: Container(
+                                                  width: 208,
+                                                  height: 60,
+                                                  child: ElevatedButton(
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(Color(
+                                                                  0xFFF9EE6D)),
+                                                      shape:
+                                                          MaterialStateProperty
+                                                              .all(
+                                                        RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      90.0),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    onPressed: () {
+                                                      print('##Topic : ' +
+                                                          topicController.text);
+                                                      print('##List : ' +
+                                                          listController.text);
+                                                      var list_text =
+                                                          listController.text;
+                                                      var arr =
+                                                          list_text.split(",");
+                                                      print(arr.length);
+                                                      insertTickTick(
+                                                          topic: topicController
+                                                              .text,
+                                                          arr: arr);
+                                                      Navigator.pop(context);
+                                                      listController.text = '';
+                                                      topicController.text = '';
+                                                    },
+                                                    child: Text(
+                                                      "Confirm",
+                                                      style: TextStyle(
+                                                          fontSize: 21,
+                                                          color: Colors.black),
+                                                    ),
+                                                  ),
+                                                ))
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom),
+                              ),
+                              SizedBox(height: 10),
+                            ],
+                          ),
+                        ));
+              }),
+        )
+      ],
     );
   }
 }
