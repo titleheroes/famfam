@@ -127,6 +127,48 @@ Future<Null> pullUserSQLID() async {
 
   }
 
+  Future getReplytFromPinID() async{
+    
+    if(pinpostModels.length !=0){
+      pinpostModels.clear();
+    }else{}
+
+    SharedPreferences preferences = await SharedPreferences.getInstance(); 
+    String circle_id = preferences.getString('circle_id')!;
+    String author_id = userModels[0].id!;
+
+    //print('## circle_id = $circle_id');
+    String path = '${MyConstant.domain}/famfam/getPinWhereCircleID.php?isAdd=true&circleID_pinpost=$circle_id';
+    
+    await Dio().get(path).then((value){
+      //print(value);
+      
+      if(value.toString() == 'null'){
+        //No Data
+        setState(() {
+          load = false;
+          haveData = false;
+        });
+
+      } else {
+        //Have Data
+        for (var item in json.decode(value.data)) {
+          PinpostModel model = PinpostModel.fromMap(item);
+          //print('Pintext ==>> ${model.pin_text} by ${model.fname}' );
+
+          setState(() {
+            load = false;
+            haveData = true;
+            pinpostModels.add(model);
+          } );
+        }
+
+      }
+
+    });
+
+  }
+
   void SendPinText(String input_pin_text)async {
     SharedPreferences preferences = await SharedPreferences.getInstance(); 
     String circle_id = preferences.getString('circle_id')!;
@@ -338,15 +380,6 @@ Future<Null> pullUserSQLID() async {
     
     TextEditingController pinController = TextEditingController();
 
-    void addItemToList() {
-      setState(() {
-      names.insert(0,pinController.text);
-      print(names);
-    });
-    }
-
-    
-
     Size size = MediaQuery.of(context).size;
 
 
@@ -366,6 +399,7 @@ Future<Null> pullUserSQLID() async {
               ),
               onPressed: () {
                 Navigator.pushNamed(context, '/pinpost');
+                //Navigator.pop(context);
               },
             ),
           ),

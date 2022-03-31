@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:famfam/models/pinpost_model.dart';
+import 'package:famfam/models/replynumber.dart';
 import 'package:famfam/widgets/slide_dots.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:famfam/pinpost_screen/reply_pin_screen.dart';
@@ -27,6 +28,7 @@ class _BodyState extends State<PinScreen> {
   bool? haveData;
   List<UserModel> userModels = [];
   List<PinpostModel> pinpostModels = [];
+  List<ReplyNumberModel> replynumberModels = [];
   
    
   List<String> names = <String>['Dummy Pin Post Right Here!', 'zzzzzzzz', 'ssssss'];
@@ -38,7 +40,8 @@ class _BodyState extends State<PinScreen> {
   void initState(){
     super.initState();
     pullUserSQLID().then((value)  {
-      getPinpostFromCircle();
+      getPinpostFromCircle().then((value) => getReplyNumberFromCircleID());
+      
     });
     
 
@@ -81,6 +84,8 @@ Future<Null> pullUserSQLID() async {
   }
 
 
+
+
   Future getPinpostFromCircle() async{
     
     if(pinpostModels.length !=0){
@@ -100,7 +105,7 @@ Future<Null> pullUserSQLID() async {
       if(value.toString() == 'null'){
         //No Data
         setState(() {
-          load = false;
+          //load = false;
           haveData = false;
         });
 
@@ -111,7 +116,7 @@ Future<Null> pullUserSQLID() async {
           print('Pintext ==>> ${model.pin_text} by ${model.fname}' );
 
           setState(() {
-            load = false;
+            //load = false;
             haveData = true;
             pinpostModels.add(model);
           } );
@@ -326,7 +331,49 @@ Future<Null> pullUserSQLID() async {
 
   }
 
-  
+
+  Future getReplyNumberFromCircleID() async{
+    
+    SharedPreferences preferences = await SharedPreferences.getInstance(); 
+    String circle_id = preferences.getString('circle_id')!;
+
+
+    if(replynumberModels.length !=0){
+      replynumberModels.clear();
+    }else{}
+
+    
+    String path = '${MyConstant.domain}/famfam/getReplyNumberWhereCircleID.php?isAdd=true&circle_id=$circle_id';
+    
+    await Dio().get(path).then((value){
+      //print(value);
+      
+      if(value.toString() == 'null'){
+        //No Data
+        setState(() {
+          load = false;
+          haveData = false;
+        });
+
+      } else {
+        //Have Data
+        for (var item in json.decode(value.data)) {
+          ReplyNumberModel model = ReplyNumberModel.fromMap(item);
+          print('Pin_ID ==>> ${model.pin_id} have ${model.number_of_reply} reply' );
+
+          setState(() {
+            load = false;
+            haveData = true;
+            replynumberModels.add(model);
+          } );
+        }
+
+      }
+
+    });
+
+  }
+
 
   Widget build(BuildContext context){
     
@@ -490,19 +537,16 @@ Future<Null> pullUserSQLID() async {
                             ),
 
                             
-
+                            for(var i=0 ; i<replynumberModels.length;i++)
+                              if(pinpostModels[index].pin_id == replynumberModels[i].pin_id)
                                     Align(
                                       alignment: Alignment.bottomRight,
                                       child: Padding(
                                         padding: EdgeInsets.only(top: 20),
                                         child: 
-                                        
-                                        //Text('0 Replied',style: TextStyle(fontSize: 18,height: 1.5),),
-                                        RichText(text: TextSpan(
-                                          style: TextStyle(fontSize: 18,height: 1.5),
+                                        RichText(text: TextSpan(                                         
                                           children: [
-
-                                            TextSpan(text: '0 Replied',style: TextStyle(fontSize: 18,height: 1.5,color: Colors.black),
+                                            TextSpan(text: '${replynumberModels[i].number_of_reply} Replied',style: TextStyle(fontSize: 18,height: 1.5,color: Colors.black),
                                               recognizer: TapGestureRecognizer()
                                               ..onTap = (){
                                                 print('Tapped ==>> '+pinpostModels[index].pin_id);
@@ -511,20 +555,21 @@ Future<Null> pullUserSQLID() async {
                                                   MaterialPageRoute(
                                                     builder: (context) => ReplyPinScreen(pinpostModels[index].pin_id,),
                                                   ));
-
                                               }
-
                                             ),
-
                                           ]
-
-                                        
                                           )
                                         ),
 
                                       ),
-                                    ),
+                                    )
+
                                     
+                                  
+
+
+
+
                           ],),
                         ],
                       ),
