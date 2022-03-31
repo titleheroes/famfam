@@ -41,7 +41,7 @@ class _BodyState extends State<ReplyPinScreen> {
   void initState(){
     super.initState();
     pullUserSQLID().then((value)  {
-      getPinpostFromCircle();
+      getPinpostFromPinID();
     });
     
     print('Reply of ID ==>> '+widget.pin_id);
@@ -85,18 +85,15 @@ Future<Null> pullUserSQLID() async {
   }
 
 
-  Future getPinpostFromCircle() async{
+  Future getPinpostFromPinID() async{
     
+    String pin_id = widget.pin_id;
     if(pinpostModels.length !=0){
       pinpostModels.clear();
     }else{}
 
-    SharedPreferences preferences = await SharedPreferences.getInstance(); 
-    String circle_id = preferences.getString('circle_id')!;
-    String author_id = userModels[0].id!;
-
     //print('## circle_id = $circle_id');
-    String path = '${MyConstant.domain}/famfam/getPinWhereCircleID.php?isAdd=true&circleID_pinpost=$circle_id';
+    String path = '${MyConstant.domain}/famfam/getPinWherePinID.php?isAdd=true&pin_id=$pin_id';
     
     await Dio().get(path).then((value){
       //print(value);
@@ -189,7 +186,7 @@ Future<Null> pullUserSQLID() async {
     }
     
   );
-    getPinpostFromCircle();
+    getPinpostFromPinID();
     //Navigator.pushNamed(context, '/pinpost');
 
   }
@@ -272,7 +269,7 @@ Future<Null> pullUserSQLID() async {
                             }
                           }   
                         );
-                        getPinpostFromCircle();
+                        getPinpostFromPinID();
                         Navigator.pop(context);
                       },
                     ),
@@ -368,7 +365,7 @@ Future<Null> pullUserSQLID() async {
       }
     });
     //Navigator.pushNamed(context, '/pinpost');
-    getPinpostFromCircle();
+    getPinpostFromPinID();
 
   }
 
