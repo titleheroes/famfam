@@ -12,17 +12,20 @@ import 'package:famfam/models/user_model.dart';
 import 'package:famfam/models/pinpost_model.dart';
 import 'package:famfam/widgets/slide_dots.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:famfam/pinpost_screen/reply_pin_screen.dart';
 
-class PinScreen extends StatefulWidget {
-  const PinScreen({Key? key}) : super(key: key);
+class ReplyPinScreen extends StatefulWidget {
+  String pin_id  ;
+  
+  ReplyPinScreen(this.pin_id) ;
 
   @override
-  State<PinScreen> createState() => _BodyState();
+  State<ReplyPinScreen> createState() => _BodyState();
+
 }
 
-class _BodyState extends State<PinScreen> {
+class _BodyState extends State<ReplyPinScreen> {
   
+
   bool load = true;
   bool? haveData;
   List<UserModel> userModels = [];
@@ -41,6 +44,7 @@ class _BodyState extends State<PinScreen> {
       getPinpostFromCircle();
     });
     
+    print('Reply of ID ==>> '+widget.pin_id);
 
   }
   
@@ -91,7 +95,7 @@ Future<Null> pullUserSQLID() async {
     String circle_id = preferences.getString('circle_id')!;
     String author_id = userModels[0].id!;
 
-    print('## circle_id = $circle_id');
+    //print('## circle_id = $circle_id');
     String path = '${MyConstant.domain}/famfam/getPinWhereCircleID.php?isAdd=true&circleID_pinpost=$circle_id';
     
     await Dio().get(path).then((value){
@@ -108,7 +112,7 @@ Future<Null> pullUserSQLID() async {
         //Have Data
         for (var item in json.decode(value.data)) {
           PinpostModel model = PinpostModel.fromMap(item);
-          print('Pintext ==>> ${model.pin_text} by ${model.fname}' );
+          //print('Pintext ==>> ${model.pin_text} by ${model.fname}' );
 
           setState(() {
             load = false;
@@ -361,8 +365,7 @@ Future<Null> pullUserSQLID() async {
                 size: 40,
               ),
               onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => HomePage(user)));
+                Navigator.pushNamed(context, '/pinpost');
               },
             ),
           ),
@@ -372,7 +375,7 @@ Future<Null> pullUserSQLID() async {
           title: Transform.translate(
             offset: Offset(0, 12),
             child: Text(
-              "Pin Post",
+              "Reply Pin Post",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 30,
@@ -491,39 +494,7 @@ Future<Null> pullUserSQLID() async {
 
                             
 
-                                    Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(top: 20),
-                                        child: 
-                                        
-                                        //Text('0 Replied',style: TextStyle(fontSize: 18,height: 1.5),),
-                                        RichText(text: TextSpan(
-                                          style: TextStyle(fontSize: 18,height: 1.5),
-                                          children: [
-
-                                            TextSpan(text: '0 Replied',style: TextStyle(fontSize: 18,height: 1.5,color: Colors.black),
-                                              recognizer: TapGestureRecognizer()
-                                              ..onTap = (){
-                                                print('Tapped ==>> '+pinpostModels[index].pin_id);
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => ReplyPinScreen(pinpostModels[index].pin_id,),
-                                                  ));
-
-                                              }
-
-                                            ),
-
-                                          ]
-
-                                        
-                                          )
-                                        ),
-
-                                      ),
-                                    ),
+                                   
                                     
                           ],),
                         ],
@@ -631,7 +602,7 @@ Future<Null> pullUserSQLID() async {
                             ),
                           ),
                           child: Text(
-                            'Add Pin!',
+                            'Reply',
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
