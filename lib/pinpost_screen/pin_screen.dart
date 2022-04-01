@@ -148,6 +148,7 @@ Future<Null> pullUserSQLID() async {
     }
     
   );
+    getReplyNumberFromCircleID();
     getPinpostFromCircle();
     //Navigator.pushNamed(context, '/pinpost');
 
@@ -401,7 +402,9 @@ Future<Null> pullUserSQLID() async {
         child: AppBar(
           leading: Transform.translate(
             offset: Offset(0, 12),
-            child: IconButton(
+            child: 
+            load ? null :IconButton(
+
               icon: Icon(
                 Icons.navigate_before_rounded,
                 color: Colors.black,
@@ -412,6 +415,7 @@ Future<Null> pullUserSQLID() async {
                     MaterialPageRoute(builder: (context) => HomePage(user)));
               },
             ),
+
           ),
           elevation: 0,
           centerTitle: true,
@@ -537,8 +541,7 @@ Future<Null> pullUserSQLID() async {
                             ),
 
                             
-                            for(var i=0 ; i<replynumberModels.length;i++)
-                              if(pinpostModels[index].pin_id == replynumberModels[i].pin_id)
+                            
                                     Align(
                                       alignment: Alignment.bottomRight,
                                       child: Padding(
@@ -546,7 +549,7 @@ Future<Null> pullUserSQLID() async {
                                         child: 
                                         RichText(text: TextSpan(                                         
                                           children: [
-                                            TextSpan(text: '${replynumberModels[i].number_of_reply} Replied',style: TextStyle(fontSize: 18,height: 1.5,color: Colors.black),
+                                            TextSpan(text: '${pinpostModels[index].number_of_reply} Replied',style: TextStyle(fontSize: 18,height: 1.5,color: Colors.black),
                                               recognizer: TapGestureRecognizer()
                                               ..onTap = (){
                                                 print('Tapped ==>> '+pinpostModels[index].pin_id);

@@ -6,6 +6,7 @@ import 'package:famfam/widgets/circle_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/models/user_model.dart';
@@ -13,8 +14,11 @@ import 'package:famfam/models/pinpost_model.dart';
 import 'package:famfam/widgets/slide_dots.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
+
 class ReplyPinScreen extends StatefulWidget {
   String pin_id  ;
+  
   
   ReplyPinScreen(this.pin_id) ;
 
@@ -78,6 +82,8 @@ Future<Null> pullUserSQLID() async {
           UserModel model = UserModel.fromMap(item);         
           setState(() {
             userModels.add(model);
+            
+
           });
         }
       }
@@ -115,6 +121,10 @@ Future<Null> pullUserSQLID() async {
             load = false;
             haveData = true;
             pinpostModels.add(model);
+            DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm").parse(pinpostModels[0].date);
+            String formattedDate = DateFormat('dd/MM/yyyy - kk:mm').format(tempDate);
+            pinpostModels[0].date = formattedDate;
+
           } );
         }
 
@@ -156,6 +166,7 @@ Future<Null> pullUserSQLID() async {
           setState(() {
             load = false;
             haveData = true;
+            
             pinpostModels.add(model);
           } );
         }
@@ -379,6 +390,8 @@ Future<Null> pullUserSQLID() async {
 
     Size size = MediaQuery.of(context).size;
 
+    
+    
 
 
     return Scaffold(
@@ -421,14 +434,14 @@ Future<Null> pullUserSQLID() async {
 
       body: load ? CircleLoader() : SafeArea(
         child: Container(
-          //color: Colors.pink,
+          color: Colors.pink,
           width: double.infinity,
           
           padding: EdgeInsets.only(
             top: 10,
             left: 24,
             right: 24,
-            bottom: 0
+            
 
             
           ),
@@ -441,174 +454,148 @@ Future<Null> pullUserSQLID() async {
 
 
 
- Expanded(
+        Container(
+          //height: 300,
+          
+          color: Color.fromRGBO(0, 188, 212, 1),
+          child: Stack(
 
-            
-            child: Container(
-              height: 50,
-              //color: Colors.cyan,
-              child: ListView.builder(
-                physics: BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(8),
-                itemCount: pinpostModels.length,
-
-
-
-                itemBuilder: (BuildContext context, int index) {
-                  DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm").parse(pinpostModels[index].date);
-                  String formattedDate = DateFormat('dd/MM/yyyy - kk:mm').format(tempDate);
-                  //print(tempDate);
-
-                  return
+                children: [
                   
-                    Stack(
-
+                  
+                  Container(
+                  
+                  width: size.width ,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 24,
+                  ),
+                  margin: EdgeInsets.only(bottom: 0),
+                            
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 250, 244, 154),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Stack(
                     children: [
                       
-                      
-                      Container(
-                      
-                      width: size.width ,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 15,
-                        horizontal: 24,
-                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                        Row(children: [
 
-                    
-                  
-                      
+                          Container(
+                                  
+                                  child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: Colors.white,
+                                    backgroundImage:
+                                        NetworkImage(pinpostModels[0].profileImage),
+                                  ),
+                                ),
 
-                      margin: EdgeInsets.only(bottom: index==pinpostModels.length-1 ? 100 :20),
+                          Padding(
+                                padding: EdgeInsets.only(
+                                  left: 10,
+                                ),
+                                child: Text('${pinpostModels[0].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                                 
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 250, 244, 154),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Stack(
-                        children: [
-                          
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                            Row(children: [
-
-                              Container(
-                                      
-                                      child: CircleAvatar(
-                                        radius: 20,
-                                        backgroundColor: Colors.white,
-                                        backgroundImage:
-                                            NetworkImage(pinpostModels[index].profileImage),
-                                      ),
-                                    ),
-
-                              Padding(
-                                    padding: EdgeInsets.only(
-                                      left: 10,
-                                    ),
-                                    child: Text('${pinpostModels[index].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                    
-                              ),
-                              
-                                    
-                            ],),
-                            SizedBox(height: 5,),
-                            Text(formattedDate,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
-                                    
-                            Padding(
-                              padding: EdgeInsets.only(
-                                    top: 10,
-                              ),
-                              child: Text('${pinpostModels[index].pin_text}',
-                              style: TextStyle(fontSize: 18,height: 1.5),),
-                            ),
-
-                            
-
-                                   
-                                    
-                          ],),
-                        ],
-                      ),
-
-                  
-
-                    ),
-
-                     
-
-                    if (userModels[0].id == pinpostModels[index].author_id) 
-                    
-                    Positioned( 
-                      right: 0,
-                      top: 0,
-
-                      child: Row(
-                        children: [
-
-                          IconButton(onPressed: () {
-                            
-                            _displayEditDialog(context,pinpostModels[index].pin_id,pinpostModels[index].pin_text);
-                          }, 
-                          icon: Icon(Icons.edit),
-                          iconSize: 30,
-                          splashColor: Colors.transparent, 
-                          highlightColor: Colors.transparent,  
-                          
                           ),
-
-                          IconButton(onPressed: () {
-                            
-                            _displayDeleteDialog(context,pinpostModels[index].pin_id);
-                          }, 
-                          icon: Icon(Icons.close),
-                          iconSize: 30,
-                          splashColor: Colors.transparent, 
-                          highlightColor: Colors.transparent,  
                           
+                                
+                        ],),
+                        SizedBox(height: 5,),
+                        
+                        
+                        Text(pinpostModels[0].date,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
+                                
+                        Padding(
+                          padding: EdgeInsets.only(
+                                top: 10,
                           ),
-                        ],
-
-
-                      ),
-
-
-
-                    ),
-
-
-
-
+                          child: Text('${pinpostModels[0].pin_text}',
+                          style: TextStyle(fontSize: 18,height: 1.5),),
+                        ),     
+                      ],),
                     ],
-                  
-
-                  );
-                  
-                  
-                  
-                  
-                  
-
-
-                }
-
-                
-
-
-
-
-              ),
+                  ),
 
               
-            )
 
-          
-          ),
+                ),
+
+                 
+
+                if (userModels[0].id == pinpostModels[0].author_id) 
+                
+                Positioned( 
+                  right: 0,
+                  top: 0,
+
+                  child: Row(
+                    children: [
+
+                      IconButton(onPressed: () {
+                        
+                        _displayEditDialog(context,pinpostModels[0].pin_id,pinpostModels[0].pin_text);
+                      }, 
+                      icon: Icon(Icons.edit),
+                      iconSize: 30,
+                      splashColor: Colors.transparent, 
+                      highlightColor: Colors.transparent,  
+                      
+                      ),
+
+                      IconButton(onPressed: () {
+                        
+                        _displayDeleteDialog(context,pinpostModels[0].pin_id);
+                      }, 
+                      icon: Icon(Icons.close),
+                      iconSize: 30,
+                      splashColor: Colors.transparent, 
+                      highlightColor: Colors.transparent,  
+                      
+                      ),
+                    ],
+
+
+                  ),
+
+
+
+                ),
+                ],
+              
+
+              ),
+        ),
+
+
 
           //SizedBox(height: 50,),
 
+          Expanded(
+            child: Container(
+              //height: double.infinity,
+              width: double.infinity,
+              color: Colors.white,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Text('${pinpostModels[0].number_of_reply} Replied',
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,
+                  ),
+                  
+                  ),
+                ),
+            ),
+            ),
+          )
           
-                ],),
+                ],
+                
+                ),
                 Positioned(
                   bottom: 20,
                   right: 5,

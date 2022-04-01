@@ -20,10 +20,12 @@ if (isset($_GET)) {
 				
 		$pin_id = $_GET['pin_id'];
 
-		$result = mysqli_query($link, " select * 
-        from pinpost INNER join user
-        on pinpost.author_id = user.id
-        WHERE pinpost.pin_id = $pin_id ");
+		$result = mysqli_query($link, " SELECT pinpost.pin_id, pinpost.circle_id,pinpost.date, pinpost.author_id, pinpost.pin_text, user.fname, user.lname, user.profileImage,
+		COUNT(pin_reply.pin_reply_id) as 'number_of_reply'
+		FROM pinpost LEFT JOIN pin_reply on pinpost.pin_id = pin_reply.pin_id INNER JOIN user on pinpost.author_id = user.id
+		WHERE pinpost.pin_id = $pin_id
+		GROUP by pinpost.pin_id 
+		");
 
 		if ($result) {
 
