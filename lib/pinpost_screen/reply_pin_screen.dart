@@ -97,6 +97,7 @@ Future<Null> pullUserSQLID() async {
 
   Future getPinpostFromPinID() async{
     
+    load = true;
     String pin_id = widget.pin_id;
     pinpostModels.clear();
     
@@ -275,13 +276,14 @@ Future<Null> pullUserSQLID() async {
                         await Dio().get(EditPinpost).then((value) {
                             if(value.toString()=='true'){
                               print('Pinpost Edited');
+                              getPinpostFromPinID().then((value) => load = false);
                             }else{
                               print('Edit Error');
                             }
                           }   
                         );
                         
-                        getPinpostFromPinID();
+                        
                         Navigator.pop(context);
                       },
                     ),
@@ -555,7 +557,7 @@ Future<Null> pullUserSQLID() async {
         Container(
           //height: 300,
           
-          color: Color.fromRGBO(0, 188, 212, 1),
+          //color: Color.fromRGBO(0, 188, 212, 1),
           child: Stack(
     
                 children: [
@@ -583,12 +585,15 @@ Future<Null> pullUserSQLID() async {
     
                           Container(
                                   
-                                  // child: CircleAvatar(
-                                  //   radius: 20,
-                                  //   backgroundColor: Colors.white,
-                                  //   backgroundImage:
-                                  //       NetworkImage(pinpostModels[0].profileImage),
-                                  // ),
+                                  
+                                  child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: Colors.white,
+                                    backgroundImage:
+                                        NetworkImage(pinpostModels[0].profileImage),
+                                  ),
+
+
                                 ),
     
                           Padding(
