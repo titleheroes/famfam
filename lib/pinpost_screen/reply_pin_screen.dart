@@ -34,7 +34,7 @@ class _BodyState extends State<ReplyPinScreen> {
   
 
   bool load = true;
-  bool? haveData;
+  bool? havePinpostData;
   List<UserModel> userModels = [];
   List<PinpostModel> pinpostModels = [];
   List<PinpostReplyModel> pinreplyModels = [];
@@ -112,7 +112,7 @@ Future<Null> pullUserSQLID() async {
         //No Data
         setState(() {
           //load = false;
-          haveData = false;
+          havePinpostData = false;
         });
 
       } else {
@@ -123,7 +123,7 @@ Future<Null> pullUserSQLID() async {
 
           setState(() {
             //load = false;
-            haveData = true;
+            havePinpostData = true;
             pinpostModels.add(model);
             DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm").parse(pinpostModels[0].date);
             String formattedDate = DateFormat('dd/MM/yyyy - kk:mm').format(tempDate);
@@ -140,6 +140,7 @@ Future<Null> pullUserSQLID() async {
 
   Future getPinReplyFromPinID() async{
     
+    load = true;
     String pin_id = widget.pin_id;
     pinreplyModels.clear();
     
@@ -154,7 +155,7 @@ Future<Null> pullUserSQLID() async {
         //No Data
         setState(() {
           load = false;
-          haveData = false;
+          //haveData = false;
         });
 
       } else {
@@ -165,7 +166,7 @@ Future<Null> pullUserSQLID() async {
 
           setState(() {
             load = false;
-            haveData = true;
+            //haveData = true;
             pinreplyModels.add(model);
             
             
@@ -368,6 +369,7 @@ Future<Null> pullUserSQLID() async {
                         await Dio().get(EditPinpost).then((value) {
                             if(value.toString()=='true'){
                               print('Pinreply Edited');
+                              
                               getPinReplyFromPinID().then((value) => load = false);
                             }else{
                               print('Edit Error');
@@ -477,6 +479,93 @@ Future<Null> pullUserSQLID() async {
 
   }
 
+  Future<void> _displayReplyDeleteDialog(BuildContext context,String pin_reply_id) async {
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text('Are you sure you want to delete this Reply?'),
+          
+
+          actions: <Widget>[
+            
+            Center(
+              child: Row(
+                children: [
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: 5,
+                      ),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          
+                          minimumSize: Size(150, 40),
+                          backgroundColor: Color.fromARGB(255, 139, 139, 139),
+                          alignment: Alignment.center,
+                        ),
+                        child: Text('Cancel',style: TextStyle(color: Colors.white)),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ),
+                  
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 20
+                    ),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        
+                        minimumSize: Size(150, 40),
+                        backgroundColor: Color.fromARGB(255, 248, 102, 102),
+                        alignment: Alignment.center,
+                      ),
+                      child: Text('Delete',style: TextStyle(color: Colors.white)),
+                      onPressed: () {
+
+                        DeletePinReply(pin_reply_id);
+                        //onDismissed();
+
+
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void DeletePinReply(String pin_reply_id)async {
+    
+    String target_pin_id = pin_reply_id;
+    String DeletePinpost = '${MyConstant.domain}/famfam/deletePinReplyWherePinReplyID.php?isAdd=true&pin_reply_id=$target_pin_id' ;
+    
+    print('## target = $target_pin_id');
+
+    await Dio().get(DeletePinpost).then((value) {
+      if(value.toString()=='True'){
+        print('PinReply Deleted');
+        getPinpostFromPinID().then((value) =>  getPinReplyFromPinID().then((value) => load = false));
+       
+      }else{
+        print('Delete Error');
+      }
+    });
+    //Navigator.pushNamed(context, '/pinpost');
+    
+
+  }
+
   
 
   Widget build(BuildContext context){
@@ -497,19 +586,19 @@ Future<Null> pullUserSQLID() async {
         child: AppBar(
           leading: Transform.translate(
             offset: Offset(0, 12),
-            child: IconButton(
+            child: load ? null : IconButton(
               icon: Icon(
                 Icons.navigate_before_rounded,
                 color: Colors.black,
                 size: 40,
               ),
               onPressed: () {
-                Navigator.pop(context);
-                // Navigator.pushReplacement(
-                //     context,
-                //     MaterialPageRoute(
-                //     builder: (context) => PinScreen(),
-                // ));
+                //Navigator.pop(context);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => PinScreen(),
+                ));
                 
               },
             ),
@@ -823,7 +912,7 @@ Future<Null> pullUserSQLID() async {
                 
                             IconButton(onPressed: () {
                               
-                              _displayDeleteDialog(context,pinreplyModels[index].pin_id);
+                              _displayReplyDeleteDialog(context,pinreplyModels[index].pin_reply_id);
                             }, 
                             icon: Icon(Icons.close),
                             iconSize: 30,
