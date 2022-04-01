@@ -98,9 +98,8 @@ Future<Null> pullUserSQLID() async {
   Future getPinpostFromPinID() async{
     
     String pin_id = widget.pin_id;
-    if(pinpostModels.length !=0){
-      pinpostModels.clear();
-    }else{}
+    pinpostModels.clear();
+    
 
     //print('## circle_id = $circle_id');
     String path = '${MyConstant.domain}/famfam/getPinWherePinID.php?isAdd=true&pin_id=$pin_id';
@@ -210,10 +209,7 @@ Future<Null> pullUserSQLID() async {
 
     TextEditingController pinEditController = TextEditingController();
     pinEditController.text = "${pin_text}";
-    
-
-    
-
+    print('aaaaaaaaa');
     return showDialog(
       context: context,
       builder: (context) {
@@ -284,6 +280,7 @@ Future<Null> pullUserSQLID() async {
                             }
                           }   
                         );
+                        
                         getPinpostFromPinID();
                         Navigator.pop(context);
                       },
@@ -297,6 +294,99 @@ Future<Null> pullUserSQLID() async {
       },
     );
   }
+
+
+  Future<void> _displayReplyEditDialog(BuildContext context, String pin_reply_id, String pin_reply_text) async {
+
+    TextEditingController pinEditController = TextEditingController();
+    pinEditController.text = "${pin_reply_text}";
+    
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text('Edit Pin Post'),
+          
+          content: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: TextFormField(
+                //initialValue: "${pin_text}",
+                controller: pinEditController,
+                decoration: InputDecoration(
+                  hintText: "${pin_reply_text}",
+                  fillColor: Colors.white,
+                  filled: true,
+                ),
+              )),
+
+
+          actions: <Widget>[
+            
+            Center(
+              child: Row(
+                children: [
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: 2,
+                      ),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          
+                          minimumSize: Size(150, 40),
+                          backgroundColor: Color.fromARGB(255, 139, 139, 139),
+                          alignment: Alignment.center,
+                        ),
+                        child: Text('Cancel',style: TextStyle(color: Colors.white)),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 2
+                    ),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        
+                        minimumSize: Size(150, 40),
+                        backgroundColor: Color.fromARGB(255, 224, 222, 72),
+                        alignment: Alignment.center,
+                      ),
+                      child: Text('Edit',style: TextStyle(color: Colors.white)),
+                      onPressed: ()async {
+
+
+                        print('Edited text = '+pinEditController.text);
+                        String EditPinpost = '${MyConstant.domain}/famfam/editReplyfromReplyID.php?isAdd=true&pin_reply_text=${pinEditController.text}&pin_reply_id=${pin_reply_id}' ;
+                        await Dio().get(EditPinpost).then((value) {
+                            if(value.toString()=='true'){
+                              print('Pinreply Edited');
+                            }else{
+                              print('Edit Error');
+                            }
+                          }   
+                        );
+                        getPinpostFromPinID();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+
+
 
 
   Future<void> _displayDeleteDialog(BuildContext context,String pin_id) async {
@@ -442,7 +532,7 @@ Future<Null> pullUserSQLID() async {
     
       body: load ? CircleLoader() : SafeArea(
         child: Container(
-          color: Colors.pink,
+          //color: Colors.pink,
           width: double.infinity,
           
           padding: EdgeInsets.only(
@@ -493,12 +583,12 @@ Future<Null> pullUserSQLID() async {
     
                           Container(
                                   
-                                  child: CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: Colors.white,
-                                    backgroundImage:
-                                        NetworkImage(pinpostModels[0].profileImage),
-                                  ),
+                                  // child: CircleAvatar(
+                                  //   radius: 20,
+                                  //   backgroundColor: Colors.white,
+                                  //   backgroundImage:
+                                  //       NetworkImage(pinpostModels[0].profileImage),
+                                  // ),
                                 ),
     
                           Padding(
@@ -532,7 +622,7 @@ Future<Null> pullUserSQLID() async {
                 ),
     
                  
-    
+                
                 if (userModels[0].id == pinpostModels[0].author_id) 
                 
                 Positioned( 
@@ -571,6 +661,8 @@ Future<Null> pullUserSQLID() async {
     
     
                 ),
+
+                
                 ],
               
     
@@ -587,7 +679,7 @@ Future<Null> pullUserSQLID() async {
                 Container(
                   //height: double.infinity,
                   width: double.infinity,
-                  color: Colors.white,
+                  //color: Colors.white,
                   child: Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
@@ -606,7 +698,7 @@ Future<Null> pullUserSQLID() async {
                 Expanded(
                   child: Container(
                               height: 50,
-                              color: Color.fromARGB(255, 71, 243, 114),
+                              //color: Color.fromARGB(255, 71, 243, 114),
                               child: ListView.builder(
                   physics: BouncingScrollPhysics(),
                   padding: const EdgeInsets.all(8),
@@ -701,7 +793,7 @@ Future<Null> pullUserSQLID() async {
                       ),
                 
                        
-                
+                      
                       if (userModels[0].id == pinreplyModels[index].reply_user_id) 
                       
                       Positioned( 
@@ -713,8 +805,9 @@ Future<Null> pullUserSQLID() async {
                 
                             IconButton(onPressed: () {
                               
-                              _displayEditDialog(context,pinreplyModels[index].pin_id,pinreplyModels[index].pin_reply_text);
+                              _displayReplyEditDialog(context,pinreplyModels[index].pin_id,pinreplyModels[index].pin_reply_text);
                             }, 
+
                             icon: Icon(Icons.edit),
                             iconSize: 30,
                             splashColor: Colors.transparent, 
@@ -846,7 +939,7 @@ Future<Null> pullUserSQLID() async {
                                                 SizedBox(height: 45),
                                                 Center(
                                                   child: Text(
-                                                    'Add Pin Post',
+                                                    'Reply Pin Post',
                                                     style: TextStyle(
                                                         fontSize: 24,
                                                         fontWeight:
@@ -928,7 +1021,7 @@ Future<Null> pullUserSQLID() async {
                                                               width: 2.0),
                                                         ),
                                                         hintText:
-                                                            'Write your Pin Post',
+                                                            'Write your Reply',
                                                         hintStyle: TextStyle(
                                                           fontSize: 20.0,
                                                         ),
