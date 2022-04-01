@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/models/circle_model.dart';
@@ -346,10 +347,10 @@ Future<Null> pullUserSQLID() async {
     
     String path = '${MyConstant.domain}/famfam/getReplyNumberWhereCircleID.php?isAdd=true&circle_id=$circle_id';
     
-    await Dio().get(path).then((value){
+    await Dio().get(path).then((getvalue){
       //print(value);
       
-      if(value.toString() == 'null'){
+      if(getvalue.toString() == 'null'){
         //No Data
         setState(() {
           load = false;
@@ -358,7 +359,7 @@ Future<Null> pullUserSQLID() async {
 
       } else {
         //Have Data
-        for (var item in json.decode(value.data)) {
+        for (var item in json.decode(getvalue.data)) {
           ReplyNumberModel model = ReplyNumberModel.fromMap(item);
           print('Pin_ID ==>> ${model.pin_id} have ${model.number_of_reply} reply' );
 

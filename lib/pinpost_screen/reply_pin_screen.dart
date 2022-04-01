@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/models/circle_model.dart';
+import 'package:famfam/pinpost_screen/pin_screen.dart';
 import 'package:famfam/widgets/circle_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -11,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:famfam/models/pinpost_model.dart';
+import 'package:famfam/models/pinreply_model.dart';
 import 'package:famfam/widgets/slide_dots.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,6 +37,7 @@ class _BodyState extends State<ReplyPinScreen> {
   bool? haveData;
   List<UserModel> userModels = [];
   List<PinpostModel> pinpostModels = [];
+  List<PinpostReplyModel> pinreplyModels = [];
   
    
   List<String> names = <String>['Dummy Pin Post Right Here!', 'zzzzzzzz', 'ssssss'];
@@ -45,7 +49,7 @@ class _BodyState extends State<ReplyPinScreen> {
   void initState(){
     super.initState();
     pullUserSQLID().then((value)  {
-      getPinpostFromPinID();
+      getPinpostFromPinID().then((value) => getPinReplyFromPinID());
     });
     
     print('Reply of ID ==>> '+widget.pin_id);
@@ -107,7 +111,7 @@ Future<Null> pullUserSQLID() async {
       if(value.toString() == 'null'){
         //No Data
         setState(() {
-          load = false;
+          //load = false;
           haveData = false;
         });
 
@@ -118,7 +122,7 @@ Future<Null> pullUserSQLID() async {
           //print('Pintext ==>> ${model.pin_text} by ${model.fname}' );
 
           setState(() {
-            load = false;
+            //load = false;
             haveData = true;
             pinpostModels.add(model);
             DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm").parse(pinpostModels[0].date);
@@ -134,23 +138,20 @@ Future<Null> pullUserSQLID() async {
 
   }
 
-  Future getReplytFromPinID() async{
+  Future getPinReplyFromPinID() async{
     
-    if(pinpostModels.length !=0){
-      pinpostModels.clear();
+    String pin_id = widget.pin_id;
+    if(pinreplyModels.length !=0){
+      pinreplyModels.clear();
     }else{}
 
-    SharedPreferences preferences = await SharedPreferences.getInstance(); 
-    String circle_id = preferences.getString('circle_id')!;
-    String author_id = userModels[0].id!;
-
     //print('## circle_id = $circle_id');
-    String path = '${MyConstant.domain}/famfam/getPinWhereCircleID.php?isAdd=true&circleID_pinpost=$circle_id';
+    String path = '${MyConstant.domain}/famfam/getPinReplyWherePinID.php?isAdd=true&pin_id=$pin_id';
     
-    await Dio().get(path).then((value){
+    await Dio().get(path).then((getvalue){
       //print(value);
       
-      if(value.toString() == 'null'){
+      if(getvalue.toString() == 'null'){
         //No Data
         setState(() {
           load = false;
@@ -159,15 +160,17 @@ Future<Null> pullUserSQLID() async {
 
       } else {
         //Have Data
-        for (var item in json.decode(value.data)) {
-          PinpostModel model = PinpostModel.fromMap(item);
-          //print('Pintext ==>> ${model.pin_text} by ${model.fname}' );
+        for (var item in json.decode(getvalue.data)) {
+          PinpostReplyModel model = PinpostReplyModel.fromMap(item);
+          print('PinReplytext ==>> ${model.pin_reply_text} by ${model.fname}' );
 
           setState(() {
             load = false;
             haveData = true;
+            pinreplyModels.add(model);
             
-            pinpostModels.add(model);
+            
+
           } );
         }
 
@@ -177,27 +180,28 @@ Future<Null> pullUserSQLID() async {
 
   }
 
-  void SendPinText(String input_pin_text)async {
+  void SendPinReplyText(String input_reply_text)async {
     SharedPreferences preferences = await SharedPreferences.getInstance(); 
-    String circle_id = preferences.getString('circle_id')!;
-    String author_id = userModels[0].id!;
-    String author_fname = userModels[0].fname;
-    String pin_text = input_pin_text;
     
-    print('## text = $pin_text');
+    String author_id = userModels[0].id!;
+    String pin_id = widget.pin_id;
+    String pin_reply_text = input_reply_text;
+    
+    
 
-    String InsertPinpost = '${MyConstant.domain}/famfam/insertPin.php?isAdd=true&pin_text=$pin_text&author_id=$author_id&circle_id=$circle_id' ;
+    String InsertPinReply = '${MyConstant.domain}/famfam/insertPinReply.php?isAdd=true&author_id=$author_id&pin_id=$pin_id&pin_reply_text=$pin_reply_text' ;
 
-    await Dio().get(InsertPinpost).then((value) {
+    await Dio().get(InsertPinReply).then((value) {
       if(value.toString()=='true'){
-        print('Pinpost Inserted');
+        print('PinReply Inserted');
       }else{
-        print('Insert Error');
+        print('Reply Error');
       }
     }
     
   );
-    getPinpostFromPinID();
+    load = true;
+    getPinpostFromPinID().then((value) => getPinReplyFromPinID());
     //Navigator.pushNamed(context, '/pinpost');
 
   }
@@ -391,7 +395,6 @@ Future<Null> pullUserSQLID() async {
     Size size = MediaQuery.of(context).size;
 
     
-    
 
 
     return Scaffold(
@@ -408,8 +411,13 @@ Future<Null> pullUserSQLID() async {
                 size: 40,
               ),
               onPressed: () {
-                Navigator.pushNamed(context, '/pinpost');
-                //Navigator.pop(context);
+                Navigator.pop(context);
+                // Navigator.pushReplacement(
+                //     context,
+                //     MaterialPageRoute(
+                //     builder: (context) => PinScreen(),
+                // ));
+                
               },
             ),
           ),
@@ -429,9 +437,9 @@ Future<Null> pullUserSQLID() async {
           ),
         ),
       ),
-
-
-
+    
+    
+    
       body: load ? CircleLoader() : SafeArea(
         child: Container(
           color: Colors.pink,
@@ -442,7 +450,7 @@ Future<Null> pullUserSQLID() async {
             left: 24,
             right: 24,
             
-
+    
             
           ),
           child: Center(
@@ -451,18 +459,17 @@ Future<Null> pullUserSQLID() async {
                 Column(
                   
                   children: [
-
-
-
+    
+    
+    
         Container(
           //height: 300,
           
           color: Color.fromRGBO(0, 188, 212, 1),
           child: Stack(
-
+    
                 children: [
-                  
-                  
+    
                   Container(
                   
                   width: size.width ,
@@ -483,7 +490,7 @@ Future<Null> pullUserSQLID() async {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                         Row(children: [
-
+    
                           Container(
                                   
                                   child: CircleAvatar(
@@ -493,7 +500,7 @@ Future<Null> pullUserSQLID() async {
                                         NetworkImage(pinpostModels[0].profileImage),
                                   ),
                                 ),
-
+    
                           Padding(
                                 padding: EdgeInsets.only(
                                   left: 10,
@@ -502,7 +509,7 @@ Future<Null> pullUserSQLID() async {
                                 
                           ),
                           
-                                
+                          
                         ],),
                         SizedBox(height: 5,),
                         
@@ -519,22 +526,22 @@ Future<Null> pullUserSQLID() async {
                       ],),
                     ],
                   ),
-
+    
               
-
+    
                 ),
-
+    
                  
-
+    
                 if (userModels[0].id == pinpostModels[0].author_id) 
                 
                 Positioned( 
                   right: 0,
                   top: 0,
-
+    
                   child: Row(
                     children: [
-
+    
                       IconButton(onPressed: () {
                         
                         _displayEditDialog(context,pinpostModels[0].pin_id,pinpostModels[0].pin_text);
@@ -545,7 +552,7 @@ Future<Null> pullUserSQLID() async {
                       highlightColor: Colors.transparent,  
                       
                       ),
-
+    
                       IconButton(onPressed: () {
                         
                         _displayDeleteDialog(context,pinpostModels[0].pin_id);
@@ -557,39 +564,210 @@ Future<Null> pullUserSQLID() async {
                       
                       ),
                     ],
-
-
+    
+    
                   ),
-
-
-
+    
+    
+    
                 ),
                 ],
               
-
+    
               ),
         ),
-
-
-
+    
+    
+    
           //SizedBox(height: 50,),
-
+          
           Expanded(
-            child: Container(
-              //height: double.infinity,
-              width: double.infinity,
-              color: Colors.white,
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Text('${pinpostModels[0].number_of_reply} Replied',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,
-                  ),
-                  
-                  ),
+            child: Column(
+              children: [
+                Container(
+                  //height: double.infinity,
+                  width: double.infinity,
+                  color: Colors.white,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 10,bottom: 10),
+                      child: Text('${pinpostModels[0].number_of_reply} Replied',
+                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,
+                      ),
+                      
+                      ),
+                    ),
                 ),
-            ),
+                ),
+
+
+
+                Expanded(
+                  child: Container(
+                              height: 50,
+                              color: Color.fromARGB(255, 71, 243, 114),
+                              child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(8),
+                  itemCount: pinreplyModels.length,
+
+                
+                
+                  itemBuilder: (BuildContext context, int index) {
+                    DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm").parse(pinreplyModels[index].date);
+                    String formattedDate = DateFormat('dd/MM/yyyy - kk:mm').format(tempDate);
+                    
+                
+                    return
+                    
+                      Stack(
+                
+                      children: [
+                        
+                        
+                        Container(
+                        
+                        width: size.width ,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 24,
+                        ),
+                
+                      
+                    
+                        
+                
+                        margin: EdgeInsets.only(bottom: index==pinreplyModels.length-1 ? 100 :20),
+                                  
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 250, 244, 154),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Stack(
+                          children: [
+                            
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                              Row(children: [
+                
+                                Container(
+                                        
+                                        child: CircleAvatar(
+                                          radius: 20,
+                                          backgroundColor: Colors.white,
+                                          backgroundImage:
+                                              NetworkImage(pinreplyModels[index].profileImage),
+                                        ),
+                                      ),
+                
+                                Padding(
+                                      padding: EdgeInsets.only(
+                                        left: 10,
+                                      ),
+                                      child: Text('${pinreplyModels[index].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                      
+                                ),
+                                
+                                      
+                              ],),
+                              SizedBox(height: 5,),
+                              Text(formattedDate,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
+                                      
+                              Padding(
+                                padding: EdgeInsets.only(
+                                      top: 10,
+                                ),
+                                child: Text('${pinreplyModels[index].pin_reply_text}',
+                                style: TextStyle(fontSize: 18,height: 1.5),),
+                              ),
+                
+                              
+                              
+                                      
+                                      
+                                    
+                
+                
+                
+                
+                            ],),
+                          ],
+                        ),
+                
+                    
+                
+                      ),
+                
+                       
+                
+                      if (userModels[0].id == pinreplyModels[index].reply_user_id) 
+                      
+                      Positioned( 
+                        right: 0,
+                        top: 0,
+                
+                        child: Row(
+                          children: [
+                
+                            IconButton(onPressed: () {
+                              
+                              _displayEditDialog(context,pinreplyModels[index].pin_id,pinreplyModels[index].pin_reply_text);
+                            }, 
+                            icon: Icon(Icons.edit),
+                            iconSize: 30,
+                            splashColor: Colors.transparent, 
+                            highlightColor: Colors.transparent,  
+                            
+                            ),
+                
+                            IconButton(onPressed: () {
+                              
+                              _displayDeleteDialog(context,pinreplyModels[index].pin_id);
+                            }, 
+                            icon: Icon(Icons.close),
+                            iconSize: 30,
+                            splashColor: Colors.transparent, 
+                            highlightColor: Colors.transparent,  
+                            
+                            ),
+                          ],
+                
+                
+                        ),
+                
+                
+                
+                      ),
+                
+                
+                
+                
+                      ],
+                    
+                
+                    );
+                    
+                    
+                    
+                    
+                    
+                
+                
+                  }
+                
+                  
+                
+                
+                
+                
+                              ),
+                
+                              
+                            ),
+                )
+              ],
             ),
           )
           
@@ -606,9 +784,9 @@ Future<Null> pullUserSQLID() async {
                       //width: size.width * 0.8,
                       width: size.width * 0.3,
                       height: size.height * 0.08,
-
+    
                       //color: Colors.cyan,
-
+    
                       child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
@@ -627,8 +805,8 @@ Future<Null> pullUserSQLID() async {
                                 color: Colors.black),
                           ),
                           onPressed: () {
-
-
+    
+    
                             
                             showModalBottomSheet(
                               shape: RoundedRectangleBorder(
@@ -691,7 +869,7 @@ Future<Null> pullUserSQLID() async {
                                                 Container(
                                                   //margin: EdgeInsets.only(top: 40),
                                                   //width: size.width * 0.831,
-
+    
                                                   child: (Container(
                                                     decoration: BoxDecoration(
                                                       //color: Colors.white,
@@ -768,7 +946,7 @@ Future<Null> pullUserSQLID() async {
                                                             .start,
                                                     children: [
                                                       //SizedBox(height: size.height * 0.021),
-
+    
                                                       SizedBox(
                                                           height: size.height *
                                                               0.007),
@@ -795,15 +973,15 @@ Future<Null> pullUserSQLID() async {
                                                             ),
                                                           ),
                                                           onPressed: () {
-
+    
                                                             /*----------------- Here ---------------------------------*/ 
                                                             print('Input: ' + pinController.text);
                                                             //print('Current circle_id: ' + circle_id );
                                                             //getPinpostFromCircle(pinController.text);
-                                                            SendPinText(pinController.text);
+                                                            SendPinReplyText(pinController.text);
                                                             //addItemToList();
                                                             /*----------------- Here ---------------------------------*/ 
-
+    
                                                             Navigator.pop(context);
                                                           },
                                                           child: Text(
@@ -833,8 +1011,8 @@ Future<Null> pullUserSQLID() async {
                                 ),
                               ),
                             );
-
-
+    
+    
                           }),
                     )
                   ],
@@ -845,12 +1023,12 @@ Future<Null> pullUserSQLID() async {
             ),
           ),
         ),
-
+    
       )
       
-
-
-
+    
+    
+    
     );
   }
 }
