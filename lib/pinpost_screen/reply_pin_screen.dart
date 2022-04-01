@@ -141,9 +141,8 @@ Future<Null> pullUserSQLID() async {
   Future getPinReplyFromPinID() async{
     
     String pin_id = widget.pin_id;
-    if(pinreplyModels.length !=0){
-      pinreplyModels.clear();
-    }else{}
+    pinreplyModels.clear();
+    
 
     //print('## circle_id = $circle_id');
     String path = '${MyConstant.domain}/famfam/getPinReplyWherePinID.php?isAdd=true&pin_id=$pin_id';
@@ -302,6 +301,7 @@ Future<Null> pullUserSQLID() async {
 
     TextEditingController pinEditController = TextEditingController();
     pinEditController.text = "${pin_reply_text}";
+    print('Pin Reply ID ==>> '+pin_reply_id);
     
     return showDialog(
       context: context,
@@ -368,12 +368,13 @@ Future<Null> pullUserSQLID() async {
                         await Dio().get(EditPinpost).then((value) {
                             if(value.toString()=='true'){
                               print('Pinreply Edited');
+                              getPinReplyFromPinID().then((value) => load = false);
                             }else{
                               print('Edit Error');
                             }
                           }   
                         );
-                        getPinpostFromPinID();
+                        
                         Navigator.pop(context);
                       },
                     ),
@@ -810,7 +811,7 @@ Future<Null> pullUserSQLID() async {
                 
                             IconButton(onPressed: () {
                               
-                              _displayReplyEditDialog(context,pinreplyModels[index].pin_id,pinreplyModels[index].pin_reply_text);
+                              _displayReplyEditDialog(context,pinreplyModels[index].pin_reply_id,pinreplyModels[index].pin_reply_text);
                             }, 
 
                             icon: Icon(Icons.edit),
