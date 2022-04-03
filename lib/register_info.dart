@@ -4,13 +4,9 @@ import 'dart:async';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:famfam/login.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
-import 'package:famfam/models/user_model.dart';
 import 'package:famfam/services/my_constant.dart';
-import 'package:famfam/services/sqlite_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +112,7 @@ class _Register_InfoState extends State<Register_Info> {
                     ),
                   ),
 
-                  //Profile Avatar
+//Profile Avatar
                   Center(
                     child: Stack(
                       children: [
@@ -600,23 +596,8 @@ class _Register_InfoState extends State<Register_Info> {
                                                   personalIDController.text;
                                               String jobs = jobsController.text;
 
-                                              // print('$birth');
-
                                               String apiInsertUser =
                                                   '${MyConstant.domain}/famfam/insertUser.php?isAdd=true&uid=$uid&profileImage=$profileImage&fname=$fname&lname=$lname&phone=$phone&birth=$birth&address=$address&personalID=$personalID&jobs=$jobs';
-                                              // UserModel userModel = UserModel(
-                                              //     uid: uid,
-                                              //     profileImage: profileImage,
-                                              //     fname: fname,
-                                              //     lname: lname,
-                                              //     phone: phone,
-                                              //     birth: birth,
-                                              //     address: address,
-                                              //     personalID: personalID,
-                                              //     jobs: jobs);
-                                              // await SQLiteHelper()
-                                              //     .insertValueTOSQLite(
-                                              //         userModel)
                                               await Dio()
                                                   .get(apiInsertUser)
                                                   .then((value) {
@@ -669,16 +650,6 @@ class _Register_InfoState extends State<Register_Info> {
         ),
       ),
     );
-  }
-
-  Future<File> getImageFileFromAssets(String path) async {
-    final byteData = await rootBundle.load('assets/$path');
-
-    final file = File('${(await getTemporaryDirectory()).path}/$path');
-    await file.writeAsBytes(byteData.buffer
-        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-
-    return file;
   }
 
   Future<void> uploadPictureToStorage() async {
