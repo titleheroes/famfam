@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
     pullUserSQLID().then((value) => pullCircle().then((value) {
           name = userModels[0].fname;
           family = circleModels[0].circle_name;
-          
+
           profileImage = userModels[0].profileImage;
         }));
   }
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
         preferences.clear();
       } else {
         for (var item in json.decode(value.data)) {
-          UserModel model = UserModel.fromMap(item);         
+          UserModel model = UserModel.fromMap(item);
           setState(() {
             userModels.add(model);
           });
@@ -207,7 +207,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Date(),
                         tabbar()
-                        
                       ]),
                     ),
                   ),

@@ -59,9 +59,9 @@ class _tabbarState extends State<tabbar> {
 
   void onDismissed(int index) {
     setState(() {
-      list_todo.removeAt(index);
       print('############list wanna delete ' + list_todo[index]);
       DeleteDatatoday(list_to_do: list_todo[index]);
+      list_todo.removeAt(index);
       print('deleted successed');
     });
   }
@@ -112,15 +112,17 @@ class _tabbarState extends State<tabbar> {
     print('###UID_frompulldata ==> ' + '$member_id');
     String pullData =
         '${MyConstant.domain}/famfam/getDataToday_IDO.php?isAdd=true&user_id=$member_id';
-    await Dio().get(pullData).then((value) async {
-      for (var item in json.decode(value.data)) {
-        list_today_Model list_model = list_today_Model.fromMap(item);
-        print(item);
-        setState(() {
-          list_to_do_Models.add(list_model);
-        });
-      }
-    });
+    try {
+      await Dio().get(pullData).then((value) async {
+        for (var item in json.decode(value.data)) {
+          list_today_Model list_model = list_today_Model.fromMap(item);
+          print(item);
+          setState(() {
+            list_to_do_Models.add(list_model);
+          });
+        }
+      });
+    } catch (e) {}
   }
 
   Future<Null> InsertDatatoday({String? list_to_do}) async {
@@ -235,16 +237,18 @@ class _tabbarState extends State<tabbar> {
     // print('#### member_id ' + '${member_id}');
     String pullData =
         '${MyConstant.domain}/famfam/getTickTickWhereCircleIDwithTrue.php?isAdd=true&circle_id=$circle_id&fav_topic=true';
-    await Dio().get(pullData).then((value) async {
-      for (var item in json.decode(value.data)) {
-        ticktick_Model ticktick_models = ticktick_Model.fromMap(item);
-        print(item);
-        setState(() {
-          ticktick_Models.add(ticktick_models);
-          count_ticktickUid = count_ticktickUid + 1;
-        });
-      }
-    });
+    try {
+      await Dio().get(pullData).then((value) async {
+        for (var item in json.decode(value.data)) {
+          ticktick_Model ticktick_models = ticktick_Model.fromMap(item);
+          print(item);
+          setState(() {
+            ticktick_Models.add(ticktick_models);
+            count_ticktickUid = count_ticktickUid + 1;
+          });
+        }
+      });
+    } catch (e) {}
 
     print('count_ticktickuid : ' + '$count_ticktickUid');
   }
@@ -265,7 +269,9 @@ class _tabbarState extends State<tabbar> {
       }
     });
     await pullDataTicktick(circle_id: circle_id, member_id: member_id);
-    addDatafromstart();
+    try {
+      addDatafromstart();
+    } catch (e) {}
   }
 
   Future<Null> addDatafromstart() async {
