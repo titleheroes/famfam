@@ -23,9 +23,8 @@ if (isset($_GET)) {
 		$user_id = $_GET['user_id'];
         $tick_topic = $_GET['tick_topic'];
 		$ticklist_list = $_GET['ticklist_list'];
-		$fav_topic = $_GET['fav_topic'];
 
-		$sql = "INSERT INTO `ticktick`(`tick_id`, `tick_uid`, `circle_id`, `user_id`, `tick_topic`, `ticklist_list`, `fav_topic`) VALUES ('$tick_id','$tick_uid','$circle_id','$user_id','$tick_topic','$ticklist_list','$fav_topic')";
+		$sql = "INSERT INTO `ticktick`(`tick_id`, `tick_uid`, `circle_id`, `user_id`, `tick_topic`, `ticklist_list`) VALUES ('$tick_id','$tick_uid','$circle_id','$user_id','$tick_topic','$ticklist_list')";
 
 		$result = mysqli_query($link, $sql);
 

@@ -9,7 +9,6 @@ import 'package:famfam/screens/ticktik_screen.dart';
 import 'package:famfam/screens/todolist_screens.dart';
 import 'package:famfam/screens/voterandom_screen.dart';
 import 'package:famfam/Homepage/HomePage.dart';
-import 'package:famfam/Homepage/addList.dart';
 import 'package:famfam/check-in/Checkin.dart';
 import 'package:famfam/loading.dart';
 import 'package:famfam/login.dart';

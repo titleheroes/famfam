@@ -17,23 +17,26 @@ if (!$link->set_charset("utf8")) {
 
 if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
-			$tick_id = $_GET['tick_id'];
-		$tick_uid = $_GET['tick_uid'];
-		$circle_id = $_GET['circle_id'];
-		$user_id = $_GET['user_id'];
-        $tick_topic = $_GET['tick_topic'];
-		$ticklist_list = $_GET['ticklist_list'];
-		$fav_topic = $_GET['fav_topic'];
 
-		$sql = "INSERT INTO `ticktick`(`tick_id`, `tick_uid`, `circle_id`, `user_id`, `tick_topic`, `ticklist_list`, `fav_topic`) VALUES ('$tick_id','$tick_uid','$circle_id','$user_id','$tick_topic','$ticklist_list','$fav_topic')";
+		$circle_id = $_GET['circle_id'];
+	    
+
+		$sql = "SELECT * FROM `ticktick` WHERE `circle_id` = '$circle_id'";
 
 		$result = mysqli_query($link, $sql);
 
 		if ($result) {
-			echo "true";
-		} else {
-			echo "false";
-		}
+
+			while($row=mysqli_fetch_assoc($result)){
+			$output[]=$row;
+
+			}	// while
+
+			echo json_encode($output);
+
+		} //if
+
+	
 
 	} else echo "Welcome Master UNG";
    

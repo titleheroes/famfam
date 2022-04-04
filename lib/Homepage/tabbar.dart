@@ -1,12 +1,22 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:famfam/models/list_today_ido.dart';
+import 'package:famfam/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:famfam/services/my_constant.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:famfam/models/circle_model.dart';
+import 'package:famfam/models/ticktick_model.dart';
 
 class tabbar extends StatefulWidget {
   const tabbar({Key? key}) : super(key: key);
@@ -15,25 +25,124 @@ class tabbar extends StatefulWidget {
   _tabbarState createState() => _tabbarState();
 }
 
+class List_showModel {
+  final String topic;
+  final String topic_id;
+  final bool fav;
+  List_showModel(this.topic, this.topic_id, this.fav);
+}
+
+class Product {
+  final String product_name;
+  final String product_id;
+  Product(this.product_name, this.product_id);
+}
+
 class _tabbarState extends State<tabbar> {
-  final List<String> names = <String>[];
+  final List<String> list_todo = <String>[];
   final List<int> icon = <int>[1, 2, 3];
 
   TextEditingController nameController = TextEditingController();
   int numicon = 0;
+  int num = 0;
+  List<UserModel> userModels = [];
+  List<list_today_Model> list_to_do_Models = [];
 
-  void addItemToList() {
+  void addItemToList(String text) {
     setState(() {
-      names.insert(0, nameController.text);
+      list_todo.insert(0, text);
       icon.insert(0, numicon);
-      nameController.text = '';
+      // nameController.text = '';
       numicon = 0;
     });
   }
 
   void onDismissed(int index) {
     setState(() {
-      names.removeAt(index);
+      list_todo.removeAt(index);
+      print('############list wanna delete ' + list_todo[index]);
+      DeleteDatatoday(list_to_do: list_todo[index]);
+      print('deleted successed');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pullUserSQLID();
+  }
+
+  void addItemfromStart() {
+    print(list_to_do_Models.length);
+    for (int i = 0; i < list_to_do_Models.length; i++) {
+      addItemToList(list_to_do_Models[i].list_to_do);
+    }
+  }
+
+  Future<Null> pullUserSQLID() async {
+    final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
+    String uid = getUID;
+    print('#### uid ' + getUID);
+    String pullUser =
+        '${MyConstant.domain}/famfam/getUserWhereUID.php?uid=$uid&isAdd=true';
+    await Dio().get(pullUser).then((value) async {
+      if (value.toString() == null ||
+          value.toString() == 'null' ||
+          value.toString() == '') {
+        FirebaseAuth.instance.signOut();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.clear();
+      } else {
+        for (var item in json.decode(value.data)) {
+          UserModel model = UserModel.fromMap(item);
+          print(item);
+          setState(() {
+            userModels.add(model);
+          });
+        }
+      }
+    });
+    await pullDataToday_IDO();
+    addItemfromStart();
+    pullCircle();
+  }
+
+  Future<Null> pullDataToday_IDO() async {
+    String? member_id = userModels[0].id;
+    print('###UID_frompulldata ==> ' + '$member_id');
+    String pullData =
+        '${MyConstant.domain}/famfam/getDataToday_IDO.php?isAdd=true&user_id=$member_id';
+    await Dio().get(pullData).then((value) async {
+      for (var item in json.decode(value.data)) {
+        list_today_Model list_model = list_today_Model.fromMap(item);
+        print(item);
+        setState(() {
+          list_to_do_Models.add(list_model);
+        });
+      }
+    });
+  }
+
+  Future<Null> InsertDatatoday({String? list_to_do}) async {
+    String? member_id = userModels[0].id;
+    print('###UID ==> ' + '$member_id');
+    String APIinsertData =
+        '${MyConstant.domain}/famfam/insertDataToday_IDO.php?user_id=$member_id &list_to_do=$list_to_do&isAdd=true';
+    await Dio().get(APIinsertData).then((value) {
+      if (value.toString() == 'true') {
+        print('Insert Today I Do Successed');
+      }
+    });
+  }
+
+  Future<Null> DeleteDatatoday({String? list_to_do}) async {
+    String? member_id = userModels[0].id;
+    String APIDeleteData =
+        '${MyConstant.domain}/famfam/deleteDataToday_IDO.php?isAdd=true&user_id=$member_id&list_to_do=$list_to_do';
+    await Dio().get(APIDeleteData).then((value) {
+      if (value.toString() == 'true') {
+        print('Deleted Today I Do Successed');
+      }
     });
   }
 
@@ -100,8 +209,8 @@ class _tabbarState extends State<tabbar> {
                   color: Colors.amber,
                   child: Text('Add'),
                   onPressed: () {
-                    addItemToList();
-                    print(nameController.text);
+                    addItemToList(nameController.text);
+                    InsertDatatoday(list_to_do: nameController.text);
                     Navigator.pop(context);
                   },
                 ),
@@ -111,6 +220,166 @@ class _tabbarState extends State<tabbar> {
         );
       },
     );
+  }
+
+  int count_ticktickUid = 0;
+  List<CircleModel> circleModels = [];
+  List<ticktick_Model> ticktick_Models = [];
+  List<ticktick_Model> tempticktick = [];
+  List<List_showModel> list_topic = [];
+  List<Product> list_product = [];
+
+  Future<Null> pullDataTicktick({String? circle_id, String? member_id}) async {
+    count_ticktickUid = 0;
+    // print('#### circle_id ' + '${circle_id}');
+    // print('#### member_id ' + '${member_id}');
+    String pullData =
+        '${MyConstant.domain}/famfam/getTickTickWhereCircleIDwithTrue.php?isAdd=true&circle_id=$circle_id&fav_topic=true';
+    await Dio().get(pullData).then((value) async {
+      for (var item in json.decode(value.data)) {
+        ticktick_Model ticktick_models = ticktick_Model.fromMap(item);
+        print(item);
+        setState(() {
+          ticktick_Models.add(ticktick_models);
+          count_ticktickUid = count_ticktickUid + 1;
+        });
+      }
+    });
+
+    print('count_ticktickuid : ' + '$count_ticktickUid');
+  }
+
+  Future<Null> pullCircle() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? circle_id = preferences.getString('circle_id');
+    String? member_id = userModels[0].id;
+
+    String pullCircle =
+        '${MyConstant.domain}/famfam/getCircleWhereCircleIDuserID.php?isAdd=true&circle_id=$circle_id&member_id=$member_id';
+    await Dio().get(pullCircle).then((value) async {
+      for (var item in json.decode(value.data)) {
+        CircleModel model = CircleModel.fromMap(item);
+        setState(() {
+          circleModels.add(model);
+        });
+      }
+    });
+    await pullDataTicktick(circle_id: circle_id, member_id: member_id);
+    addDatafromstart();
+  }
+
+  Future<Null> addDatafromstart() async {
+    int num = 1;
+    var arr = [];
+    for (int i = 0; i <= count_ticktickUid; i++) {
+      if (i == count_ticktickUid - 1) {
+        String topic = ticktick_Models[i].tick_topic;
+        arr.insert(0, ticktick_Models[i].ticklist_list);
+        String? product = ticktick_Models[i].ticklist_list;
+        String? product_id = ticktick_Models[i].tick_id;
+        bool fav = true;
+        // if (ticktick_Models[i].fav_topic == 'true') {
+        //   fav = true;
+        // } else {
+        //   fav = false;
+        // }
+
+        String? id = ticktick_Models[i].tick_id;
+        // print('id :' + '${id}');
+        // print('topic :' + topic);
+        // print('list : ' + '$arr');
+        // print('num : ' + '$num');
+
+        setState(() {
+          list_topic.add(List_showModel(topic, id!, fav));
+          list_product.add(Product(product, product_id!));
+        });
+        // print(list_topic);
+        break;
+      } else if (ticktick_Models[i].tick_uid ==
+          ticktick_Models[i + 1].tick_uid) {
+        // print('## i : ' + ticktick_Models[i].tick_uid);
+        // print('## i+1 : ' + ticktick_Models[i + 1].tick_uid);
+        String? product = ticktick_Models[i].ticklist_list;
+        String? product_id = ticktick_Models[i].tick_id;
+        arr.insert(0, product);
+        setState(() {
+          list_product.add(Product(product, product_id!));
+        });
+        num = num + 1;
+      } else {
+        String topic = ticktick_Models[i].tick_topic;
+        // print(i);
+        String? product = ticktick_Models[i].ticklist_list;
+        String? product_id = ticktick_Models[i].tick_id;
+        arr.insert(0, ticktick_Models[i].ticklist_list);
+        String? id = ticktick_Models[i].tick_id;
+        bool fav;
+        if (ticktick_Models[i].fav_topic == 'true') {
+          fav = true;
+        } else {
+          fav = false;
+        }
+        // print('id :' + '${id}');
+        // print('topic :' + topic);
+        // print('list : ' + '$arr');
+        // print('num : ' + '$num');
+        setState(() {
+          list_topic.add(List_showModel(topic, id!, fav));
+          list_product.add(Product(product, product_id!));
+        });
+        arr = [];
+        num = 1;
+      }
+    }
+  }
+
+  Future<Null> deletedlistByIDandName(
+      {String? product_id, String? product_name}) async {
+    String deletedDataList =
+        '${MyConstant.domain}/famfam/deleteTickTickList.php?isAdd=true&tick_id=$product_id&ticklist_list=$product_name';
+    await Dio().get(deletedDataList).then((value) {
+      if (value.toString() == 'true') {
+        print('Deleted List By ID Successed');
+      }
+    });
+  }
+
+  void onDismissedTickTick(String product_name, String product_id) {
+    int checkEmpty = 0;
+    setState(() {
+      list_product.removeWhere((item) =>
+          item.product_name == '$product_name' &&
+          item.product_id == '$product_id');
+      deletedlistByIDandName(
+          product_id: product_id, product_name: product_name);
+
+      print('deleted list successed');
+
+      for (int i = 0; i <= list_product.length; i++) {
+        if (list_product[i].product_id == product_id) {
+          checkEmpty = checkEmpty + 1;
+          print(checkEmpty);
+        }
+        if (checkEmpty == 0) {
+          print(checkEmpty);
+          setState(() {
+            list_topic.removeWhere((item) => item.topic_id == '$product_id');
+            print('deleted topic successed');
+          });
+        }
+      }
+    });
+  }
+
+  Future<Null> updateFav({String? fav_topic, String? tick_id}) async {
+    String updateDataFav =
+        '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
+    await Dio().get(updateDataFav).then((value) {
+      if (value.toString() == 'true') {
+        print('Updated Fav By ID Successed');
+      }
+    });
   }
 
   @override
@@ -238,7 +507,7 @@ class _tabbarState extends State<tabbar> {
                                   ),
                                 ),
                                 Container(
-                                  child: (names.isEmpty)
+                                  child: (list_todo.isEmpty)
                                       ? Column(children: [
                                           Padding(
                                               padding: EdgeInsets.only(
@@ -264,7 +533,7 @@ class _tabbarState extends State<tabbar> {
                                       : Expanded(
                                           child: ListView.builder(
                                               padding: const EdgeInsets.all(8),
-                                              itemCount: names.length,
+                                              itemCount: list_todo.length,
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index) {
@@ -302,7 +571,7 @@ class _tabbarState extends State<tabbar> {
                                                                         padding:
                                                                             EdgeInsets.only(right: 10)),
                                                                     Text(
-                                                                      '${names[index]}',
+                                                                      '${list_todo[index]}',
                                                                       style: TextStyle(
                                                                           fontSize:
                                                                               18),
@@ -329,89 +598,7 @@ class _tabbarState extends State<tabbar> {
                                                             ),
                                                           ),
                                                         ]));
-                                              }
-                                              //          Padding(
-                                              //   padding:
-                                              //       const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                              //   child: Container(
-                                              //       height: 70,
-                                              //       decoration: BoxDecoration(
-                                              //           borderRadius: BorderRadius.circular(10),
-                                              //           color: Color(0xfffFFC34A)),
-                                              //       child: Row(
-                                              //         children: [
-                                              //           Padding(
-                                              //             padding: const EdgeInsets.fromLTRB(
-                                              //                 20, 10, 10, 10),
-                                              //             child: Icon(
-                                              //               IconData(0xea8c,
-                                              //                   fontFamily: 'MaterialIcons'),
-                                              //               color: Colors.red,
-                                              //               size: 30.0,
-                                              //             ),
-                                              //           ),
-                                              //           Container(
-                                              //             width: 250,
-                                              //             child: Text(
-                                              //               "ทำการบ้านวิชาSE",
-                                              //               style: TextStyle(
-                                              //                   fontWeight: FontWeight.normal,
-                                              //                   fontSize: 20),
-                                              //             ),
-                                              //           ),
-                                              //           Padding(
-                                              //             padding: const EdgeInsets.only(left: 0),
-                                              //             child: RoundCheckBox(
-                                              //               uncheckedColor: Colors.white,
-                                              //               checkedColor: Colors.grey,
-                                              //               onTap: (selected) {},
-                                              //             ),
-                                              //           ),
-                                              //         ],
-                                              //       )),
-                                              // ),
-                                              )),
-
-                                  // Padding(
-                                  //   padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                                  //   child: Container(
-                                  //       height: 70,
-                                  //       decoration: BoxDecoration(
-                                  //           borderRadius: BorderRadius.circular(10),
-                                  //           color: Color(0xfffFFC34A)),
-                                  //       child: Row(
-                                  //         children: [
-                                  //           Padding(
-                                  //             padding: const EdgeInsets.fromLTRB(
-                                  //                 20, 10, 10, 10),
-                                  //             child: Icon(
-                                  //               IconData(0xea8c,
-                                  //                   fontFamily: 'MaterialIcons'),
-                                  //               color: Colors.red,
-                                  //               size: 30.0,
-                                  //             ),
-                                  //           ),
-                                  //           Container(
-                                  //             width: 250,
-                                  //             child: Text(
-                                  //               "ส่งพัสดุ",
-                                  //               style: TextStyle(
-                                  //                   fontWeight: FontWeight.normal,
-                                  //                   fontSize: 20),
-                                  //             ),
-                                  //           ),
-                                  //           Padding(
-                                  //             padding:
-                                  //                 const EdgeInsets.only(right: 10),
-                                  //             child: RoundCheckBox(
-                                  //               uncheckedColor: Colors.white,
-                                  //               checkedColor: Colors.grey,
-                                  //               onTap: (selected) {},
-                                  //             ),
-                                  //           ),
-                                  //         ],
-                                  //       )),
-                                  // ),
+                                              })),
                                 )
                               ],
                             )),
@@ -594,7 +781,10 @@ class _tabbarState extends State<tabbar> {
                                             ),
                                             onPressed: () {
                                               Navigator.pushNamed(
-                                                  context, '/ticktik');
+                                                      context, '/ticktik')
+                                                  .then((value) {
+                                                setState(() {});
+                                              });
                                             },
                                             child: Row(
                                               children: [
@@ -621,71 +811,210 @@ class _tabbarState extends State<tabbar> {
                                       ),
                                     ),
                                     Container(
-                                      height: 140,
-                                      margin: const EdgeInsets.all(11),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(30),
-                                        color: Color(0xFFFFC34A),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        30, 6, 0, 0),
-                                                child: Text(
-                                                  "Shopping",
-                                                  textAlign: TextAlign.left,
-                                                  style:
-                                                      TextStyle(fontSize: 22),
+                                        child: (list_topic.isEmpty)
+                                            ? Column(children: [
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height /
+                                                            8)),
+                                                Container(
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/leaf-fall.svg",
+                                                    height: 85,
+                                                    color: Colors.black
+                                                        .withOpacity(0.4),
+                                                  ),
                                                 ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        200, 6, 0, 0),
-                                                child: FavoriteButton(
-                                                  iconSize: 30,
-                                                  iconDisabledColor:
-                                                      Colors.white,
-                                                  valueChanged: (_isFavorite) {
-                                                    print(
-                                                        'Is Favorite $_isFavorite)');
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 7,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 30),
-                                                child: RoundCheckBox(
-                                                  size: 22,
-                                                  uncheckedColor: Colors.white,
-                                                  checkedColor: Colors.green,
-                                                  onTap: (selected) {},
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 7),
-                                                child: Text("นมตราหมี"),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    )
+                                                Text(
+                                                  "You don't have any list right now",
+                                                  style: TextStyle(
+                                                      color: Colors.grey[500],
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                )
+                                              ])
+                                            : Expanded(
+                                                child: ListView.builder(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    itemCount:
+                                                        list_topic.length,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      return Container(
+                                                          height: 150,
+                                                          margin:
+                                                              EdgeInsets.all(
+                                                                  15),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5),
+                                                            color: Color(
+                                                                0xfffFFC34A),
+                                                            // color: Colors.white,
+                                                          ),
+                                                          child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Container(
+                                                                      margin: EdgeInsets.only(
+                                                                          left:
+                                                                              15,
+                                                                          top:
+                                                                              15),
+                                                                      child: Text(
+                                                                          '${list_topic[index].topic}',
+                                                                          style: TextStyle(
+                                                                              fontSize: 22,
+                                                                              fontWeight: FontWeight.bold)),
+                                                                    ),
+                                                                    Spacer(),
+                                                                    Container(
+                                                                      child: IconButton(
+                                                                          iconSize: 22,
+                                                                          icon: Icon(
+                                                                            Icons.favorite,
+                                                                          ),
+                                                                          color: list_topic[index].fav ? Colors.red : Colors.white,
+                                                                          onPressed: () {
+                                                                            // bool
+                                                                            //     isChecked =
+                                                                            //     false;
+                                                                            setState(() async {
+                                                                              String fav_topic = 'false';
+                                                                              String tick_id = list_topic[index].topic_id;
+                                                                              String updateDataFav = '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
+                                                                              await Dio().get(updateDataFav).then((value) {
+                                                                                // if (value.toString() == 'true') {
+                                                                                print('Updated Fav By ID Successed');
+                                                                                // }
+                                                                                setState(() {
+                                                                                  list_topic.removeWhere((item) => item.topic_id == '${list_topic[index].topic_id}');
+                                                                                  print('deleted topic successed');
+                                                                                });
+                                                                              });
+                                                                            });
+                                                                          }),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                Expanded(
+                                                                    child: ListView.builder(
+                                                                        scrollDirection: Axis.horizontal,
+                                                                        itemCount: list_product.length,
+                                                                        itemBuilder: (BuildContext context, int index2) {
+                                                                          if (list_topic[index].topic_id ==
+                                                                              list_product[index2].product_id) {}
+                                                                          return Container(
+                                                                              child: (list_topic[index].topic_id == list_product[index2].product_id)
+                                                                                  ? Wrap(children: <Widget>[
+                                                                                      Container(
+                                                                                          margin: EdgeInsets.only(left: 15, top: 20),
+                                                                                          child: Row(children: [
+                                                                                            Container(
+                                                                                              child: RoundCheckBox(
+                                                                                                size: 22,
+                                                                                                uncheckedColor: Colors.white,
+                                                                                                checkedColor: Colors.green,
+                                                                                                onTap: (selected) {
+                                                                                                  print('selected ' + list_product[index2].product_id);
+                                                                                                  print('selected ' + list_product[index2].product_name);
+
+                                                                                                  onDismissedTickTick(list_product[index2].product_name, list_product[index2].product_id);
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(right: 10, left: 10),
+                                                                                              child: Text('${list_product[index2].product_name}'),
+                                                                                            )
+                                                                                          ]))
+                                                                                    ])
+                                                                                  : SizedBox.shrink());
+                                                                        }))
+                                                              ]));
+                                                    })))
+
+                                    // Container(
+                                    //   height: 140,
+                                    //   margin: const EdgeInsets.all(11),
+                                    //   decoration: BoxDecoration(
+                                    //     borderRadius: BorderRadius.circular(30),
+                                    //     color: Color(0xFFFFC34A),
+                                    //   ),
+                                    //   child: Column(
+                                    //     children: [
+                                    //       SizedBox(
+                                    //         height: 10,
+                                    //       ),
+                                    //       Row(
+                                    //         children: [
+                                    //           Padding(
+                                    //             padding:
+                                    //                 const EdgeInsets.fromLTRB(
+                                    //                     30, 6, 0, 0),
+                                    //             child: Text(
+                                    //               "Shopping",
+                                    //               textAlign: TextAlign.left,
+                                    //               style:
+                                    //                   TextStyle(fontSize: 22),
+                                    //             ),
+                                    //           ),
+                                    //           Padding(
+                                    //             padding:
+                                    //                 const EdgeInsets.fromLTRB(
+                                    //                     200, 6, 0, 0),
+                                    //             child: FavoriteButton(
+                                    //               iconSize: 30,
+                                    //               iconDisabledColor:
+                                    //                   Colors.white,
+                                    //               valueChanged: (_isFavorite) {
+                                    //                 print(
+                                    //                     'Is Favorite $_isFavorite)');
+                                    //               },
+                                    //             ),
+                                    //           ),
+                                    //         ],
+                                    //       ),
+                                    //       SizedBox(
+                                    //         height: 7,
+                                    //       ),
+                                    //       Row(
+                                    //         children: [
+                                    //           Padding(
+                                    //             padding: const EdgeInsets.only(
+                                    //                 left: 30),
+                                    //             child: RoundCheckBox(
+                                    //               size: 22,
+                                    //               uncheckedColor: Colors.white,
+                                    //               checkedColor: Colors.green,
+                                    //               onTap: (selected) {},
+                                    //             ),
+                                    //           ),
+                                    //           Padding(
+                                    //             padding: const EdgeInsets.only(
+                                    //                 left: 7),
+                                    //             child: Text("นมตราหมี"),
+                                    //           )
+                                    //         ],
+                                    //       )
+                                    //     ],
+                                    //   ),
+                                    // )
                                   ],
                                 )),
                           ],
