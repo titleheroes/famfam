@@ -17,15 +17,16 @@ if (!$link->set_charset("utf8")) {
 
 if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
-			$tick_id = $_GET['tick_id'];
-		$tick_uid = $_GET['tick_uid'];
+				
 		$circle_id = $_GET['circle_id'];
-		$user_id = $_GET['user_id'];
-        $tick_topic = $_GET['tick_topic'];
-		$ticklist_list = $_GET['ticklist_list'];
-		$fav_topic = $_GET['fav_topic'];
-
-		$sql = "INSERT INTO `ticktick`(`tick_id`, `tick_uid`, `circle_id`, `user_id`, `tick_topic`, `ticklist_list`, `fav_topic`) VALUES ('$tick_id','$tick_uid','$circle_id','$user_id','$tick_topic','$ticklist_list','$fav_topic')";
+		$circle_code = $_GET['circle_code'];
+		$circle_name = $_GET['circle_name'];
+		$host_id = $_GET['host_id'];
+		$member_id = $_GET['member_id'];
+		
+							
+		$sql = "INSERT INTO `circle`(`circle_id`, `circle_code`, `circle_name`, `host_id`,`member_id`) VALUES ('$circle_id','$circle_code','$circle_name','$host_id','$member_id')";
+		
 
 		$result = mysqli_query($link, $sql);
 

@@ -18,6 +18,7 @@ if (!$link->set_charset("utf8")) {
 if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
 				
+		$name = $_GET['name'];
 		$uid = $_GET['uid'];
 		$profileImage = $_GET['profileImage'];
 		$fname = $_GET['fname'];
