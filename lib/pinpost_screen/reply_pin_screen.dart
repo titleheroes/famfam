@@ -582,12 +582,18 @@ Future<Null> pullUserSQLID() async {
 
     return new WillPopScope(
       onWillPop: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PinScreen() ),) ;
+
+          if(load == false){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PinScreen() ),) ;
+          }else{
+            null;
+          }
+
         return Future.value(false);
 
       } ,
 
-      
+
       child: Scaffold(
         //Main Screen
         appBar: PreferredSize(

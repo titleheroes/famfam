@@ -398,7 +398,13 @@ Future<Null> pullUserSQLID() async {
 
     return new WillPopScope(
       onWillPop: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user) ),) ;
+
+        if(load == false){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user) ),) ;
+          }else{
+            null;
+          }
+
         return Future.value(false);
 
       } ,
