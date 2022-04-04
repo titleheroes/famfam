@@ -201,7 +201,7 @@ Future<Null> pullUserSQLID() async {
     
   );
     load = true;
-    getPinpostFromPinID().then((value) => getPinReplyFromPinID());
+    getPinpostFromPinID().then((value) =>  getPinReplyFromPinID().then((value) => load = false));
     //Navigator.pushNamed(context, '/pinpost');
 
   }
@@ -276,7 +276,7 @@ Future<Null> pullUserSQLID() async {
                         await Dio().get(EditPinpost).then((value) {
                             if(value.toString()=='true'){
                               print('Pinpost Edited');
-                              getPinpostFromPinID().then((value) => load = false);
+                              getPinpostFromPinID().then((value) =>  getPinReplyFromPinID().then((value) => load = false));
                             }else{
                               print('Edit Error');
                             }
@@ -309,7 +309,7 @@ Future<Null> pullUserSQLID() async {
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text('Edit Pin Post'),
+          title: Text('Edit Reply'),
           
           content: SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -370,7 +370,7 @@ Future<Null> pullUserSQLID() async {
                             if(value.toString()=='true'){
                               print('Pinreply Edited');
                               
-                              getPinReplyFromPinID().then((value) => load = false);
+                              getPinpostFromPinID().then((value) =>  getPinReplyFromPinID().then((value) => load = false));
                             }else{
                               print('Edit Error');
                             }
@@ -475,7 +475,7 @@ Future<Null> pullUserSQLID() async {
       }
     });
     //Navigator.pushNamed(context, '/pinpost');
-    getPinpostFromPinID();
+    getPinpostFromPinID().then((value) =>  getPinReplyFromPinID().then((value) => load = false));
 
   }
 
