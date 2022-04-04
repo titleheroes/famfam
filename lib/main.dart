@@ -23,6 +23,7 @@ import 'package:famfam/settingPage/settingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:famfam/pinpost_screen/pin_screen.dart';
+import 'package:famfam/pinpost_screen/reply_pin_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,7 +75,7 @@ void main() async {
         '/todolist': (context) => ToDoListScreen(),
         '/voterandom': (context) => VoteRandomScreen(),
         '/checkin': (context) => CheckIn(),
-        '/pinpost': (context) => PinScreen(),
+        '/pinpost': (context) => PinScreen(),     
         '/calendar': (context) => Calendar(),
       },
     ),

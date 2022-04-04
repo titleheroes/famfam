@@ -1,172 +1,270 @@
+import 'dart:io';
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:famfam/models/user_model.dart';
+import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/settingPage/member/member.dart';
 import 'package:famfam/settingPage/settingPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:famfam/Homepage/HomePage.dart';
-import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
-  String? nameProfileMember;
-  String? idProfileMember;
-  String? personIDProfileMember;
+  final String? userID;
+  final String? circle_id;
   final int? profileUser;
   final int? profileMem;
   final int? profileOwner;
-  // String? bdProfileMember;
-  // String? phoneProfileMember;
-  // String? addressProfileMember;
-  // String? jobProfileMember;
-  // String? profileProfileMember;
   Profile({
     Key? key,
-    @required this.nameProfileMember,
-    @required this.idProfileMember,
-    @required this.personIDProfileMember,
+    @required this.userID,
+    @required this.circle_id,
     @required this.profileMem,
     @required this.profileOwner,
     @required this.profileUser,
-    // @required this.bdProfileMember,
-    // @required this.phoneProfileMember,
-    // @required this.addressProfileMember,
-    // @required this.jobProfileMember,
-    // @required this.profileProfileMember,
   }) : super(key: key);
   @override
   State<Profile> createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
-  String profile = 'assets/images/Burin-Profile.png';
-  String name = 'Burin Sabaidee';
-  String userID = '00000000002';
-  String birthday = '21 January 2006';
-  String PersonId = '1100098765421';
-  String phone = '+66 98 765 4321';
-  String address = '101 Royal Village Ram Road Bangkok 10101';
-  String job = 'Student';
+  List<UserModel> userModels = [];
+
+  String? urlImage;
+  PickedFile? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+
+  String profile =
+      'https://firebasestorage.googleapis.com/v0/b/famfam-c881b.appspot.com/o/userProfile%2FcircleOnbg.png?alt=media&token=80bc8cea-30d6-41d7-8896-c86c021e059e';
+  String name = 'Loading...';
+  String userID = 'Loading...';
+  String birthday = 'Loading...';
+  String PersonId = 'Loading...';
+  String phone = 'Loading...';
+  String address = 'Loading...';
+  String job = 'Loading...';
+
+  @override
+  void initState() {
+    super.initState();
+    pullUserSQLID().then((value) {
+      profile = userModels[0].profileImage;
+      name = '${userModels[0].fname} ${userModels[0].lname}';
+      userID = userModels[0].uid;
+      birthday = userModels[0].birth;
+      PersonId = userModels[0].personalID;
+      phone = userModels[0].phone;
+      address = userModels[0].address;
+      job = userModels[0].jobs;
+    });
+  }
+
+  Future<Null> pullUserSQLID() async {
+    final String getUID = widget.userID!;
+    String uid = getUID;
+    String pullUser =
+        '${MyConstant.domain}/famfam/getUserWhereUID.php?isAdd=true&uid=$uid';
+    await Dio().get(pullUser).then((value) async {
+      if (value.toString() == null ||
+          value.toString() == 'null' ||
+          value.toString() == '') {
+        FirebaseAuth.instance.signOut();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.clear();
+      } else {
+        for (var item in json.decode(value.data)) {
+          UserModel model = UserModel.fromMap(item);
+          setState(() {
+            userModels.add(model);
+          });
+        }
+      }
+    });
+  }
 
   TextEditingController editController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "My Profile",
-          style: TextStyle(
-              color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.chevron_left_rounded,
-            color: Colors.black,
-            size: 40,
+      home: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            "My Profile",
+            style: TextStyle(
+                color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
           ),
-          onPressed: () {
-            if (widget.profileOwner == 1 || widget.idProfileMember == 1) {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => memberPage()));
-            } else {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => settingPage()));
-            }
-          },
+          leading: IconButton(
+            icon: Icon(
+              Icons.chevron_left_rounded,
+              color: Colors.black,
+              size: 40,
+            ),
+            onPressed: () {
+              if (widget.profileOwner == 1 || widget.profileMem == 1) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    print(widget.circle_id);
+                    return memberPage(
+                      circle_id: widget.circle_id,
+                    );
+                  }),
+                );
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => settingPage(),
+                  ),
+                );
+              }
+            },
+          ),
+          elevation: 0,
+          backgroundColor: Color(0xFFF6E5C7),
         ),
-        elevation: 0,
-        backgroundColor: Color(0xFFF6E5C7),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: ListView(
-          children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height / 4,
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 9,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(color: Colors.white),
+        body: Container(
+          color: Colors.white,
+          child: ListView(
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height / 4,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 9,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  top: 0,
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 9,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                          color: Color(0xFFF6E5C7),
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(50),
-                              bottomRight: Radius.circular(50))),
+                  Positioned(
+                    top: 0,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 9,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                            color: Color(0xFFF6E5C7),
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(50),
+                                bottomRight: Radius.circular(50))),
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
+                  Positioned(
                     top: 10,
                     child: Container(
                       width: 200,
                       height: 200,
-                      child: Image.asset(profile),
+                      // child: Image.network(profile),
                       decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(
-                              width: 8, color: const Color(0xFFFFFFFF))),
-                    )),
-                Positioned(
-                    bottom: 0,
-                    right: 150,
-                    child: Container(
-                        width: 60,
-                        height: 60,
-                        child: ElevatedButton(
-                          child: Icon(
-                            Icons.autorenew_rounded,
-                            color: Colors.black,
-                            size: 30,
-                          ),
-                          style: ButtonStyle(
-                              shape: MaterialStateProperty.all(CircleBorder()),
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith(
-                                      (states) => Colors.white)),
-                          onPressed: () {},
-                        )))
-              ],
-            ),
-            Column(
-              children: [
-                Text(name,
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(
+                          width: 8,
+                          color: const Color(0xFFFFFFFF),
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.white,
+                        backgroundImage: _imageFile == null
+                            ? NetworkImage(profile) as ImageProvider
+                            : FileImage(File(_imageFile!.path)),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                      bottom: 0,
+                      right: 150,
+                      child: Container(
+                          width: 60,
+                          height: 60,
+                          child: ElevatedButton(
+                            child: Icon(
+                              Icons.autorenew_rounded,
+                              color: Colors.black,
+                              size: 30,
+                            ),
+                            style: ButtonStyle(
+                                shape:
+                                    MaterialStateProperty.all(CircleBorder()),
+                                backgroundColor:
+                                    MaterialStateProperty.resolveWith(
+                                        (states) => Colors.white)),
+                            onPressed: () {
+                              String profileImage;
+                              TakePhoto(ImageSource.gallery).then((value) {
+                                uploadPictureToStorage().whenComplete(() async {
+                                  if (urlImage == null) {
+                                    return;
+                                  } else {
+                                    String uid = userModels[0].uid;
+                                    profileImage =
+                                        Uri.encodeComponent(urlImage!);
+                                    String apiInsertUser =
+                                        '${MyConstant.domain}/famfam/updateProfileUserWhereUID.php?isAdd=true&uid=$uid&profileImage=$profileImage';
+                                    await Dio()
+                                        .get(apiInsertUser)
+                                        .then((value) async {
+                                      await Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Profile(
+                                            userID: widget.userID,
+                                            circle_id: widget.circle_id,
+                                            profileUser: widget.profileUser,
+                                            profileMem: widget.profileMem,
+                                            profileOwner: widget.profileOwner,
+                                          ),
+                                        ),
+                                      );
+                                    });
+                                  }
+                                });
+                              });
+                            },
+                          )))
+                ],
+              ),
+              Column(
+                children: [
+                  Text(name,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold)),
+                  Text(
+                    'ID: ' + '$userID',
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold)),
-                Text(
-                  'ID: ' + '$userID',
-                  style: TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                ),
-                headtoppic("Birthdate", birthday),
-                headtoppic("Personal ID", PersonId),
-                headtoppic("Phone number", phone),
-                headtoppic("Address", "xxxxxxxxxxxxx"),
-                headtoppic("Job", job),
-              ],
-            ),
-            CheckUser(
-                widget.profileUser!, widget.profileMem!, widget.profileOwner!),
-          ],
+                        color: Colors.grey[500],
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  headtoppic("Birthdate", birthday),
+                  headtoppic("Personal ID", PersonId),
+                  headtoppic("Phone number", phone),
+                  headtoppic("Address", address),
+                  headtoppic("Job", job),
+                ],
+              ),
+              CheckUser(widget.profileUser!, widget.profileMem!,
+                  widget.profileOwner!),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 
   Widget headtoppic(String Head, String Info) => Container(
@@ -233,4 +331,42 @@ class _ProfileState extends State<Profile> {
                           borderRadius: BorderRadius.all(Radius.circular(8))),
                     )
                   : Container());
+
+  Future<void> TakePhoto(ImageSource source) async {
+    final PickedFile = await _picker.getImage(
+      source: source,
+    );
+    setState(() {
+      _imageFile = PickedFile;
+    });
+  }
+
+  Future<void> uploadPictureToStorage() async {
+    Random random = Random();
+    int i = random.nextInt(10000);
+    var imageFile;
+
+    FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+
+    if (_imageFile == null) {
+      return;
+    } else {
+      imageFile = File(_imageFile!.path);
+      print(_imageFile!.path);
+    }
+
+    Reference storageReference = firebaseStorage
+        .ref()
+        .child('userProfile/' + userModels[0].fname + i.toString());
+
+    UploadTask uploadTask = storageReference.putFile(imageFile);
+    await uploadTask.whenComplete(() async {
+      var url = await storageReference.getDownloadURL();
+      setState(() {
+        urlImage = url.toString();
+      });
+    }).catchError((onError) {
+      print(onError);
+    });
+  }
 }
