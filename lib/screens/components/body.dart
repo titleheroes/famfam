@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, annotate_overrides, use_key_in_widget_constructors
 
 import 'dart:convert';
-
+import 'package:famfam/screens/ticktik_screen.dart';
+import 'package:favorite_button/favorite_button.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/models/ticktick_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,7 +20,7 @@ import 'package:uuid/uuid.dart';
 import 'header_circle.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:famfam/models/user_model.dart';
+
 import 'package:famfam/models/circle_model.dart';
 
 class Body extends StatelessWidget {
@@ -874,15 +875,13 @@ class TickBody extends StatefulWidget {
 
 List<UserModel> userModels = [];
 List<CircleModel> circleModels = [];
-List<ticktick_Model> ticktick_Models = [];
 List<ticktick_Model> tempticktick = [];
-int count_ticktickUid = 0;
 
 class List_showModel {
   final String topic;
   final String topic_id;
-
-  List_showModel(this.topic, this.topic_id);
+  final bool fav;
+  List_showModel(this.topic, this.topic_id, this.fav);
 }
 
 class Product {
@@ -894,6 +893,11 @@ class Product {
 class _TickBodyState extends State<TickBody> {
   List<List_showModel> listshow = [];
   List<Product> products = [];
+  List<List_showModel> list_topic = [];
+  List<Product> list_product = [];
+  int count_ticktickUid = 0;
+  List<ticktick_Model> ticktick_Models = [];
+
   @override
   void initState() {
     super.initState();
@@ -963,16 +967,38 @@ class _TickBodyState extends State<TickBody> {
     print('count_ticktickuid : ' + '$count_ticktickUid');
   }
 
-  List<List_showModel> list_topic = [];
-  List<Product> list_product = [];
-
   Future<Null> addDatafromstart() async {
     int num = 1;
     var arr = [];
     for (int i = 0; i <= count_ticktickUid; i++) {
+      if (i == count_ticktickUid - 1) {
+        String topic = ticktick_Models[i].tick_topic;
+        arr.insert(0, ticktick_Models[i].ticklist_list);
+        String? product = ticktick_Models[i].ticklist_list;
+        String? product_id = ticktick_Models[i].tick_id;
+        bool fav;
+        if (ticktick_Models[i].fav_topic == 'true') {
+          fav = true;
+        } else {
+          fav = false;
+        }
+
+        String? id = ticktick_Models[i].tick_id;
+        // print('id :' + '${id}');
+        // print('topic :' + topic);
+        // print('list : ' + '$arr');
+        // print('num : ' + '$num');
+
+        setState(() {
+          list_topic.add(List_showModel(topic, id!, fav));
+          list_product.add(Product(product, product_id!));
+        });
+        // print(list_topic);
+        break;
+      }
       if (ticktick_Models[i].tick_uid == ticktick_Models[i + 1].tick_uid) {
-        print('## i : ' + ticktick_Models[i].tick_uid);
-        print('## i+1 : ' + ticktick_Models[i + 1].tick_uid);
+        // print('## i : ' + ticktick_Models[i].tick_uid);
+        // print('## i+1 : ' + ticktick_Models[i + 1].tick_uid);
         String? product = ticktick_Models[i].ticklist_list;
         String? product_id = ticktick_Models[i].tick_id;
         arr.insert(0, product);
@@ -980,24 +1006,6 @@ class _TickBodyState extends State<TickBody> {
           list_product.add(Product(product, product_id!));
         });
         num = num + 1;
-      } else if (i == count_ticktickUid - 1) {
-        String topic = ticktick_Models[i].tick_topic;
-        arr.insert(0, ticktick_Models[i].ticklist_list);
-        String? product = ticktick_Models[i].ticklist_list;
-        String? product_id = ticktick_Models[i].tick_id;
-        print(i);
-        String? id = ticktick_Models[i].tick_id;
-        print('id :' + '${id}');
-        print('topic :' + topic);
-        print('list : ' + '$arr');
-        print('num : ' + '$num');
-
-        setState(() {
-          list_topic.add(List_showModel(topic, id!));
-          list_product.add(Product(product, product_id!));
-        });
-        // print(list_topic);
-        break;
       } else {
         String topic = ticktick_Models[i].tick_topic;
         // print(i);
@@ -1005,12 +1013,18 @@ class _TickBodyState extends State<TickBody> {
         String? product_id = ticktick_Models[i].tick_id;
         arr.insert(0, ticktick_Models[i].ticklist_list);
         String? id = ticktick_Models[i].tick_id;
-        print('id :' + '${id}');
-        print('topic :' + topic);
-        print('list : ' + '$arr');
-        print('num : ' + '$num');
+        bool fav;
+        if (ticktick_Models[i].fav_topic == 'true') {
+          fav = true;
+        } else {
+          fav = false;
+        }
+        // print('id :' + '${id}');
+        // print('topic :' + topic);
+        // print('list : ' + '$arr');
+        // print('num : ' + '$num');
         setState(() {
-          list_topic.add(List_showModel(topic, id!));
+          list_topic.add(List_showModel(topic, id!, fav));
           list_product.add(Product(product, product_id!));
         });
         arr = [];
@@ -1019,8 +1033,54 @@ class _TickBodyState extends State<TickBody> {
     }
   }
 
-  Widget getTextWidgets(List<String> strings) {
-    return new Row(children: strings.map((item) => new Text(item)).toList());
+  Future<Null> deletedlistByIDandName(
+      {String? product_id, String? product_name}) async {
+    String deletedDataList =
+        '${MyConstant.domain}/famfam/deleteTickTickList.php?isAdd=true&tick_id=$product_id&ticklist_list=$product_name';
+    await Dio().get(deletedDataList).then((value) {
+      if (value.toString() == 'true') {
+        print('Deleted List By ID Successed');
+      }
+    });
+  }
+
+  void onDismissed(String product_name, String product_id) {
+    int checkEmpty = 0;
+    setState(() {
+      list_product.removeWhere((item) =>
+          item.product_name == '$product_name' &&
+          item.product_id == '$product_id');
+      deletedlistByIDandName(
+          product_id: product_id, product_name: product_name);
+
+      print('deleted list successed');
+
+      for (int i = 0; i <= list_product.length; i++) {
+        if (list_product[i].product_id == product_id) {
+          checkEmpty = checkEmpty + 1;
+          print(checkEmpty);
+        }
+        if (checkEmpty == 0) {
+          print(checkEmpty);
+          setState(() {
+            list_topic.removeWhere((item) => item.topic_id == '$product_id');
+            print('deleted topic successed');
+          });
+        }
+      }
+    });
+  }
+
+  Future<Null> updateFav({String? fav_topic, String? tick_id}) async {
+    print('fav_topic $fav_topic');
+    print('id $tick_id');
+    String updateDataFav =
+        '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
+    await Dio().get(updateDataFav).then((value) {
+      // if (value.toString() == 'true') {
+      print('Updated Fav By ID Successed');
+      // }
+    });
   }
 
   @override
@@ -1048,7 +1108,15 @@ class _TickBodyState extends State<TickBody> {
                 elevation: 0,
                 leading: IconButton(
                   onPressed: () {
+                    var user = FirebaseAuth.instance.currentUser;
                     Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(user),
+                      ),
+                    );
+                    // (Route<dynamic> route) => false);
                   },
                   icon: SvgPicture.asset(
                     "assets/icons/chevron-back-outline.svg",
@@ -1157,39 +1225,210 @@ class _TickBodyState extends State<TickBody> {
                                             itemCount: list_topic.length,
                                             itemBuilder: (BuildContext context,
                                                 int index) {
+                                              // return buildTickTick(
+                                              //     list_topic[index].topic,
+                                              //     list_topic[index].fav,
+                                              //     list_topic[index].topic_id);
+
                                               return Container(
-                                                  height: 80,
-                                                  margin: EdgeInsets.all(2),
+                                                  height: 150,
+                                                  margin: EdgeInsets.all(15),
                                                   decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            10),
+                                                            5),
                                                     color: Color(0xfffFFC34A),
+                                                    // color: Colors.white,
                                                   ),
-                                                  child: Column(children: [
-                                                    Text(
-                                                        '${list_topic[index].topic}'),
-                                                    // Text(
-                                                    //     '${list_product[index].product_name}')
-                                                    Text(
-                                                        '${list_product.length}'),
-                                                    Text(
-                                                        '${list_product[2].product_id}')
-                                                    // Container(
-                                                    //     child: ListView.builder(
-                                                    //         itemCount:
-                                                    //             list_product
-                                                    //                 .length,
-                                                    //         itemBuilder:
-                                                    //             (BuildContext
-                                                    //                     context,
-                                                    //                 int index) {
-                                                    //           return Container(
-                                                    //             child: Text(
-                                                    //                 '${list_product[index].product_name}'),
-                                                    //           );
-                                                    //         }))
-                                                  ]));
+                                                  child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            // ListTile(
+                                                            //   title: Text('hi'),
+                                                            // ),
+                                                            Container(
+                                                              margin: EdgeInsets
+                                                                  .only(
+                                                                      left: 15,
+                                                                      top: 15),
+                                                              child: Text(
+                                                                  '${list_topic[index].topic}',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold)),
+                                                            ),
+                                                            // Text(
+                                                            //     '${list_topic[index].fav}'),
+                                                            Spacer(),
+
+                                                            Container(
+                                                              child: IconButton(
+                                                                  iconSize: 22,
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .favorite,
+                                                                  ),
+                                                                  color: list_topic[
+                                                                              index]
+                                                                          .fav
+                                                                      ? Colors
+                                                                          .red
+                                                                      : Colors
+                                                                          .white,
+                                                                  onPressed:
+                                                                      () {
+                                                                    // bool
+                                                                    //     isChecked =
+                                                                    //     false;
+                                                                    setState(
+                                                                        () async {
+                                                                      if (list_topic[
+                                                                              index]
+                                                                          .fav) {
+                                                                        String
+                                                                            fav_topic =
+                                                                            'false';
+                                                                        String
+                                                                            updateDataFav =
+                                                                            '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
+                                                                        await Dio()
+                                                                            .get(updateDataFav)
+                                                                            .then((value) {
+                                                                          // if (value.toString() == 'true') {
+                                                                          print(
+                                                                              'Updated Fav By ID Successed change true to false');
+                                                                          // }
+
+                                                                          Navigator
+                                                                              .pushReplacement(
+                                                                            context,
+                                                                            MaterialPageRoute(
+                                                                              builder: (context) => TickTikScreen(),
+                                                                            ),
+                                                                          );
+                                                                        });
+                                                                      } else {
+                                                                        String
+                                                                            fav_topic =
+                                                                            'true';
+
+                                                                        String
+                                                                            updateDataFav =
+                                                                            '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
+                                                                        await Dio()
+                                                                            .get(updateDataFav)
+                                                                            .then((value) {
+                                                                          // if (value.toString() == 'true') {
+                                                                          print(
+                                                                              'Updated Fav By ID Successed change false to true');
+                                                                          // }
+
+                                                                          Navigator
+                                                                              .pushReplacement(
+                                                                            context,
+                                                                            MaterialPageRoute(
+                                                                              builder: (context) => TickTikScreen(),
+                                                                            ),
+                                                                          );
+                                                                        });
+                                                                        // updateFav(
+                                                                        //     fav_topic:
+                                                                        //         fav_topic,
+                                                                        //     tick_id:
+                                                                        //         list_topic[index].topic_id);
+                                                                      }
+
+                                                                      // print(list_topic[
+                                                                      //         index]
+                                                                      //     .fav);
+                                                                      // print(list_topic[
+                                                                      //         index]
+                                                                      //     .topic);
+                                                                    });
+                                                                  }),
+                                                            ),
+
+                                                            // Container(
+                                                            //   margin: EdgeInsets
+                                                            //       .only(
+                                                            //           top: 15,
+                                                            //           right:
+                                                            //               15),
+                                                            //   child:
+                                                            //       FavoriteButton(
+                                                            //     iconSize: 30,
+                                                            //     iconDisabledColor:
+                                                            //         Colors
+                                                            //             .white,
+                                                            //     valueChanged:
+                                                            //         (_isFavorite) {
+                                                            //       print(
+                                                            //           'Is Favorite $_isFavorite ${list_topic[index].topic_id}');
+                                                            //       // updateFav(
+                                                            //       //     fav_topic:
+                                                            //       //         fav_topic,
+                                                            //       //     tick_id:
+                                                            //       //         list_topic[index].topic_id);
+                                                            //     },
+                                                            //   ),
+                                                            // ),
+                                                          ],
+                                                        ),
+                                                        Expanded(
+                                                            child: ListView
+                                                                .builder(
+                                                                    scrollDirection:
+                                                                        Axis
+                                                                            .horizontal,
+                                                                    itemCount:
+                                                                        list_product
+                                                                            .length,
+                                                                    itemBuilder:
+                                                                        (BuildContext
+                                                                                context,
+                                                                            int index2) {
+                                                                      if (list_topic[index]
+                                                                              .topic_id ==
+                                                                          list_product[index2]
+                                                                              .product_id) {}
+                                                                      return Container(
+                                                                          child: (list_topic[index].topic_id == list_product[index2].product_id)
+                                                                              ? Wrap(children: <Widget>[
+                                                                                  Container(
+                                                                                      margin: EdgeInsets.only(left: 15, top: 20),
+                                                                                      child: Row(children: [
+                                                                                        Container(
+                                                                                          child: RoundCheckBox(
+                                                                                            size: 22,
+                                                                                            uncheckedColor: Colors.white,
+                                                                                            checkedColor: Colors.green,
+                                                                                            onTap: (selected) {
+                                                                                              print('selected ' + list_product[index2].product_id);
+                                                                                              print('selected ' + list_product[index2].product_name);
+
+                                                                                              onDismissed(list_product[index2].product_name, list_product[index2].product_id);
+                                                                                            },
+                                                                                          ),
+                                                                                        ),
+                                                                                        Padding(
+                                                                                          padding: const EdgeInsets.only(right: 10, left: 10),
+                                                                                          child: Text('${list_product[index2].product_name}'),
+                                                                                        )
+                                                                                      ]))
+                                                                                ])
+                                                                              : SizedBox.shrink());
+                                                                    }))
+                                                      ]));
                                             })))),
                       ),
                     ),
@@ -1218,6 +1457,8 @@ class TicBotSheet extends StatefulWidget {
 }
 
 class _TicBotSheetState extends State<TicBotSheet> {
+  final _TickBodyState pulldata = new _TickBodyState();
+
   Future<Null> insertTickTick({String? topic, List<String>? arr}) async {
     var uuid = Uuid();
 
@@ -1227,49 +1468,46 @@ class _TicBotSheetState extends State<TicBotSheet> {
 
     String? tick_id;
 
-    // print('###ticktickleghth ' + '$count_ticktickUid');
-
-    // print('#### tick_uid ' + '${tick_uid}');
-    // print('#### uid ' + '${member_id}');
-    // print('#### topic :' + '${topic}');
-    // print('#### arr : ' + '${arr}');
-    // print('#### arr : ' + '${arr!.length}');
     String ticklist = arr![0];
     String insertTicklistData =
-        '${MyConstant.domain}/famfam/insertTickTick.php?isAdd=true&tick_uid=$tick_uid&circle_id=$circle_id&user_id=$member_id&tick_topic=$topic&ticklist_list=$ticklist';
+        '${MyConstant.domain}/famfam/insertTickTick.php?isAdd=true&tick_uid=$tick_uid&circle_id=$circle_id&user_id=$member_id&tick_topic=$topic&ticklist_list=$ticklist&fav_topic=false';
     await Dio().get(insertTicklistData).then((value) async {
       print('push');
+
       String pullDataticktick =
           '${MyConstant.domain}/famfam/getTickTickWhereUID.php?isAdd=true&tick_uid=$tick_uid';
       await Dio().get(pullDataticktick).then((value) async {
         for (var item in json.decode(value.data)) {
           ticktick_Model model = ticktick_Model.fromMap(item);
-          // print(item);
 
           setState(() {
-            // count_ticktickUid = count_ticktickUid + 1;
             tempticktick.add(model);
             tick_id = model.tick_id;
           });
         }
+        // restartListshow.restartListShowTopic(topic!, tick_id!);
+        // restartListshow.restartListShowProduct(tick_id!, ticklist);
       }).then((value) async {
         int i = 1;
-
         print(tick_id);
         for (i; i < arr.length; i++) {
           print('i = ' + '$i');
           String ticklist = arr[i];
           String insertTicklistData =
-              '${MyConstant.domain}/famfam/insertTickTickWithID.php?isAdd=true&user_id=$member_id&tick_topic=$topic&ticklist_list=$ticklist&circle_id=$circle_id&tick_uid=$tick_uid&tick_id=$tick_id';
+              '${MyConstant.domain}/famfam/insertTickTickWithID.php?isAdd=true&user_id=$member_id&tick_topic=$topic&ticklist_list=$ticklist&circle_id=$circle_id&tick_uid=$tick_uid&tick_id=$tick_id&fav_topic=false';
           await Dio().get(insertTicklistData);
+
+          // restartListshow.restartListShowProduct(tick_id!, ticklist);
         }
       });
       print('inserted ticklist successed');
+      // pulldata.pullDataTicktick();
+      // pulldata.addDatafromstart();
+      // restartListshow.restartListShow(topic!, tick_id!, ticklist, tick_id!);
     });
   }
 
   final TextEditingController topicController = TextEditingController();
-
   final TextEditingController listController = TextEditingController();
 
   @override
@@ -1499,7 +1737,7 @@ class _TicBotSheetState extends State<TicBotSheet> {
                                                         ),
                                                       ),
                                                     ),
-                                                    onPressed: () {
+                                                    onPressed: () async {
                                                       print('##Topic : ' +
                                                           topicController.text);
                                                       print('##List : ' +
@@ -1509,11 +1747,19 @@ class _TicBotSheetState extends State<TicBotSheet> {
                                                       var arr =
                                                           list_text.split(",");
                                                       print(arr.length);
-                                                      insertTickTick(
+                                                      await insertTickTick(
                                                           topic: topicController
                                                               .text,
                                                           arr: arr);
                                                       Navigator.pop(context);
+                                                      Navigator.pushReplacement(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              TickTikScreen(),
+                                                        ),
+                                                      );
+
                                                       listController.text = '';
                                                       topicController.text = '';
                                                     },

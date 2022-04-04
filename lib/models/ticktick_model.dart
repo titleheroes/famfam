@@ -7,13 +7,15 @@ class ticktick_Model {
   final String user_id;
   final String tick_topic;
   final String ticklist_list;
+  final String fav_topic;
   ticktick_Model(
       {this.tick_id,
       required this.tick_uid,
       required this.circle_id,
       required this.user_id,
       required this.tick_topic,
-      required this.ticklist_list});
+      required this.ticklist_list,
+      required this.fav_topic});
   ticktick_Model copyWith({
     String? tick_id,
     String? tick_uid,
@@ -21,6 +23,7 @@ class ticktick_Model {
     String? user_id,
     String? tick_topic,
     String? ticklist_list,
+    String? fav_topic,
   }) {
     return ticktick_Model(
       tick_id: tick_id ?? this.tick_id,
@@ -28,7 +31,8 @@ class ticktick_Model {
       circle_id: circle_id ?? this.circle_id,
       user_id: tick_id ?? this.user_id,
       tick_topic: tick_uid ?? this.tick_topic,
-      ticklist_list: circle_id ?? this.ticklist_list,
+      ticklist_list: ticklist_list ?? this.ticklist_list,
+      fav_topic: fav_topic ?? this.fav_topic,
     );
   }
 
@@ -40,6 +44,7 @@ class ticktick_Model {
       'user_id': user_id,
       'tick_topic': tick_topic,
       'ticklist_list': ticklist_list,
+      'fav_topic': fav_topic,
     };
   }
 
@@ -51,6 +56,7 @@ class ticktick_Model {
       user_id: map['user_id'] ?? '',
       tick_topic: map['tick_topic'] ?? '',
       ticklist_list: map['ticklist_list'] ?? '',
+      fav_topic: map['fav_topic'] ?? '',
     );
   }
   String toJson() => json.encode(toMap());
@@ -60,7 +66,7 @@ class ticktick_Model {
 
   @override
   String toString() {
-    return 'UserModel(tick_id: $tick_id, tick_uid: $tick_uid, circle_id: $circle_id, user_id: $user_id, tick_topic: $tick_topic, ticklist_list: $ticklist_list';
+    return 'UserModel(tick_id: $tick_id, tick_uid: $tick_uid, circle_id: $circle_id, user_id: $user_id, tick_topic: $tick_topic, ticklist_list: $ticklist_list, fav_topic: $fav_topic';
   }
 
   @override
@@ -73,7 +79,8 @@ class ticktick_Model {
         other.circle_id == circle_id &&
         other.user_id == user_id &&
         other.tick_topic == tick_topic &&
-        other.ticklist_list == ticklist_list;
+        other.ticklist_list == ticklist_list &&
+        other.fav_topic == fav_topic;
   }
 
   @override
@@ -83,6 +90,7 @@ class ticktick_Model {
         circle_id.hashCode ^
         user_id.hashCode ^
         tick_topic.hashCode ^
-        ticklist_list.hashCode;
+        ticklist_list.hashCode ^
+        fav_topic.hashCode;
   }
 }
