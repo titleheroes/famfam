@@ -20,27 +20,24 @@ if (isset($_GET)) {
 				
 		$uid = $_GET['uid'];
 		$profileImage = $_GET['profileImage'];
-		$fname = $_GET['fname'];
-		$lname = $_GET['lname'];
-		$phone = $_GET['phone'];
-		$birth = $_GET['birth'];
-		$address = $_GET['address'];
-		$personalID = $_GET['personalID'];
-		$jobs = $_GET['jobs'];
-		
-							
-		$sql = "INSERT INTO `user`(`id`, `uid`, `profileImage`, `fname`, `lname`, `phone`, `birth`, `address`, `personalID`, `jobs`) VALUES (Null,'$uid','$profileImage','$fname','$lname','$phone','$birth','$address','$personalID','$jobs')";
 
-		$result = mysqli_query($link, $sql);
+		$result = mysqli_query($link, "UPDATE `user` SET `profileImage`='$profileImage' WHERE uid = '$uid'");
 
 		if ($result) {
-			echo "true";
-		} else {
-			echo "false";
-		}
 
-	} else echo "Welcome Master UNG";
+			while($row=mysqli_fetch_assoc($result)){
+			$output[]=$row;
+
+			}	// while
+
+			echo json_encode($output);
+
+		} //if
+
+	} else echo "Welcome Master UNG";	// if2
    
-}
+}	// if1
+
+
 	mysqli_close($link);
 ?>
