@@ -141,7 +141,7 @@ class _memberPageState extends State<memberPage> {
             ),
             onPressed: () async {
               Navigator.pop(context);
-              await Navigator.pushReplacement(context,
+              await Navigator.push(context,
                   MaterialPageRoute(builder: (context) => settingPage()));
             },
           ),
