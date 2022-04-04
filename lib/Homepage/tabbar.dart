@@ -362,20 +362,20 @@ class _tabbarState extends State<tabbar> {
 
       print('deleted list successed');
 
-      for (int i = 0; i <= list_product.length; i++) {
+      for (int i = 0; i < list_product.length; i++) {
         if (list_product[i].product_id == product_id) {
           checkEmpty = checkEmpty + 1;
           print(checkEmpty);
         }
-        if (checkEmpty == 0) {
-          print(checkEmpty);
-          setState(() {
-            list_topic.removeWhere((item) => item.topic_id == '$product_id');
-            print('deleted topic successed');
-          });
-        }
       }
     });
+    if (checkEmpty == 0) {
+      print(checkEmpty);
+      setState(() {
+        list_topic.removeWhere((item) => item.topic_id == '$product_id');
+        print('deleted topic successed');
+      });
+    }
   }
 
   Future<Null> updateFav({String? fav_topic, String? tick_id}) async {
@@ -896,24 +896,29 @@ class _tabbarState extends State<tabbar> {
                                                                             Icons.favorite,
                                                                           ),
                                                                           color: list_topic[index].fav ? Colors.red : Colors.white,
-                                                                          onPressed: () {
+                                                                          onPressed: () async {
                                                                             // bool
                                                                             //     isChecked =
                                                                             //     false;
-                                                                            setState(() async {
-                                                                              String fav_topic = 'false';
-                                                                              String tick_id = list_topic[index].topic_id;
-                                                                              String updateDataFav = '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
-                                                                              await Dio().get(updateDataFav).then((value) {
-                                                                                // if (value.toString() == 'true') {
-                                                                                print('Updated Fav By ID Successed');
-                                                                                // }
-                                                                                setState(() {
-                                                                                  list_topic.removeWhere((item) => item.topic_id == '${list_topic[index].topic_id}');
-                                                                                  print('deleted topic successed');
-                                                                                });
+                                                                            String
+                                                                                fav_topic =
+                                                                                'false';
+                                                                            String
+                                                                                tick_id =
+                                                                                list_topic[index].topic_id;
+                                                                            String
+                                                                                updateDataFav =
+                                                                                '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
+                                                                            await Dio().get(updateDataFav).then((value) {
+                                                                              // if (value.toString() == 'true') {
+                                                                              print('Updated Fav By ID Successed');
+                                                                              // }
+                                                                              setState(() {
+                                                                                list_topic.removeWhere((item) => item.topic_id == '${list_topic[index].topic_id}');
+                                                                                print('deleted topic successed');
                                                                               });
                                                                             });
+                                                                            // setState(() {});
                                                                           }),
                                                                     ),
                                                                   ],

@@ -945,7 +945,9 @@ class _TickBodyState extends State<TickBody> {
       }
     });
     await pullDataTicktick(circle_id: circle_id, member_id: member_id);
-    addDatafromstart();
+    try {
+      addDatafromstart();
+    } catch (e) {}
   }
 
   Future<Null> pullDataTicktick({String? circle_id, String? member_id}) async {
@@ -954,16 +956,19 @@ class _TickBodyState extends State<TickBody> {
     // print('#### member_id ' + '${member_id}');
     String pullData =
         '${MyConstant.domain}/famfam/getTickTickWhereCircleID.php?isAdd=true&circle_id=$circle_id';
-    await Dio().get(pullData).then((value) async {
-      for (var item in json.decode(value.data)) {
-        ticktick_Model ticktick_models = ticktick_Model.fromMap(item);
-        print(item);
-        setState(() {
-          count_ticktickUid = count_ticktickUid + 1;
-          ticktick_Models.add(ticktick_models);
-        });
-      }
-    });
+    try {
+      await Dio().get(pullData).then((value) async {
+        for (var item in json.decode(value.data)) {
+          ticktick_Model ticktick_models = ticktick_Model.fromMap(item);
+          print(item);
+          setState(() {
+            count_ticktickUid = count_ticktickUid + 1;
+            ticktick_Models.add(ticktick_models);
+          });
+        }
+      });
+    } catch (e) {}
+
     print('count_ticktickuid : ' + '$count_ticktickUid');
   }
 
@@ -1055,20 +1060,20 @@ class _TickBodyState extends State<TickBody> {
 
       print('deleted list successed');
 
-      for (int i = 0; i <= list_product.length; i++) {
+      for (int i = 0; i < list_product.length; i++) {
         if (list_product[i].product_id == product_id) {
           checkEmpty = checkEmpty + 1;
           print(checkEmpty);
         }
-        if (checkEmpty == 0) {
-          print(checkEmpty);
-          setState(() {
-            list_topic.removeWhere((item) => item.topic_id == '$product_id');
-            print('deleted topic successed');
-          });
-        }
       }
     });
+    if (checkEmpty == 0) {
+      print(checkEmpty);
+      setState(() {
+        list_topic.removeWhere((item) => item.topic_id == '$product_id');
+        print('deleted topic successed');
+      });
+    }
   }
 
   Future<Null> updateFav({String? fav_topic, String? tick_id}) async {
@@ -1286,75 +1291,80 @@ class _TickBodyState extends State<TickBody> {
                                                                       : Colors
                                                                           .white,
                                                                   onPressed:
-                                                                      () {
+                                                                      () async {
                                                                     // bool
                                                                     //     isChecked =
                                                                     //     false;
-                                                                    setState(
-                                                                        () async {
-                                                                      if (list_topic[
-                                                                              index]
-                                                                          .fav) {
-                                                                        String
-                                                                            fav_topic =
-                                                                            'false';
-                                                                        String
-                                                                            updateDataFav =
-                                                                            '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
-                                                                        await Dio()
-                                                                            .get(updateDataFav)
-                                                                            .then((value) {
-                                                                          // if (value.toString() == 'true') {
-                                                                          print(
-                                                                              'Updated Fav By ID Successed change true to false');
-                                                                          // }
+                                                                    if (list_topic[
+                                                                            index]
+                                                                        .fav) {
+                                                                      String
+                                                                          fav_topic =
+                                                                          'false';
+                                                                      String
+                                                                          updateDataFav =
+                                                                          '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
+                                                                      await Dio()
+                                                                          .get(
+                                                                              updateDataFav)
+                                                                          .then(
+                                                                              (value) {
+                                                                        // if (value.toString() == 'true') {
+                                                                        print(
+                                                                            'Updated Fav By ID Successed change true to false');
+                                                                        // }
 
-                                                                          Navigator
-                                                                              .pushReplacement(
-                                                                            context,
-                                                                            MaterialPageRoute(
-                                                                              builder: (context) => TickTikScreen(),
-                                                                            ),
-                                                                          );
-                                                                        });
-                                                                      } else {
-                                                                        String
-                                                                            fav_topic =
-                                                                            'true';
+                                                                        Navigator
+                                                                            .pushReplacement(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                            builder: (context) =>
+                                                                                TickTikScreen(),
+                                                                          ),
+                                                                        );
+                                                                      });
+                                                                    } else {
+                                                                      String
+                                                                          fav_topic =
+                                                                          'true';
 
-                                                                        String
-                                                                            updateDataFav =
-                                                                            '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
-                                                                        await Dio()
-                                                                            .get(updateDataFav)
-                                                                            .then((value) {
-                                                                          // if (value.toString() == 'true') {
-                                                                          print(
-                                                                              'Updated Fav By ID Successed change false to true');
-                                                                          // }
+                                                                      String
+                                                                          updateDataFav =
+                                                                          '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
+                                                                      await Dio()
+                                                                          .get(
+                                                                              updateDataFav)
+                                                                          .then(
+                                                                              (value) {
+                                                                        // if (value.toString() == 'true') {
+                                                                        print(
+                                                                            'Updated Fav By ID Successed change false to true');
+                                                                        // }
 
-                                                                          Navigator
-                                                                              .pushReplacement(
-                                                                            context,
-                                                                            MaterialPageRoute(
-                                                                              builder: (context) => TickTikScreen(),
-                                                                            ),
-                                                                          );
-                                                                        });
-                                                                        // updateFav(
-                                                                        //     fav_topic:
-                                                                        //         fav_topic,
-                                                                        //     tick_id:
-                                                                        //         list_topic[index].topic_id);
-                                                                      }
-
-                                                                      // print(list_topic[
-                                                                      //         index]
-                                                                      //     .fav);
-                                                                      // print(list_topic[
-                                                                      //         index]
-                                                                      //     .topic);
-                                                                    });
+                                                                        Navigator
+                                                                            .pushReplacement(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                            builder: (context) =>
+                                                                                TickTikScreen(),
+                                                                          ),
+                                                                        );
+                                                                      });
+                                                                      // updateFav(
+                                                                      //     fav_topic:
+                                                                      //         fav_topic,
+                                                                      //     tick_id:
+                                                                      //         list_topic[index].topic_id);
+                                                                    }
+                                                                    // setState(
+                                                                    //     () {
+                                                                    //   // print(list_topic[
+                                                                    //   //         index]
+                                                                    //   //     .fav);
+                                                                    //   // print(list_topic[
+                                                                    //   //         index]
+                                                                    //   //     .topic);
+                                                                    // });
                                                                   }),
                                                             ),
 
