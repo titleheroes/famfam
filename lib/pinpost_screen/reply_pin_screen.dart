@@ -565,6 +565,7 @@ Future<Null> pullUserSQLID() async {
     
 
   }
+  
 
   
 
@@ -579,644 +580,653 @@ Future<Null> pullUserSQLID() async {
     
 
 
-    return Scaffold(
-      //Main Screen
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80),
-        child: AppBar(
-          leading: Transform.translate(
-            offset: Offset(0, 12),
-            child: load ? null : IconButton(
-              icon: Icon(
-                Icons.navigate_before_rounded,
-                color: Colors.black,
-                size: 40,
+    return new WillPopScope(
+      onWillPop: () {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PinScreen() ),) ;
+        return Future.value(false);
+
+      } ,
+
+      
+      child: Scaffold(
+        //Main Screen
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(80),
+          child: AppBar(
+            leading: Transform.translate(
+              offset: Offset(0, 12),
+              child: load ? null : IconButton(
+                icon: Icon(
+                  Icons.navigate_before_rounded,
+                  color: Colors.black,
+                  size: 40,
+                ),
+                onPressed: () {
+                  //Navigator.pop(context);
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                      builder: (context) => PinScreen(),
+                  ));
+                  
+                },
               ),
-              onPressed: () {
-                //Navigator.pop(context);
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                    builder: (context) => PinScreen(),
-                ));
-                
-              },
             ),
-          ),
-          elevation: 0,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          title: Transform.translate(
-            offset: Offset(0, 12),
-            child: Text(
-              "Reply Pin Post",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 30,
-                fontWeight: FontWeight.bold
+            elevation: 0,
+            centerTitle: true,
+            backgroundColor: Colors.white,
+            title: Transform.translate(
+              offset: Offset(0, 12),
+              child: Text(
+                "Reply Pin Post",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold
+                ),
               ),
             ),
           ),
         ),
-      ),
-    
-    
-    
-      body: load ? CircleLoader() : SafeArea(
-        child: Container(
-          //color: Colors.pink,
-          width: double.infinity,
-          
-          padding: EdgeInsets.only(
-            top: 10,
-            left: 24,
-            right: 24,
+      
+      
+      
+        body: load ? CircleLoader() : SafeArea(
+          child: Container(
+            //color: Colors.pink,
+            width: double.infinity,
             
-    
-            
-          ),
-          child: Center(
-            child: Stack(
-              children: [
-                Column(
-                  
-                  children: [
-    
-    
-    
-        Container(
-          //height: 300,
-          
-          //color: Color.fromRGBO(0, 188, 212, 1),
-          child: Stack(
-    
+            padding: EdgeInsets.only(
+              top: 10,
+              left: 24,
+              right: 24,
+              
+      
+              
+            ),
+            child: Center(
+              child: Stack(
                 children: [
-    
-                  Container(
-                  
-                  width: size.width ,
-                  padding: EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 24,
-                  ),
-                  margin: EdgeInsets.only(bottom: 0),
-                            
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 250, 244, 154),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Stack(
+                  Column(
+                    
                     children: [
-                      
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                        Row(children: [
-    
-                          Container(
-                                  
-                                  
-                                  child: CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: Colors.white,
-                                    backgroundImage:
-                                        NetworkImage(pinpostModels[0].profileImage),
-                                  ),
-
-
-                                ),
-    
-                          Padding(
-                                padding: EdgeInsets.only(
-                                  left: 10,
-                                ),
-                                child: Text('${pinpostModels[0].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                
-                          ),
-                          
-                          
-                        ],),
-                        SizedBox(height: 5,),
-                        
-                        
-                        Text(pinpostModels[0].date,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
-                                
-                        Padding(
-                          padding: EdgeInsets.only(
-                                top: 10,
-                          ),
-                          child: Text('${pinpostModels[0].pin_text}',
-                          style: TextStyle(fontSize: 18,height: 1.5),),
-                        ),     
-                      ],),
-                    ],
-                  ),
-    
-              
-    
-                ),
-    
-                 
-                
-                if (userModels[0].id == pinpostModels[0].author_id) 
-                
-                Positioned( 
-                  right: 0,
-                  top: 0,
-    
-                  child: Row(
-                    children: [
-    
-                      IconButton(onPressed: () {
-                        
-                        _displayEditDialog(context,pinpostModels[0].pin_id,pinpostModels[0].pin_text);
-                      }, 
-                      icon: Icon(Icons.edit),
-                      iconSize: 30,
-                      splashColor: Colors.transparent, 
-                      highlightColor: Colors.transparent,  
-                      
-                      ),
-    
-                      IconButton(onPressed: () {
-                        
-                        _displayDeleteDialog(context,pinpostModels[0].pin_id);
-                      }, 
-                      icon: Icon(Icons.close),
-                      iconSize: 30,
-                      splashColor: Colors.transparent, 
-                      highlightColor: Colors.transparent,  
-                      
-                      ),
-                    ],
-    
-    
-                  ),
-    
-    
-    
-                ),
-
-                
-                ],
-              
-    
-              ),
-        ),
-    
-    
-    
-          //SizedBox(height: 50,),
-          
-          Expanded(
-            child: Column(
-              children: [
-                Container(
-                  //height: double.infinity,
-                  width: double.infinity,
-                  //color: Colors.white,
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10,bottom: 10),
-                      child: Text('${pinpostModels[0].number_of_reply} Replied',
-                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,
-                      ),
-                      
-                      ),
+      
+      
+      
+          Container(
+            //height: 300,
+            
+            //color: Color.fromRGBO(0, 188, 212, 1),
+            child: Stack(
+      
+                  children: [
+      
+                    Container(
+                    
+                    width: size.width ,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: 24,
                     ),
-                ),
-                ),
-
-
-
-                Expanded(
-                  child: Container(
-                              height: 50,
-                              //color: Color.fromARGB(255, 71, 243, 114),
-                              child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  padding: const EdgeInsets.all(8),
-                  itemCount: pinreplyModels.length,
-
-                
-                
-                  itemBuilder: (BuildContext context, int index) {
-                    DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm").parse(pinreplyModels[index].date);
-                    String formattedDate = DateFormat('dd/MM/yyyy - kk:mm').format(tempDate);
-                    
-                
-                    return
-                    
-                      Stack(
-                
+                    margin: EdgeInsets.only(bottom: 0),
+                              
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 250, 244, 154),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Stack(
                       children: [
                         
-                        
-                        Container(
-                        
-                        width: size.width ,
-                        padding: EdgeInsets.symmetric(
-                          vertical: 15,
-                          horizontal: 24,
-                        ),
-                
-                      
-                    
-                        
-                
-                        margin: EdgeInsets.only(bottom: index==pinreplyModels.length-1 ? 100 :20),
-                                  
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 250, 244, 154),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Stack(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                              Row(children: [
-                
-                                Container(
-                                        
-                                        child: CircleAvatar(
-                                          radius: 20,
-                                          backgroundColor: Colors.white,
-                                          backgroundImage:
-                                              NetworkImage(pinreplyModels[index].profileImage),
-                                        ),
-                                      ),
-                
-                                Padding(
-                                      padding: EdgeInsets.only(
-                                        left: 10,
-                                      ),
-                                      child: Text('${pinreplyModels[index].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                      
-                                ),
-                                
-                                      
-                              ],),
-                              SizedBox(height: 5,),
-                              Text(formattedDate,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
-                                      
-                              Padding(
-                                padding: EdgeInsets.only(
-                                      top: 10,
-                                ),
-                                child: Text('${pinreplyModels[index].pin_reply_text}',
-                                style: TextStyle(fontSize: 18,height: 1.5),),
-                              ),
-                
-                              
-                              
-                                      
-                                      
+                          Row(children: [
+      
+                            Container(
                                     
-                
-                
-                
-                
-                            ],),
-                          ],
-                        ),
-                
-                    
-                
-                      ),
-                
-                       
-                      
-                      if (userModels[0].id == pinreplyModels[index].reply_user_id) 
-                      
-                      Positioned( 
-                        right: 0,
-                        top: 0,
-                
-                        child: Row(
-                          children: [
-                
-                            IconButton(onPressed: () {
-                              
-                              _displayReplyEditDialog(context,pinreplyModels[index].pin_reply_id,pinreplyModels[index].pin_reply_text);
-                            }, 
-
-                            icon: Icon(Icons.edit),
-                            iconSize: 30,
-                            splashColor: Colors.transparent, 
-                            highlightColor: Colors.transparent,  
-                            
+                                    
+                                    child: CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.white,
+                                      backgroundImage:
+                                          NetworkImage(pinpostModels[0].profileImage),
+                                    ),
+    
+    
+                                  ),
+      
+                            Padding(
+                                  padding: EdgeInsets.only(
+                                    left: 10,
+                                  ),
+                                  child: Text('${pinpostModels[0].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                  
                             ),
-                
-                            IconButton(onPressed: () {
-                              
-                              _displayReplyDeleteDialog(context,pinreplyModels[index].pin_reply_id);
-                            }, 
-                            icon: Icon(Icons.close),
-                            iconSize: 30,
-                            splashColor: Colors.transparent, 
-                            highlightColor: Colors.transparent,  
                             
+                            
+                          ],),
+                          SizedBox(height: 5,),
+                          
+                          
+                          Text(pinpostModels[0].date,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
+                                  
+                          Padding(
+                            padding: EdgeInsets.only(
+                                  top: 10,
                             ),
-                          ],
-                
-                
-                        ),
-                
-                
-                
-                      ),
-                
-                
-                
-                
+                            child: Text('${pinpostModels[0].pin_text}',
+                            style: TextStyle(fontSize: 18,height: 1.5),),
+                          ),     
+                        ],),
                       ],
-                    
+                    ),
+      
                 
-                    );
-                    
-                    
-                    
-                    
-                    
-                
-                
-                  }
-                
+      
+                  ),
+      
+                   
                   
+                  if (userModels[0].id == pinpostModels[0].author_id) 
+                  
+                  Positioned( 
+                    right: 0,
+                    top: 0,
+      
+                    child: Row(
+                      children: [
+      
+                        IconButton(onPressed: () {
+                          
+                          _displayEditDialog(context,pinpostModels[0].pin_id,pinpostModels[0].pin_text);
+                        }, 
+                        icon: Icon(Icons.edit),
+                        iconSize: 30,
+                        splashColor: Colors.transparent, 
+                        highlightColor: Colors.transparent,  
+                        
+                        ),
+      
+                        IconButton(onPressed: () {
+                          
+                          _displayDeleteDialog(context,pinpostModels[0].pin_id);
+                        }, 
+                        icon: Icon(Icons.close),
+                        iconSize: 30,
+                        splashColor: Colors.transparent, 
+                        highlightColor: Colors.transparent,  
+                        
+                        ),
+                      ],
+      
+      
+                    ),
+      
+      
+      
+                  ),
+    
+                  
+                  ],
                 
-                
-                
-                
-                              ),
-                
-                              
-                            ),
-                )
-              ],
-            ),
-          )
-          
-                ],
-                
+      
                 ),
-                Positioned(
-                  bottom: 20,
-                  right: 5,
-                  child:  //bottomsheet
-                Stack(
-                  children: [
-                    Container(
-                      //width: size.width * 0.8,
-                      width: size.width * 0.3,
-                      height: size.height * 0.08,
+          ),
+      
+      
+      
+            //SizedBox(height: 50,),
+            
+            Expanded(
+              child: Column(
+                children: [
+                  Container(
+                    //height: double.infinity,
+                    width: double.infinity,
+                    //color: Colors.white,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 10,bottom: 10),
+                        child: Text('${pinpostModels[0].number_of_reply} Replied',
+                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,
+                        ),
+                        
+                        ),
+                      ),
+                  ),
+                  ),
     
-                      //color: Colors.cyan,
     
-                      child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 243, 230, 90)),
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
+    
+                  Expanded(
+                    child: Container(
+                                height: 50,
+                                //color: Color.fromARGB(255, 71, 243, 114),
+                                child: ListView.builder(
+                    physics: BouncingScrollPhysics(),
+                    padding: const EdgeInsets.all(8),
+                    itemCount: pinreplyModels.length,
+    
+                  
+                  
+                    itemBuilder: (BuildContext context, int index) {
+                      DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm").parse(pinreplyModels[index].date);
+                      String formattedDate = DateFormat('dd/MM/yyyy - kk:mm').format(tempDate);
+                      
+                  
+                      return
+                      
+                        Stack(
+                  
+                        children: [
+                          
+                          
+                          Container(
+                          
+                          width: size.width ,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15,
+                            horizontal: 24,
+                          ),
+                  
+                        
+                      
+                          
+                  
+                          margin: EdgeInsets.only(bottom: index==pinreplyModels.length-1 ? 100 :20),
+                                    
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 250, 244, 154),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Stack(
+                            children: [
+                              
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                Row(children: [
+                  
+                                  Container(
+                                          
+                                          child: CircleAvatar(
+                                            radius: 20,
+                                            backgroundColor: Colors.white,
+                                            backgroundImage:
+                                                NetworkImage(pinreplyModels[index].profileImage),
+                                          ),
+                                        ),
+                  
+                                  Padding(
+                                        padding: EdgeInsets.only(
+                                          left: 10,
+                                        ),
+                                        child: Text('${pinreplyModels[index].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                        
+                                  ),
+                                  
+                                        
+                                ],),
+                                SizedBox(height: 5,),
+                                Text(formattedDate,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
+                                        
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                        top: 10,
+                                  ),
+                                  child: Text('${pinreplyModels[index].pin_reply_text}',
+                                  style: TextStyle(fontSize: 18,height: 1.5),),
+                                ),
+                  
+                                
+                                
+                                        
+                                        
+                                      
+                  
+                  
+                  
+                  
+                              ],),
+                            ],
+                          ),
+                  
+                      
+                  
+                        ),
+                  
+                         
+                        
+                        if (userModels[0].id == pinreplyModels[index].reply_user_id) 
+                        
+                        Positioned( 
+                          right: 0,
+                          top: 0,
+                  
+                          child: Row(
+                            children: [
+                  
+                              IconButton(onPressed: () {
+                                
+                                _displayReplyEditDialog(context,pinreplyModels[index].pin_reply_id,pinreplyModels[index].pin_reply_text);
+                              }, 
+    
+                              icon: Icon(Icons.edit),
+                              iconSize: 30,
+                              splashColor: Colors.transparent, 
+                              highlightColor: Colors.transparent,  
+                              
+                              ),
+                  
+                              IconButton(onPressed: () {
+                                
+                                _displayReplyDeleteDialog(context,pinreplyModels[index].pin_reply_id);
+                              }, 
+                              icon: Icon(Icons.close),
+                              iconSize: 30,
+                              splashColor: Colors.transparent, 
+                              highlightColor: Colors.transparent,  
+                              
+                              ),
+                            ],
+                  
+                  
+                          ),
+                  
+                  
+                  
+                        ),
+                  
+                  
+                  
+                  
+                        ],
+                      
+                  
+                      );
+                      
+                      
+                      
+                      
+                      
+                  
+                  
+                    }
+                  
+                    
+                  
+                  
+                  
+                  
+                                ),
+                  
+                                
+                              ),
+                  )
+                ],
+              ),
+            )
+            
+                  ],
+                  
+                  ),
+                  Positioned(
+                    bottom: 20,
+                    right: 5,
+                    child:  //bottomsheet
+                  Stack(
+                    children: [
+                      Container(
+                        //width: size.width * 0.8,
+                        width: size.width * 0.3,
+                        height: size.height * 0.08,
+      
+                        //color: Colors.cyan,
+      
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromARGB(255, 243, 230, 90)),
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
                               ),
                             ),
-                          ),
-                          child: Text(
-                            'Reply',
-                            style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black),
-                          ),
-                          onPressed: () {
-    
-    
-                            
-                            showModalBottomSheet(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(62.0))),
-                              backgroundColor: Colors.white,
-                              context: context,
-                              isScrollControlled: true,
-                              enableDrag: false,
-                              builder: (context) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 18),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 25.0),
-                                        child: Container(
-                                          height: size.height * 0.595,
+                            child: Text(
+                              'Reply',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                            onPressed: () {
+      
+      
+                              
+                              showModalBottomSheet(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(62.0))),
+                                backgroundColor: Colors.white,
+                                context: context,
+                                isScrollControlled: true,
+                                enableDrag: false,
+                                builder: (context) => Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 18),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 25.0),
                                           child: Container(
-                                            width: size.width * 0.84,
-                                            decoration: BoxDecoration(
-                                                //color: hexToColor("#F1E5BA"),
-                                                borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(66),
-                                              topRight: Radius.circular(66),
-                                            )),
-                                            child: Column(
-                                              // mainAxisAlignment:
-                                              //     MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                SizedBox(height: 45),
-                                                Center(
-                                                  child: Text(
-                                                    'Reply Pin Post',
+                                            height: size.height * 0.595,
+                                            child: Container(
+                                              width: size.width * 0.84,
+                                              decoration: BoxDecoration(
+                                                  //color: hexToColor("#F1E5BA"),
+                                                  borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(66),
+                                                topRight: Radius.circular(66),
+                                              )),
+                                              child: Column(
+                                                // mainAxisAlignment:
+                                                //     MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  SizedBox(height: 45),
+                                                  Center(
+                                                    child: Text(
+                                                      'Reply Pin Post',
+                                                      style: TextStyle(
+                                                          fontSize: 24,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.black),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 30),
+                                                  Text(
+                                                    'What\'s on your mind',
                                                     style: TextStyle(
-                                                        fontSize: 24,
+                                                        fontSize: 20,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                         color: Colors.black),
                                                   ),
-                                                ),
-                                                SizedBox(height: 30),
-                                                Text(
-                                                  'What\'s on your mind',
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.black),
-                                                ),
-                                                SizedBox(
-                                                    height:
-                                                        size.height * 0.021),
-                                                Container(
-                                                  //margin: EdgeInsets.only(top: 40),
-                                                  //width: size.width * 0.831,
-    
-                                                  child: (Container(
-                                                    decoration: BoxDecoration(
-                                                      //color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              30),
-                                                      // boxShadow: [
-                                                      //   const BoxShadow(
-                                                      //     color: Colors.black,
-                                                      //   ),
-                                                      // ]
-                                                    ),
-                                                    //height: 300,
-                                                    child: (TextField(
-                                                      controller:
-                                                          pinController,
-                                                      keyboardType:
-                                                          TextInputType
-                                                              .multiline,
-                                                      maxLines: 8,
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          height: 1.5),
-                                                      decoration:
-                                                          InputDecoration(
-                                                        filled: true,
-                                                        fillColor: Colors.white,
-                                                        contentPadding:
-                                                            EdgeInsets
-                                                                .symmetric(
-                                                                    vertical:
-                                                                        10,
-                                                                    horizontal:
-                                                                        20),
-                                                        //border: InputBorder.none,
-                                                        focusedBorder:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      18.0),
-                                                          borderSide: BorderSide(
-                                                              color: Color(
-                                                                  0xFFF9EE6D),
-                                                              width: 2.0),
-                                                        ),
-                                                        enabledBorder:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      18.0),
-                                                          borderSide: BorderSide(
-                                                              color: Color(
-                                                                  0xFFF9EE6D),
-                                                              width: 2.0),
-                                                        ),
-                                                        hintText:
-                                                            'Write your Reply',
-                                                        hintStyle: TextStyle(
-                                                          fontSize: 20.0,
-                                                        ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.021),
+                                                  Container(
+                                                    //margin: EdgeInsets.only(top: 40),
+                                                    //width: size.width * 0.831,
+      
+                                                    child: (Container(
+                                                      decoration: BoxDecoration(
+                                                        //color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                30),
+                                                        // boxShadow: [
+                                                        //   const BoxShadow(
+                                                        //     color: Colors.black,
+                                                        //   ),
+                                                        // ]
                                                       ),
+                                                      //height: 300,
+                                                      child: (TextField(
+                                                        controller:
+                                                            pinController,
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .multiline,
+                                                        maxLines: 8,
+                                                        style: TextStyle(
+                                                            fontSize: 20,
+                                                            height: 1.5),
+                                                        decoration:
+                                                            InputDecoration(
+                                                          filled: true,
+                                                          fillColor: Colors.white,
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          10,
+                                                                      horizontal:
+                                                                          20),
+                                                          //border: InputBorder.none,
+                                                          focusedBorder:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        18.0),
+                                                            borderSide: BorderSide(
+                                                                color: Color(
+                                                                    0xFFF9EE6D),
+                                                                width: 2.0),
+                                                          ),
+                                                          enabledBorder:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        18.0),
+                                                            borderSide: BorderSide(
+                                                                color: Color(
+                                                                    0xFFF9EE6D),
+                                                                width: 2.0),
+                                                          ),
+                                                          hintText:
+                                                              'Write your Reply',
+                                                          hintStyle: TextStyle(
+                                                            fontSize: 20.0,
+                                                          ),
+                                                        ),
+                                                      )),
                                                     )),
-                                                  )),
-                                                ),
-                                                SizedBox(
-                                                    height:
-                                                        size.height * 0.021),
-                                                Container(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      //SizedBox(height: size.height * 0.021),
-    
-                                                      SizedBox(
-                                                          height: size.height *
-                                                              0.007),
-                                                      Center(
-                                                          child: Container(
-                                                        width: 208,
-                                                        height: 60,
-                                                        child: ElevatedButton(
-                                                          style: ButtonStyle(
-                                                            backgroundColor:
-                                                                MaterialStateProperty
-                                                                    .all<Color>(
-                                                                        Color(
-                                                                            0xFFF9EE6D)),
-                                                            shape:
-                                                                MaterialStateProperty
-                                                                    .all(
-                                                              RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            90.0),
+                                                  ),
+                                                  SizedBox(
+                                                      height:
+                                                          size.height * 0.021),
+                                                  Container(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        //SizedBox(height: size.height * 0.021),
+      
+                                                        SizedBox(
+                                                            height: size.height *
+                                                                0.007),
+                                                        Center(
+                                                            child: Container(
+                                                          width: 208,
+                                                          height: 60,
+                                                          child: ElevatedButton(
+                                                            style: ButtonStyle(
+                                                              backgroundColor:
+                                                                  MaterialStateProperty
+                                                                      .all<Color>(
+                                                                          Color(
+                                                                              0xFFF9EE6D)),
+                                                              shape:
+                                                                  MaterialStateProperty
+                                                                      .all(
+                                                                RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              90.0),
+                                                                ),
                                                               ),
                                                             ),
+                                                            onPressed: () {
+      
+                                                              /*----------------- Here ---------------------------------*/ 
+                                                              print('Input: ' + pinController.text);
+                                                              //print('Current circle_id: ' + circle_id );
+                                                              //getPinpostFromCircle(pinController.text);
+                                                              SendPinReplyText(pinController.text);
+                                                              //addItemToList();
+                                                              /*----------------- Here ---------------------------------*/ 
+      
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: Text(
+                                                              "Confirm",
+                                                              style: TextStyle(
+                                                                  fontSize: 21,
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
                                                           ),
-                                                          onPressed: () {
-    
-                                                            /*----------------- Here ---------------------------------*/ 
-                                                            print('Input: ' + pinController.text);
-                                                            //print('Current circle_id: ' + circle_id );
-                                                            //getPinpostFromCircle(pinController.text);
-                                                            SendPinReplyText(pinController.text);
-                                                            //addItemToList();
-                                                            /*----------------- Here ---------------------------------*/ 
-    
-                                                            Navigator.pop(context);
-                                                          },
-                                                          child: Text(
-                                                            "Confirm",
-                                                            style: TextStyle(
-                                                                fontSize: 21,
-                                                                color: Colors
-                                                                    .black),
-                                                          ),
-                                                        ),
-                                                      ))
-                                                    ],
+                                                        ))
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        )),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: MediaQuery.of(context)
-                                              .viewInsets
-                                              .bottom),
-                                    ),
-                                    SizedBox(height: 10),
-                                  ],
+                                          )),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                      ),
+                                      SizedBox(height: 10),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-    
-    
-                          }),
-                    )
-                  ],
-                )
-                  
+                              );
+      
+      
+                            }),
+                      )
+                    ],
                   )
-              ],
+                    
+                    )
+                ],
+              ),
             ),
           ),
-        ),
-    
-      )
       
-    
-    
-    
+        )
+        
+      
+      
+      
+      ),
     );
   }
 }
