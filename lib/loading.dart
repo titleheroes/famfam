@@ -25,6 +25,7 @@ class _LoadingState extends State<Loading> {
 
   @override
   void initState() {
+    // FirebaseAuth.instance.signOut();
     super.initState();
     WidgetsBinding.instance!
         .addPostFrameCallback((_) => _auth.checkAuth(context));
