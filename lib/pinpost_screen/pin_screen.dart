@@ -512,7 +512,7 @@ Future<Null> pullUserSQLID() async {
                         margin: EdgeInsets.only(bottom: index==pinpostModels.length-1 ? 100 :20),
                                   
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 250, 244, 154),
+                          color: Color(0xfffF5EC83),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Stack(
