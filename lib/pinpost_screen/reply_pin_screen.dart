@@ -396,6 +396,8 @@ class _BodyState extends State<ReplyPinScreen> {
                       child:
                           Text('Delete', style: TextStyle(color: Colors.white)),
                       onPressed: () async {
+
+                        
                         DeletePinpost(pin_id);
                         //onDismissed();
 
@@ -418,12 +420,32 @@ class _BodyState extends State<ReplyPinScreen> {
     );
   }
 
+
+
+
   void DeletePinpost(String pin_id) async {
     String target_pin_id = pin_id;
     String DeletePinpost =
         '${MyConstant.domain}/famfam/deletePinFromPinID.php?isAdd=true&pin_id=$target_pin_id';
 
     print('## target = $target_pin_id');
+
+    String DeletePinReply =
+        '${MyConstant.domain}/famfam/deletePinreplyWherePinID.php?isAdd=true&pin_id=$target_pin_id';
+
+    print('## target = $target_pin_id');
+
+    await Dio().get(DeletePinReply).then((value) {
+      if (value.toString() == 'True') {
+        print('PinReply Deleted');
+
+        
+      } else {
+        print('Delete Error');
+      }
+    });
+
+
 
     await Dio().get(DeletePinpost).then((value) {
       if (value.toString() == 'True') {
@@ -436,6 +458,8 @@ class _BodyState extends State<ReplyPinScreen> {
     // getPinpostFromPinID()
     //     .then((value) => getPinReplyFromPinID().then((value) => load = false));
   }
+
+  
 
   Future<void> _displayReplyDeleteDialog(
       BuildContext context, String pin_reply_id) async {

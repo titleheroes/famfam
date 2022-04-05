@@ -321,6 +321,22 @@ Future<Null> pullUserSQLID() async {
     
     print('## target = $target_pin_id');
 
+
+    String DeletePinReply =
+        '${MyConstant.domain}/famfam/deletePinreplyWherePinID.php?isAdd=true&pin_id=$target_pin_id';
+
+    print('## target = $target_pin_id');
+
+    await Dio().get(DeletePinReply).then((value) {
+      if (value.toString() == 'True') {
+        print('PinReply Deleted');
+
+        
+      } else {
+        print('Delete Error');
+      }
+    });
+
     await Dio().get(DeletePinpost).then((value) {
       if(value.toString()=='True'){
         print('Pinpost Deleted');
