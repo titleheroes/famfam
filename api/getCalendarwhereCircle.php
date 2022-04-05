@@ -18,16 +18,9 @@ if (!$link->set_charset("utf8")) {
 if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
 				
-<<<<<<< Updated upstream
-        $id = $_GET['id'];
-		
+        $circle_id = $_GET['circle_id'];
 
-		$result = mysqli_query($link, "SELECT * FROM calendar_att WHERE  id='$id' ");
-=======
-		$id = $_GET['id'];
-
-		$result = mysqli_query($link, "SELECT * FROM calendar_att WHERE id = '$id'");
->>>>>>> Stashed changes
+		$result = mysqli_query($link, "SELECT * FROM calendar_att WHERE  circle_id='$circle_id' ");
 
 		if ($result) {
 
