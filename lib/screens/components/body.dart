@@ -269,8 +269,15 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                     backgroundColor: Colors.transparent,
                     elevation: 0,
                     leading: IconButton(
-                      onPressed: () {
+                      onPressed: () async {
                         Navigator.pop(context);
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                HomePage(FirebaseAuth.instance.currentUser),
+                          ),
+                        );
                       },
                       icon: SvgPicture.asset(
                         "assets/icons/chevron-back-outline.svg",

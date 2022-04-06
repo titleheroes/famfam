@@ -102,103 +102,18 @@ class _settingPageState extends State<settingPage> {
               backgroundColor: Colors.white,
             ),
             body: ListView(children: [
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleSetting(),
-                    CreateAndJoinCircle(),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
-                          elevation: 0),
-                      child: buttonSettings(imageProfile, "My Profile"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Profile(
-                                      profileUser: 1,
-                                      profileMem: 0,
-                                      profileOwner: 0,
-                                    )));
-                      },
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
-                      child: Text(
-                        "Settings",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey[500],
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          padding: EdgeInsets.fromLTRB(30, 20, 0, 20),
-                          elevation: 0),
-                      child: buttonSettings(
-                          'assets/images/Privacy.png', "Privacy & EZ-Mode"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PrivacyEZ()));
-                      },
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          padding: EdgeInsets.fromLTRB(30, 20, 0, 20),
-                          elevation: 0),
-                      child: buttonSettings(
-                          'assets/images/Notification.png', "Notification"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => NotificationPage()));
-                      },
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          padding: EdgeInsets.fromLTRB(30, 20, 0, 20),
-                          elevation: 0),
-                      child: buttonSettings('assets/images/Help.png', "Help"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HelpPage()));
-                      },
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          padding: EdgeInsets.fromLTRB(30, 20, 0, 20),
-                          elevation: 0),
-                      child: buttonSettings('assets/images/About.png', "About"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AboutPage()));
-                      },
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.5,
-                      margin: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width / 5.5,
-                          top: 20,
-                          bottom: 30),
-                      child: ElevatedButton(
+              Container(
+                color: Colors.white,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleSetting(),
+                      CreateAndJoinCircle(),
+                      ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            primary: Color(0xFFE3E3E3),
-                            padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                            primary: Colors.white,
+                            padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
                             elevation: 0),
                         child: Row(children: [
                           CircleAvatar(
@@ -240,15 +155,90 @@ class _settingPageState extends State<settingPage> {
                       Container(
                         padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
                         child: Text(
-                          "Log out",
-                          style: TextStyle(color: Colors.black),
+                          "Settings",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[500],
+                              fontWeight: FontWeight.bold),
                         ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            padding: EdgeInsets.fromLTRB(30, 20, 0, 20),
+                            elevation: 0),
+                        child: buttonSettings(
+                            'assets/images/Privacy.png', "Privacy & EZ-Mode"),
                         onPressed: () {
-                          AuthService().signOut(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PrivacyEZ()));
                         },
                       ),
-                    ),
-                  ])
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            padding: EdgeInsets.fromLTRB(30, 20, 0, 20),
+                            elevation: 0),
+                        child: buttonSettings(
+                            'assets/images/Notification.png', "Notification"),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NotificationPage()));
+                        },
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            padding: EdgeInsets.fromLTRB(30, 20, 0, 20),
+                            elevation: 0),
+                        child: buttonSettings('assets/images/Help.png', "Help"),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HelpPage()));
+                        },
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            padding: EdgeInsets.fromLTRB(30, 20, 0, 20),
+                            elevation: 0),
+                        child:
+                            buttonSettings('assets/images/About.png', "About"),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AboutPage()));
+                        },
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        margin: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width / 5.5,
+                            top: 20,
+                            bottom: 30),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Color(0xFFE3E3E3),
+                              padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                              elevation: 0),
+                          child: Text(
+                            "Log out",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          onPressed: () {
+                            AuthService().signOut(context);
+                          },
+                        ),
+                      ),
+                    ]),
+              )
             ])));
   }
 
