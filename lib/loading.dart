@@ -25,6 +25,7 @@ class _LoadingState extends State<Loading> {
 
   @override
   void initState() {
+    // FirebaseAuth.instance.signOut();
     super.initState();
     // FirebaseAuth.instance.signOut();
     WidgetsBinding.instance!

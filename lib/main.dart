@@ -9,7 +9,6 @@ import 'package:famfam/screens/ticktik_screen.dart';
 //import 'package:flutter_famfam/screens/circle_screen.dart';
 import 'package:famfam/screens/voterandom_screen.dart';
 import 'package:famfam/Homepage/HomePage.dart';
-import 'package:famfam/Homepage/addList.dart';
 import 'package:famfam/check-in/Checkin.dart';
 import 'package:famfam/loading.dart';
 import 'package:famfam/login.dart';
@@ -24,6 +23,7 @@ import 'package:famfam/settingPage/settingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:famfam/pinpost_screen/pin_screen.dart';
+import 'package:famfam/pinpost_screen/reply_pin_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,7 +75,7 @@ void main() async {
         // '/todolist': (context) => TodoBody(),
         '/voterandom': (context) => VoteRandomScreen(),
         '/checkin': (context) => CheckIn(),
-        '/pinpost': (context) => PinScreen(),
+        '/pinpost': (context) => PinScreen(),     
         '/calendar': (context) => Calendar(),
       },
     ),

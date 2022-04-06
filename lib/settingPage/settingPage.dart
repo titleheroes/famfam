@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/models/user_model.dart';
 import 'package:famfam/services/auth.dart';
+import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/settingPage/circle/circle.dart';
 import 'package:famfam/settingPage/create&join/create&join.dart';
 import 'package:famfam/settingPage/member/member.dart';
@@ -11,6 +16,7 @@ import 'package:famfam/settingPage/privacy/Privacy.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Family {
   String idFamily;
@@ -27,26 +33,46 @@ class settingPage extends StatefulWidget {
 }
 
 class _settingPageState extends State<settingPage> {
-  List<String> circle = [
-    'one Family',
-    'two Family',
-    'three Family',
-    'four Family'
-  ];
+  List<UserModel> userModels = [];
+  String imageProfile =
+      'https://firebasestorage.googleapis.com/v0/b/famfam-c881b.appspot.com/o/userProfile%2FcircleOnbg.png?alt=media&token=80bc8cea-30d6-41d7-8896-c86c021e059e';
+  String? circle_id;
 
-  List<Family> circle01 = [
-    Family('one', 'Janejira', 'J-Profile.png'),
-    Family('one', 'Burin', 'J-Profile.png'),
-    Family('one', 'Martin', 'J-Profile.png'),
-    Family('one', 'Arunee', 'J-Profile.png')
-  ];
+  @override
+  void initState() {
+    super.initState();
+    pullUserSQLID().then((value) {
+      imageProfile = userModels[0].profileImage;
+    });
+  }
+
+  Future<Null> pullUserSQLID() async {
+    final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
+    String uid = getUID;
+    String pullUser =
+        '${MyConstant.domain}/famfam/getUserWhereUID.php?isAdd=true&uid=$uid';
+    await Dio().get(pullUser).then((value) async {
+      if (value.toString() == null ||
+          value.toString() == 'null' ||
+          value.toString() == '') {
+        FirebaseAuth.instance.signOut();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.clear();
+      } else {
+        for (var item in json.decode(value.data)) {
+          UserModel model = UserModel.fromMap(item);
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          setState(() {
+            userModels.add(model);
+            circle_id = preferences.getString('circle_id');
+          });
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    int length = circle.length;
-    String family = 'Sabaidee';
-    String imageProfile = 'assets/images/J-Profile.png';
-
     return MaterialApp(
         home: Scaffold(
             appBar: AppBar(
@@ -174,6 +200,45 @@ class _settingPageState extends State<settingPage> {
                             primary: Color(0xFFE3E3E3),
                             padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
                             elevation: 0),
+                        child: Row(children: [
+                          CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Colors.white,
+                            backgroundImage: NetworkImage(imageProfile),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'My Profile',
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            color: Colors.grey[500],
+                            size: 25,
+                          ),
+                          Padding(padding: EdgeInsets.only(right: 35))
+                        ]),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Profile(
+                                userID: FirebaseAuth.instance.currentUser!.uid
+                                    .toString(),
+                                circle_id: circle_id,
+                                profileUser: 1,
+                                profileMem: 0,
+                                profileOwner: 0,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
                         child: Text(
                           "Log out",
                           style: TextStyle(color: Colors.black),
@@ -190,24 +255,25 @@ class _settingPageState extends State<settingPage> {
   Widget buttonSettings(
     String namepic,
     String nameicon,
-  ) =>
-      Row(children: [
-        Container(
-          child: Image.asset(namepic),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Text(
-          '$nameicon',
-          style: TextStyle(color: Colors.black, fontSize: 16),
-        ),
-        Spacer(),
-        Icon(
-          Icons.chevron_right_rounded,
-          color: Colors.grey[500],
-          size: 25,
-        ),
-        Padding(padding: EdgeInsets.only(right: 35))
-      ]);
+  ) {
+    return Row(children: [
+      Container(
+        child: Image.asset(namepic),
+      ),
+      SizedBox(
+        width: 10,
+      ),
+      Text(
+        '$nameicon',
+        style: TextStyle(color: Colors.black, fontSize: 16),
+      ),
+      Spacer(),
+      Icon(
+        Icons.chevron_right_rounded,
+        color: Colors.grey[500],
+        size: 25,
+      ),
+      Padding(padding: EdgeInsets.only(right: 35))
+    ]);
+  }
 }
