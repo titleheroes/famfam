@@ -18,7 +18,9 @@ if (!$link->set_charset("utf8")) {
 if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
 
-		$result = mysqli_query($link, "SELECT * FROM random");
+		$circle_id = $_GET['circle_id'];
+
+		$result = mysqli_query($link, "SELECT * FROM random WHERE circle_id = $circle_id");
 
 		if ($result) {
 

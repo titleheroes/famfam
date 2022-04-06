@@ -1683,8 +1683,10 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
   }
 
   Future<Null> pullAllRandom() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? circle_id = preferences.getString('circle_id');
     String pullAllRandom =
-        '${MyConstant.domain}/famfam/getRandomAll.php?isAdd=true';
+        '${MyConstant.domain}/famfam/getRandomAll.php?isAdd=true&circle_id=$circle_id';
     try {
       await Dio().get(pullAllRandom).then((value) async {
         for (var item in json.decode(value.data)) {
@@ -1953,30 +1955,51 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                         child: Column(
                                                           children: [
                                                             Container(
-                                                                height: 170,
+                                                                height: 180,
                                                                 margin: EdgeInsets
                                                                     .only(
                                                                         bottom:
-                                                                            6),
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
+                                                                            10),
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            249,
+                                                                            234,
+                                                                            184),
+                                                                    boxShadow: [
+                                                                      BoxShadow(
+                                                                          color: Color.fromARGB(
+                                                                              138,
+                                                                              209,
+                                                                              209,
+                                                                              209),
+                                                                          offset: Offset(
+                                                                              1,
+                                                                              -1),
+                                                                          blurRadius:
                                                                               10),
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          252,
-                                                                          215,
-                                                                          94),
-                                                                ),
+                                                                      BoxShadow(
+                                                                          color: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              255,
+                                                                              255),
+                                                                          offset: Offset(
+                                                                              -5,
+                                                                              -5),
+                                                                          blurRadius:
+                                                                              5),
+                                                                    ]),
                                                                 child: Padding(
                                                                   padding:
                                                                       const EdgeInsets
                                                                               .fromLTRB(
                                                                           10,
-                                                                          10,
+                                                                          0,
                                                                           10,
                                                                           10),
                                                                   child: Row(
@@ -1994,59 +2017,80 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                 2,
                                                                           ),
                                                                         ),
-
                                                                         Column(
                                                                           crossAxisAlignment:
                                                                               CrossAxisAlignment.start,
                                                                           children: [
-                                                                            Row(
-                                                                              // mainAxisAlignment: MainAxisAlignment.,
-                                                                              children: [
-                                                                                Align(
-                                                                                  alignment: Alignment.topRight,
-                                                                                  child: Padding(
-                                                                                    padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
-                                                                                    child: CircleAvatar(
-                                                                                      radius: 28,
-                                                                                      backgroundImage: NetworkImage(topicRandom[index].user_profile),
-                                                                                      // child: Image.network(
-                                                                                      //   // "assets/images/new-mia.png",
-                                                                                      //   topicRandom[index].user_profile,
-                                                                                      //   fit: BoxFit.cover,
-                                                                                      // ),
+                                                                            Container(
+                                                                              width: 341,
+                                                                              child: Row(
+                                                                                // mainAxisAlignment: MainAxisAlignment.,
+                                                                                children: [
+                                                                                  Align(
+                                                                                    alignment: Alignment.topRight,
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.fromLTRB(0, 18, 5, 5),
+                                                                                      child: CircleAvatar(
+                                                                                        radius: 28,
+                                                                                        backgroundImage: NetworkImage(topicRandom[index].user_profile),
+                                                                                        // child: Image.network(
+                                                                                        //   // "assets/images/new-mia.png",
+                                                                                        //   topicRandom[index].user_profile,
+                                                                                        //   fit: BoxFit.cover,
+                                                                                        // ),
+                                                                                      ),
                                                                                     ),
                                                                                   ),
-                                                                                ),
-                                                                                Padding(
-                                                                                  padding: const EdgeInsets.only(left: 10),
-                                                                                  child: Column(
-                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                    children: <Widget>[
-                                                                                      const Text(
-                                                                                        "Topic:",
-                                                                                        style: TextStyle(
-                                                                                          fontWeight: FontWeight.w500,
-                                                                                          fontSize: 16,
-                                                                                        ),
-                                                                                      ),
-                                                                                      SizedBox(
-                                                                                        height: 2,
-                                                                                      ),
-                                                                                      Text(
+                                                                                  Padding(
+                                                                                    padding: const EdgeInsets.only(left: 5, top: 10),
+                                                                                    child: Container(
+                                                                                      width: 230,
+                                                                                      child: Text(
                                                                                         topicRandom[index].random_topic,
+                                                                                        maxLines: 2,
+                                                                                        overflow: TextOverflow.ellipsis,
+
                                                                                         // "ข้าวเย็นกินไรดีนะ",
                                                                                         style: TextStyle(
                                                                                           fontWeight: FontWeight.w500,
-                                                                                          fontSize: 18,
+                                                                                          fontSize: 17,
                                                                                         ),
                                                                                       ),
-                                                                                    ],
+                                                                                    ),
                                                                                   ),
-                                                                                ),
-                                                                              ],
+                                                                                  Expanded(
+                                                                                    child: Align(
+                                                                                      alignment: Alignment.topRight,
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.only(bottom: 30),
+                                                                                        child: PopUpMen(
+                                                                                          menuList: [
+                                                                                            PopupMenuItem(
+                                                                                              child: ListTile(
+                                                                                                leading: Icon(
+                                                                                                  Icons.delete_rounded,
+                                                                                                ),
+                                                                                                title: Text("Delete"),
+                                                                                                onTap: () {
+                                                                                                  print('## You Click Delete form index = $index');
+                                                                                                  confirmDialogDelete(context, topicRandom[index]);
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                          icon: SvgPicture.asset(
+                                                                                            "assets/icons/menu-dots.svg",
+                                                                                            height: 20,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
                                                                             ),
                                                                             SizedBox(
-                                                                              height: 10,
+                                                                              height: 15,
                                                                             ),
                                                                             Text(
                                                                               "Result:",
@@ -2055,7 +2099,6 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                 fontSize: 16,
                                                                               ),
                                                                             ),
-
                                                                             Container(
                                                                               height: 40,
                                                                               width: size.width / 1.3,
@@ -2069,6 +2112,7 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                   padding: const EdgeInsets.only(bottom: 5),
                                                                                   child: Text(
                                                                                     topicRandom[index].random_final,
+
                                                                                     // "กระเพาหมูกรอบ",
                                                                                     style: TextStyle(
                                                                                       fontWeight: FontWeight.w500,
@@ -2078,28 +2122,8 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                 ),
                                                                               ),
                                                                             ),
-
-                                                                            // SizedBox(
-                                                                            //   height: 5,
-                                                                            // ),
-                                                                            // Text(
-                                                                            //   // '${addLtoC[index]}',
-                                                                            //   'tlew',
-                                                                            //   style: TextStyle(
-                                                                            //     fontSize: 18,
-                                                                            //     fontWeight: FontWeight.normal,
-                                                                            //   ),
-                                                                            // ),
-                                                                            // Text(
-                                                                            //   '${addDesc[index]}',
-                                                                            //   style: TextStyle(
-                                                                            //       fontSize:
-                                                                            //           18),
-                                                                            // ),
                                                                           ],
                                                                         ),
-                                                                        // ),
-                                                                        //
                                                                       ]),
                                                                 )),
                                                           ],
@@ -2168,6 +2192,77 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
           ],
         ),
       ),
+    );
+  }
+}
+
+Future<Null> confirmDialogDelete(
+    BuildContext context, randomModel topicRandom) async {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Are you sure you want to delete this random?'),
+      titleTextStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 18,
+        fontWeight: FontWeight.w400,
+      ),
+      content: Row(
+        children: [
+          Expanded(
+            child: FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 18),
+              ),
+            ),
+          ),
+          Expanded(
+            child: FlatButton(
+              onPressed: () async {
+                String? random_id = topicRandom.random_id;
+                String deleteRandom =
+                    '${MyConstant.domain}/famfam/deleteRandomWhereRandomID.php?isAdd=true&random_id=$random_id';
+
+                await Dio().get(deleteRandom).then((value) async {
+                  Navigator.pop(context);
+                  await Navigator.pushReplacementNamed(
+                      context, ('/voterandom'));
+                });
+              },
+              child: Text(
+                'Delete',
+                style: TextStyle(color: Color(0xFFFFC34A), fontSize: 18),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class PopUpMen extends StatefulWidget {
+  final List<PopupMenuEntry> menuList;
+  final Widget? icon;
+
+  const PopUpMen({Key? key, required this.menuList, this.icon})
+      : super(key: key);
+
+  @override
+  State<PopUpMen> createState() => _PopUpMenState();
+}
+
+class _PopUpMenState extends State<PopUpMen> {
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      itemBuilder: ((context) => widget.menuList),
+      icon: widget.icon,
     );
   }
 }
@@ -2931,7 +3026,7 @@ Future openDialogRandom(BuildContext context) => showDialog(
                             ),
                           ),
                           child: Text(
-                            'Hello',
+                            'Done',
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
