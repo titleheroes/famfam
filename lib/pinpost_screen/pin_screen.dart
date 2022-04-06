@@ -41,7 +41,7 @@ class _BodyState extends State<PinScreen> {
   void initState(){
     super.initState();
     pullUserSQLID().then((value)  {
-      getPinpostFromCircle().then((value) => getReplyNumberFromCircleID());
+      getPinpostFromCircle().then((value) => getReplyNumberFromCircleID().then((value) => load = false));
       
     });
     
@@ -149,8 +149,12 @@ Future<Null> pullUserSQLID() async {
     }
     
   );
-    getReplyNumberFromCircleID();
-    getPinpostFromCircle();
+  setState(() {
+    load = true;
+  });
+
+    getPinpostFromCircle().then((value) => getReplyNumberFromCircleID().then((value) => load = false));
+    
     //Navigator.pushNamed(context, '/pinpost');
 
   }
@@ -345,7 +349,11 @@ Future<Null> pullUserSQLID() async {
       }
     });
     //Navigator.pushNamed(context, '/pinpost');
-    getPinpostFromCircle();
+    setState(() {
+    load = true;
+  });
+
+    getPinpostFromCircle().then((value) => getReplyNumberFromCircleID().then((value) => load = false));
 
   }
 
@@ -369,7 +377,7 @@ Future<Null> pullUserSQLID() async {
       if(getvalue.toString() == 'null'){
         //No Data
         setState(() {
-          load = false;
+          //load = false;
           haveData = false;
         });
 
@@ -380,7 +388,7 @@ Future<Null> pullUserSQLID() async {
           print('Pin_ID ==>> ${model.pin_id} have ${model.number_of_reply} reply' );
 
           setState(() {
-            load = false;
+            //load = false;
             haveData = true;
             replynumberModels.add(model);
           } );
