@@ -4,9 +4,9 @@ import 'package:famfam/Calendar/calendar.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
 import 'package:famfam/constants.dart';
 import 'package:famfam/register.dart';
+import 'package:famfam/screens/components/body.dart';
 import 'package:famfam/screens/ticktik_screen.dart';
 //import 'package:flutter_famfam/screens/circle_screen.dart';
-import 'package:famfam/screens/todolist_screens.dart';
 import 'package:famfam/screens/voterandom_screen.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/check-in/Checkin.dart';
@@ -72,7 +72,7 @@ void main() async {
         '/createcircle': (context) => createCircleScreen(),
         '/login': (context) => Login(),
         '/ticktik': (context) => TickTikScreen(),
-        '/todolist': (context) => ToDoListScreen(),
+        // '/todolist': (context) => TodoBody(),
         '/voterandom': (context) => VoteRandomScreen(),
         '/checkin': (context) => CheckIn(),
         '/pinpost': (context) => PinScreen(),     

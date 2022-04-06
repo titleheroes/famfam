@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:famfam/screens/components/body.dart';
 import 'package:famfam/models/list_today_ido.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -660,8 +661,14 @@ class _tabbarState extends State<tabbar> {
                                               ),
                                             ),
                                             onPressed: () {
-                                              Navigator.pushNamed(
-                                                  context, '/todolist');
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          TodoBody(
+                                                              tabSelected:
+                                                                  0))).then(
+                                                  (value) => setState(() {}));
                                             },
                                             child: Row(
                                               children: [
