@@ -402,12 +402,13 @@ class _BodyState extends State<ReplyPinScreen> {
                         //onDismissed();
 
                         Navigator.pop(context);
-                        await Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PinScreen(),
-                          ),
-                        );
+                        // await Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => PinScreen(),
+                        //   ),
+                        // );
+
                       },
                     ),
                   ),
@@ -434,6 +435,9 @@ class _BodyState extends State<ReplyPinScreen> {
         '${MyConstant.domain}/famfam/deletePinreplyWherePinID.php?isAdd=true&pin_id=$target_pin_id';
 
     print('## target = $target_pin_id');
+    setState(() {
+      load = true;
+    });
 
     await Dio().get(DeletePinReply).then((value) {
       if (value.toString() == 'True') {
@@ -443,20 +447,28 @@ class _BodyState extends State<ReplyPinScreen> {
       } else {
         print('Delete Error');
       }
-    });
-
-
-
-    await Dio().get(DeletePinpost).then((value) {
+    }).then((value) => Dio().get(DeletePinpost).then((value) {
       if (value.toString() == 'True') {
         print('Pinpost Deleted');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+          builder: (context) => PinScreen(),
+          ),
+        );
       } else {
         print('Delete Error');
       }
-    });
+    }));
+
+
+
+    
+
     //Navigator.pushNamed(context, '/pinpost');
     // getPinpostFromPinID()
     //     .then((value) => getPinReplyFromPinID().then((value) => load = false));
+
   }
 
   
