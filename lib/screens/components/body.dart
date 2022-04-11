@@ -29,6 +29,7 @@ import 'package:famfam/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:famfam/models/circle_model.dart';
+import 'package:flutter/cupertino.dart';
 
 class Body extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -1713,6 +1714,21 @@ class _TickBodyState extends State<TickBody> {
     });
   }
 
+  Future<Null> deletedTopicByID({String? topic_id}) async {
+    String updateDataFav =
+        '${MyConstant.domain}/famfam/deleteTickTickListByID.php?isAdd=true&tick_id=$topic_id';
+    await Dio().get(updateDataFav).then((value) {
+      print('delete topic By ID Successed');
+
+      setState(() {
+        list_topic.removeWhere((item) => item.topic_id == topic_id);
+        list_product.removeWhere((item) => item.product_id == topic_id);
+
+        print('deleted topic successed');
+      });
+    });
+  }
+
   void onDismissed(String product_name, String product_id) {
     int checkEmpty = 0;
     setState(() {
@@ -1750,6 +1766,43 @@ class _TickBodyState extends State<TickBody> {
       print('Updated Fav By ID Successed');
       // }
     });
+  }
+
+  bool _isShown = true;
+
+  void _delete(BuildContext context, String topic_id) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this topic?'),
+            actions: [
+              // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancle'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  // _isShown = false;
+                  deletedTopicByID(topic_id: topic_id);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Yes'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              )
+            ],
+          );
+        });
   }
 
   @override
@@ -1905,7 +1958,7 @@ class _TickBodyState extends State<TickBody> {
                                                   decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            5),
+                                                            30),
                                                     color: Color(0xfffFFC34A),
                                                     // color: Colors.white,
                                                   ),
@@ -2014,48 +2067,31 @@ class _TickBodyState extends State<TickBody> {
                                                                           ),
                                                                         );
                                                                       });
-                                                                      // updateFav(
-                                                                      //     fav_topic:
-                                                                      //         fav_topic,
-                                                                      //     tick_id:
-                                                                      //         list_topic[index].topic_id);
                                                                     }
-                                                                    // setState(
-                                                                    //     () {
-                                                                    //   // print(list_topic[
-                                                                    //   //         index]
-                                                                    //   //     .fav);
-                                                                    //   // print(list_topic[
-                                                                    //   //         index]
-                                                                    //   //     .topic);
-                                                                    // });
                                                                   }),
                                                             ),
-
-                                                            // Container(
-                                                            //   margin: EdgeInsets
-                                                            //       .only(
-                                                            //           top: 15,
-                                                            //           right:
-                                                            //               15),
-                                                            //   child:
-                                                            //       FavoriteButton(
-                                                            //     iconSize: 30,
-                                                            //     iconDisabledColor:
-                                                            //         Colors
-                                                            //             .white,
-                                                            //     valueChanged:
-                                                            //         (_isFavorite) {
-                                                            //       print(
-                                                            //           'Is Favorite $_isFavorite ${list_topic[index].topic_id}');
-                                                            //       // updateFav(
-                                                            //       //     fav_topic:
-                                                            //       //         fav_topic,
-                                                            //       //     tick_id:
-                                                            //       //         list_topic[index].topic_id);
-                                                            //     },
-                                                            //   ),
-                                                            // ),
+                                                            GestureDetector(
+                                                                onTap: () {
+                                                                  print(
+                                                                      'click on delete ticktik ${list_topic[index].topic_id}');
+                                                                  _isShown ==
+                                                                          true
+                                                                      ? _delete(
+                                                                          context,
+                                                                          list_topic[index]
+                                                                              .topic_id)
+                                                                      : null;
+                                                                },
+                                                                child: Image(
+                                                                  image: AssetImage(
+                                                                      'assets/images/trash.png'),
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  height: 22,
+                                                                )),
+                                                            SizedBox(
+                                                              width: 20,
+                                                            )
                                                           ],
                                                         ),
                                                         Expanded(

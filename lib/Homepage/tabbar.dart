@@ -153,6 +153,58 @@ class _tabbarState extends State<tabbar> {
     });
   }
 
+  Future<Null> deletedTopicByID({String? topic_id}) async {
+    String updateDataFav =
+        '${MyConstant.domain}/famfam/deleteTickTickListByID.php?isAdd=true&tick_id=$topic_id';
+    await Dio().get(updateDataFav).then((value) {
+      print('delete topic By ID Successed');
+
+      setState(() {
+        list_topic.removeWhere((item) => item.topic_id == topic_id);
+        list_product.removeWhere((item) => item.product_id == topic_id);
+
+        print('deleted topic successed');
+      });
+    });
+  }
+
+  bool _isShown = true;
+
+  void _delete(BuildContext context, String topic_id) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this topic?'),
+            actions: [
+              // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancle'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  // _isShown = false;
+                  deletedTopicByID(topic_id: topic_id);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Yes'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              )
+            ],
+          );
+        });
+  }
+
   Future<void> _displayTextInputDialog(BuildContext context) async {
     return showDialog(
       context: context,
@@ -1091,12 +1143,13 @@ class _tabbarState extends State<tabbar> {
                                                     return Container(
                                                         height: 150,
                                                         margin:
-                                                            EdgeInsets.all(15),
+                                                            EdgeInsets.fromLTRB(
+                                                                5, 10, 5, 0),
                                                         decoration:
                                                             BoxDecoration(
                                                           borderRadius:
                                                               BorderRadius
-                                                                  .circular(5),
+                                                                  .circular(30),
                                                           color: Color(
                                                               0xfffFFC34A),
                                                           // color: Colors.white,
@@ -1155,12 +1208,37 @@ class _tabbarState extends State<tabbar> {
                                                                             // }
                                                                             setState(() {
                                                                               list_topic.removeWhere((item) => item.topic_id == '${list_topic[index].topic_id}');
+
                                                                               print('deleted topic successed');
                                                                             });
                                                                           });
                                                                           // setState(() {});
                                                                         }),
                                                                   ),
+                                                                  GestureDetector(
+                                                                      onTap:
+                                                                          () async {
+                                                                        print(
+                                                                            'click on delete ticktik ${list_topic[index].topic_id}');
+
+                                                                        _isShown ==
+                                                                                true
+                                                                            ? _delete(context,
+                                                                                list_topic[index].topic_id)
+                                                                            : null;
+                                                                      },
+                                                                      child:
+                                                                          Image(
+                                                                        image: AssetImage(
+                                                                            'assets/images/trash.png'),
+                                                                        fit: BoxFit
+                                                                            .cover,
+                                                                        height:
+                                                                            22,
+                                                                      )),
+                                                                  SizedBox(
+                                                                    width: 20,
+                                                                  )
                                                                 ],
                                                               ),
                                                               Expanded(
@@ -1203,73 +1281,6 @@ class _tabbarState extends State<tabbar> {
                                                                           }))
                                                             ]));
                                                   })))
-
-                                  // Container(
-                                  //   height: 140,
-                                  //   margin: const EdgeInsets.all(11),
-                                  //   decoration: BoxDecoration(
-                                  //     borderRadius: BorderRadius.circular(30),
-                                  //     color: Color(0xFFFFC34A),
-                                  //   ),
-                                  //   child: Column(
-                                  //     children: [
-                                  //       SizedBox(
-                                  //         height: 10,
-                                  //       ),
-                                  //       Row(
-                                  //         children: [
-                                  //           Padding(
-                                  //             padding:
-                                  //                 const EdgeInsets.fromLTRB(
-                                  //                     30, 6, 0, 0),
-                                  //             child: Text(
-                                  //               "Shopping",
-                                  //               textAlign: TextAlign.left,
-                                  //               style:
-                                  //                   TextStyle(fontSize: 22),
-                                  //             ),
-                                  //           ),
-                                  //           Padding(
-                                  //             padding:
-                                  //                 const EdgeInsets.fromLTRB(
-                                  //                     200, 6, 0, 0),
-                                  //             child: FavoriteButton(
-                                  //               iconSize: 30,
-                                  //               iconDisabledColor:
-                                  //                   Colors.white,
-                                  //               valueChanged: (_isFavorite) {
-                                  //                 print(
-                                  //                     'Is Favorite $_isFavorite)');
-                                  //               },
-                                  //             ),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //       SizedBox(
-                                  //         height: 7,
-                                  //       ),
-                                  //       Row(
-                                  //         children: [
-                                  //           Padding(
-                                  //             padding: const EdgeInsets.only(
-                                  //                 left: 30),
-                                  //             child: RoundCheckBox(
-                                  //               size: 22,
-                                  //               uncheckedColor: Colors.white,
-                                  //               checkedColor: Colors.green,
-                                  //               onTap: (selected) {},
-                                  //             ),
-                                  //           ),
-                                  //           Padding(
-                                  //             padding: const EdgeInsets.only(
-                                  //                 left: 7),
-                                  //             child: Text("นมตราหมี"),
-                                  //           )
-                                  //         ],
-                                  //       )
-                                  //     ],
-                                  //   ),
-                                  // )
                                 ],
                               )),
                         ],
