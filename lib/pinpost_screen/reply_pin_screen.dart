@@ -172,12 +172,15 @@ class _BodyState extends State<ReplyPinScreen> {
 
     await Dio().get(InsertPinReply).then((value) {
       if (value.toString() == 'true') {
+        setState(() {
+          load = true;
+        });
         print('PinReply Inserted');
       } else {
         print('Reply Error');
       }
     });
-    load = true;
+    
     getPinpostFromPinID()
         .then((value) => getPinReplyFromPinID().then((value) => load = false));
     //Navigator.pushNamed(context, '/pinpost');
@@ -247,6 +250,9 @@ class _BodyState extends State<ReplyPinScreen> {
                             '${MyConstant.domain}/famfam/editPinfromPinID.php?isAdd=true&pin_id=$pin_id&pin_text=${pinEditController.text}';
                         await Dio().get(EditPinpost).then((value) {
                           if (value.toString() == 'true') {
+                            setState(() {
+                              load = true;
+                            });
                             print('Pinpost Edited');
                             getPinpostFromPinID().then((value) =>
                                 getPinReplyFromPinID()
@@ -310,6 +316,9 @@ class _BodyState extends State<ReplyPinScreen> {
                   String EditPinpost = '${MyConstant.domain}/famfam/editPinfromPinID.php?isAdd=true&pin_id=$pin_id&pin_text=${pinEditController.text}' ;
                   await Dio().get(EditPinpost).then((value) {
                     if(value.toString()=='true'){
+                        setState(() {
+                          load = true;
+                        });
                         print('Pinpost Edited');
                         getPinpostFromPinID().then((value) =>
                                 getPinReplyFromPinID()
@@ -334,8 +343,79 @@ class _BodyState extends State<ReplyPinScreen> {
 
   }
 
-  Future<void> _displayReplyEditDialog(
-      BuildContext context, String pin_reply_id, String pin_reply_text) async {
+
+  Future<void> CuppEditReplyDialog(BuildContext context,String pin_reply_id,String pin_reply_text) async {
+    TextEditingController pinEditController = TextEditingController();
+    pinEditController.text = "${pin_reply_text}";
+    print('Pin Reply ID ==>> ' + pin_reply_id);
+   showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            
+            title: const Text('Edit Reply'),
+            content: 
+            
+            Container(
+              //padding: EdgeInsets.symmetric(horizontal: 50),
+              margin: EdgeInsets.only(top: 15),
+              child: CupertinoTextField(
+                maxLines: 4,
+                controller: pinEditController,
+                //autofocus: true,
+              ),
+            ),
+            actions: [
+              // The "Cancel" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel',style: TextStyle(color: Colors.black),),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              ),
+              // The "Edit" button
+              CupertinoDialogAction(
+                onPressed: () async {
+
+                  print('Edited text = ' + pinEditController.text);
+                        String EditPinpost =
+                            '${MyConstant.domain}/famfam/editReplyfromReplyID.php?isAdd=true&pin_reply_text=${pinEditController.text}&pin_reply_id=${pin_reply_id}';
+                        await Dio().get(EditPinpost).then((value) {
+                          if (value.toString() == 'true') {
+                            setState(() {
+                              load = true;
+                            });
+                            print('Pinreply Edited');
+
+                            getPinpostFromPinID().then((value) =>
+                                getPinReplyFromPinID()
+                                    .then((value) => load = false));
+
+                    }else{
+                        print('Edit Error');
+                    }
+                  }   
+                  );
+                  
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Edit',style: TextStyle(color: Colors.blue),),
+                
+              )
+            ],
+          );
+        });
+
+
+
+  }
+
+  Future<void> _displayReplyEditDialog(BuildContext context, String pin_reply_id, String pin_reply_text) async {
     TextEditingController pinEditController = TextEditingController();
     pinEditController.text = "${pin_reply_text}";
     print('Pin Reply ID ==>> ' + pin_reply_id);
@@ -449,7 +529,49 @@ class _BodyState extends State<ReplyPinScreen> {
               // The "Delete" button
               CupertinoDialogAction(
                 onPressed: () {
+                  setState(() {
+                          load = true;
+                  });
                   DeletePinpost(pin_id);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Delete',style: TextStyle(color: Colors.red),),
+                
+              )
+            ],
+          );
+        });
+  }
+
+  Future<void> CuppDeleteReplyDialog(BuildContext context,String pin_reply_id) async {
+
+
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this Reply?'),
+            actions: [
+              // The "Cancel" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel',style: TextStyle(color: Colors.black),),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              ),
+              // The "Delete" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                      load = true;
+                  });
+                  DeletePinReply(pin_reply_id);
                   Navigator.of(context).pop();
                 },
                 child: const Text('Delete',style: TextStyle(color: Colors.red),),
@@ -995,14 +1117,10 @@ class _BodyState extends State<ReplyPinScreen> {
                                                         children: [
                                                           IconButton(
                                                             onPressed: () {
-                                                              _displayReplyEditDialog(
-                                                                  context,
-                                                                  pinreplyModels[
-                                                                          index]
-                                                                      .pin_reply_id,
-                                                                  pinreplyModels[
-                                                                          index]
-                                                                      .pin_reply_text);
+
+                                                              CuppEditReplyDialog(context,pinreplyModels[index].pin_reply_id,pinreplyModels[index].pin_reply_text);
+                                                              //_displayReplyEditDialog(context,pinreplyModels[index].pin_reply_id,pinreplyModels[index].pin_reply_text);
+
                                                             },
                                                             icon: SvgPicture.asset("assets/icons/pencil.svg"),
                                                             iconSize: 30,
@@ -1014,11 +1132,10 @@ class _BodyState extends State<ReplyPinScreen> {
                                                           ),
                                                           IconButton(
                                                             onPressed: () {
-                                                              _displayReplyDeleteDialog(
-                                                                  context,
-                                                                  pinreplyModels[
-                                                                          index]
-                                                                      .pin_reply_id);
+
+                                                              CuppDeleteReplyDialog(context, pinreplyModels[index].pin_reply_id);
+                                                              //_displayReplyDeleteDialog(context,pinreplyModels[index].pin_reply_id);
+
                                                             },
                                                             icon: SvgPicture.asset("assets/icons/trash.svg"),
                                                             iconSize: 30,
