@@ -13,6 +13,8 @@ import 'package:famfam/models/user_model.dart';
 import 'package:famfam/models/pinpost_model.dart';
 import 'package:famfam/models/replynumber.dart';
 import 'package:famfam/widgets/slide_dots.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:famfam/pinpost_screen/reply_pin_screen.dart';
 
@@ -249,6 +251,103 @@ Future<Null> pullUserSQLID() async {
         );
       },
     );
+  }
+
+  Future<void> CuppEditDialog(BuildContext context,String pin_id,String pin_text) async {
+    TextEditingController pinEditController = TextEditingController();
+    pinEditController.text = "${pin_text}";
+   showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            
+            title: const Text('Edit Pinpost'),
+            content: 
+            
+            Container(
+              //padding: EdgeInsets.symmetric(horizontal: 50),
+              margin: EdgeInsets.only(top: 15),
+              child: CupertinoTextField(
+                maxLines: 4,
+                controller: pinEditController,
+                //autofocus: true,
+              ),
+            ),
+            actions: [
+              // The "Cancel" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel',style: TextStyle(color: Colors.black),),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              ),
+              // The "Edit" button
+              CupertinoDialogAction(
+                onPressed: () async {
+
+                  print('Edited text = '+pinEditController.text);
+                  String EditPinpost = '${MyConstant.domain}/famfam/editPinfromPinID.php?isAdd=true&pin_id=$pin_id&pin_text=${pinEditController.text}' ;
+                  await Dio().get(EditPinpost).then((value) {
+                    if(value.toString()=='true'){
+                        print('Pinpost Edited');
+                    }else{
+                        print('Edit Error');
+                    }
+                  }   
+                  );
+                  getPinpostFromCircle();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Edit',style: TextStyle(color: Colors.blue),),
+                
+              )
+            ],
+          );
+        });
+
+
+
+  }
+
+  Future<void> CuppDelDialog(BuildContext context,String pin_id) async {
+
+
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this Pinpost?'),
+            actions: [
+              // The "Cancel" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel',style: TextStyle(color: Colors.black),),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              ),
+              // The "Delete" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  DeletePinpost(pin_id);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Delete',style: TextStyle(color: Colors.red),),
+                
+              )
+            ],
+          );
+        });
   }
 
 
@@ -587,7 +686,7 @@ Future<Null> pullUserSQLID() async {
                                           child: 
                                           RichText(text: TextSpan(                                         
                                             children: [
-                                              TextSpan(text: '${pinpostModels[index].number_of_reply} Replied',style: TextStyle(fontSize: 18,height: 1.5,color: Colors.black),
+                                              TextSpan(text: '${pinpostModels[index].number_of_reply} Replied',style: TextStyle(fontSize: 16,height: 1.5,color: Colors.black),
                                                 recognizer: TapGestureRecognizer()
                                                 ..onTap = (){
                                                   print('Tapped ==>> '+pinpostModels[index].pin_id);
@@ -631,10 +730,10 @@ Future<Null> pullUserSQLID() async {
                           children: [
     
                             IconButton(onPressed: () {
-                              
-                              _displayEditDialog(context,pinpostModels[index].pin_id,pinpostModels[index].pin_text);
+                              CuppEditDialog(context, pinpostModels[index].pin_id,pinpostModels[index].pin_text);
+                              //_displayEditDialog(context,pinpostModels[index].pin_id,pinpostModels[index].pin_text);
                             }, 
-                            icon: Icon(Icons.edit),
+                            icon: SvgPicture.asset("assets/icons/pencil.svg"),
                             iconSize: 30,
                             splashColor: Colors.transparent, 
                             highlightColor: Colors.transparent,  
@@ -642,10 +741,10 @@ Future<Null> pullUserSQLID() async {
                             ),
     
                             IconButton(onPressed: () {
-                              
-                              _displayDeleteDialog(context,pinpostModels[index].pin_id);
+                              CuppDelDialog(context,pinpostModels[index].pin_id);
+                              //_displayDeleteDialog(context,pinpostModels[index].pin_id);
                             }, 
-                            icon: Icon(Icons.close),
+                            icon: SvgPicture.asset("assets/icons/trash.svg"),
                             iconSize: 30,
                             splashColor: Colors.transparent, 
                             highlightColor: Colors.transparent,  
@@ -695,14 +794,14 @@ Future<Null> pullUserSQLID() async {
                   ],),
                   Positioned(
                     bottom: 20,
-                    right: 5,
+                    right: 7,
                     child:  //bottomsheet
                   Stack(
                     children: [
                       Container(
                         //width: size.width * 0.8,
-                        width: size.width * 0.3,
-                        height: size.height * 0.08,
+                        width: size.width * 0.85,
+                        height: size.height * 0.07,
     
                         //color: Colors.cyan,
     
@@ -712,7 +811,7 @@ Future<Null> pullUserSQLID() async {
                                   Color.fromARGB(255, 243, 230, 90)),
                               shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
+                                  borderRadius: BorderRadius.circular(30.0),
                                 ),
                               ),
                             ),

@@ -14,6 +14,7 @@ import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:famfam/models/pinpost_model.dart';
 import 'package:famfam/models/pinreply_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:famfam/widgets/slide_dots.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -601,7 +602,7 @@ class _BodyState extends State<ReplyPinScreen> {
               title: Transform.translate(
                 offset: Offset(0, 12),
                 child: Text(
-                  "Reply Pin Post",
+                  "Reply",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 30,
@@ -716,7 +717,7 @@ class _BodyState extends State<ReplyPinScreen> {
                                                     pinpostModels[0].pin_id,
                                                     pinpostModels[0].pin_text);
                                               },
-                                              icon: Icon(Icons.edit),
+                                              icon: SvgPicture.asset("assets/icons/pencil.svg"),
                                               iconSize: 30,
                                               splashColor: Colors.transparent,
                                               highlightColor:
@@ -727,7 +728,7 @@ class _BodyState extends State<ReplyPinScreen> {
                                                 _displayDeleteDialog(context,
                                                     pinpostModels[0].pin_id);
                                               },
-                                              icon: Icon(Icons.close),
+                                              icon: SvgPicture.asset("assets/icons/trash.svg"),
                                               iconSize: 30,
                                               splashColor: Colors.transparent,
                                               highlightColor:
@@ -793,13 +794,7 @@ class _BodyState extends State<ReplyPinScreen> {
                                                       vertical: 15,
                                                       horizontal: 24,
                                                     ),
-                                                    margin: EdgeInsets.only(
-                                                        bottom: index ==
-                                                                pinreplyModels
-                                                                        .length -
-                                                                    1
-                                                            ? 100
-                                                            : 20),
+                                                    margin: EdgeInsets.only(bottom: index == pinreplyModels.length - 1 ? 100 : 20),
                                                     decoration: BoxDecoration(
                                                       color: Color.fromARGB(
                                                           255, 250, 244, 154),
@@ -895,8 +890,7 @@ class _BodyState extends State<ReplyPinScreen> {
                                                                           index]
                                                                       .pin_reply_text);
                                                             },
-                                                            icon: Icon(
-                                                                Icons.edit),
+                                                            icon: SvgPicture.asset("assets/icons/pencil.svg"),
                                                             iconSize: 30,
                                                             splashColor: Colors
                                                                 .transparent,
@@ -912,8 +906,7 @@ class _BodyState extends State<ReplyPinScreen> {
                                                                           index]
                                                                       .pin_reply_id);
                                                             },
-                                                            icon: Icon(
-                                                                Icons.close),
+                                                            icon: SvgPicture.asset("assets/icons/trash.svg"),
                                                             iconSize: 30,
                                                             splashColor: Colors
                                                                 .transparent,
@@ -936,14 +929,14 @@ class _BodyState extends State<ReplyPinScreen> {
                           ),
                           Positioned(
                               bottom: 20,
-                              right: 5,
+                              right: 7,
                               child: //bottomsheet
                                   Stack(
                                 children: [
                                   Container(
-                                    //width: size.width * 0.8,
-                                    width: size.width * 0.3,
-                                    height: size.height * 0.08,
+                                    width: size.width * 0.85,
+                                    //width: size.width * 0.3,
+                                    height: size.height * 0.07,
 
                                     //color: Colors.cyan,
 
@@ -956,7 +949,7 @@ class _BodyState extends State<ReplyPinScreen> {
                                           shape: MaterialStateProperty.all(
                                             RoundedRectangleBorder(
                                               borderRadius:
-                                                  BorderRadius.circular(20.0),
+                                                  BorderRadius.circular(30.0),
                                             ),
                                           ),
                                         ),
