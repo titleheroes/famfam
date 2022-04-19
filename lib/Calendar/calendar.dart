@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/svg.dart';
 
 // import 'package:famfam/Calendar/event.dart';
 // import 'package:famfam/Calendar/AddEvens.dart';
@@ -491,7 +493,7 @@ Future<Null> pullCircle() async {
                               child: Row(
                                 children: [
                                   Text(
-                                    "Hour",
+                                    "HOUR",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         fontSize: 17,
@@ -500,7 +502,7 @@ Future<Null> pullCircle() async {
                                   Padding(
                                     padding: const EdgeInsets.only(left: 20),
                                     child: Text(
-                                      "Minute",
+                                      "MIN",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
@@ -508,9 +510,9 @@ Future<Null> pullCircle() async {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 50),
+                                    padding: const EdgeInsets.only(left: 70),
                                     child: Text(
-                                      "Hour",
+                                      "HOUR",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
@@ -520,7 +522,7 @@ Future<Null> pullCircle() async {
                                   Padding(
                                     padding: const EdgeInsets.only(left: 20),
                                     child: Text(
-                                      "Minute",
+                                      "MIN",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
@@ -800,9 +802,6 @@ Future<Null> pullCircle() async {
                           } else if( _eventControllerlocation.text.isEmpty ){
                             Fluttertoast.showToast(msg: "Can't add activity because You did not input 'location' !", gravity: ToastGravity.BOTTOM);
 
-                          } else if( _eventControllernote.text.isEmpty){
-                            Fluttertoast.showToast(msg: "Can't add activity because You did not input 'NOTE' !", gravity: ToastGravity.BOTTOM);
-
                           }
                           else {
                             SharedPreferences preferences =
@@ -850,8 +849,8 @@ Future<Null> pullCircle() async {
                                   circle_id: preferences.getString('circle_id')!,
                                   date: selectedDay.toString(),
                                   repeating: '',
-                                  time_end: time_end,
-                                  time_start: time_start,
+                                  time_end: time_end.toString(),
+                                  time_start: time_start.toString(),
                                   user_id: userModels[0].id!,
                                 ),
                               );
@@ -866,8 +865,8 @@ Future<Null> pullCircle() async {
                                   circle_id: preferences.getString('circle_id')!,
                                   repeating: '',
                                   date: selectedDay.toString(),
-                                  time_end: time_end,
-                                  time_start: time_start,
+                                  time_end: time_end.toString(),
+                                  time_start: time_start.toString(),
                                   user_id: userModels[0].id!,
                                 )
                               ];
@@ -881,14 +880,15 @@ Future<Null> pullCircle() async {
                 
                           setState(() {});
                           isChecked = false;
-                          return;
-                          // await Navigator.pushReplacement(
-                          //                   context,
-                          //                   MaterialPageRoute(
-                          //                     builder: (context) =>
-                          //                         Calendar(),
-                          //                   ),
-                          //                 );
+                          
+                          await Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Calendar(),
+                                            ),
+                                          );
+                                          return;
                         },
                       ),
                     ],
@@ -928,6 +928,7 @@ Future<Null> pullCircle() async {
       Container(
 
       ):Container(
+       
 
         child: ListView.builder(itemCount: selectedEvents[selectedDay]?.length, itemBuilder: ((context, index) =>
         
@@ -1132,17 +1133,15 @@ Future<Null> pullCircle() async {
                                                                   onPressed:
                                                                       () {
                                                                         print('### click delete from index = $index');
-                                                                       confirmDialogDelete(index);
+                                                                        _confirmDialogDelete(selectedEvents[selectedDay]![index].id.toString());
+                                                                    
                                                                       },
-                                                                  icon: Icon(
-                                                                    IconData(
-                                                                        0xe1b9,
-                                                                        fontFamily:
-                                                                            'MaterialIcons'),
-                                                                    color: Color.fromARGB(255, 73, 5, 5),
-                                                                    size: 20,
-                                                                  ),
+                                                                  icon: SvgPicture.asset(
+                                                                     "assets/icons/trash.svg",
+                                                                       height: 20,
+                                                                       ),
                                                                 ),
+                     
                                                             
                                                               ),
                                                             ],
@@ -1158,7 +1157,7 @@ Future<Null> pullCircle() async {
          
                                           // )
         ],
-    )
+       )
                                         
                                         
                                     ),
@@ -1170,43 +1169,117 @@ Future<Null> pullCircle() async {
                                 
                                 
   }
-  Future<Null> confirmDialogDelete(int index) async{
-    showDialog(context: context, builder: (context) =>AlertDialog(
-      title: ListTile(leading: Text('Do you want to delete  "${selectedEvents[selectedDay]![index].title}"  ?',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+  
+  // Future<Null> confirmDialogDelete(int index) async{
+    
+    // showDialog(context: context, builder: (context) =>AlertDialog(
+    //   title: ListTile(leading: Text('Do you want to delete  "${selectedEvents[selectedDay]![index].title}"  ?',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
       
-    ),actions: [FlatButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10))),
-                        color: Color.fromARGB(255, 246, 135, 65),
-                        child: Text('Delete'),
-                        onPressed: () async {
-                          print(selectedEvents[selectedDay]![index].id);
-                          String? id = selectedEvents[selectedDay]![index].id;
-                          print('## confirm delete at id  = ${selectedEvents[selectedDay]![index].id}');
-                          String apiDeleteCalendarwhereId = '${MyConstant.domain}/famfam/deleteCalendarActivity.php?isAdd=true&id=$id';
-                          await Dio().get(apiDeleteCalendarwhereId).then((value) async {
-                            Navigator.pop(context);
-                            await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Calendar()));
-                            // pullCalendar();
+    // ),actions: [FlatButton(
+    //                     shape: RoundedRectangleBorder(
+    //                         borderRadius: BorderRadius.all(Radius.circular(10))),
+    //                     color: Color.fromARGB(255, 246, 135, 65),
+    //                     child: Text('Delete'),
+    //                     onPressed: () async {
+    //                       print(selectedEvents[selectedDay]![index].id);
+    //                       String? id = selectedEvents[selectedDay]![index].id;
+    //                       print('## confirm delete at id  = ${selectedEvents[selectedDay]![index].id}');
+    //                       String apiDeleteCalendarwhereId = '${MyConstant.domain}/famfam/deleteCalendarActivity.php?isAdd=true&id=$id';
+    //                       await Dio().get(apiDeleteCalendarwhereId).then((value) async {
+    //                         Navigator.pop(context);
+    //                         await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Calendar()));
+    //                         // pullCalendar();
                             
 
-                          });
+    //                       });
 
                           
-                        },
-                      ),
-    FlatButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10))),
-                        color: Color.fromARGB(255, 170, 170, 170),
-                        child: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),],
+    //                     },
+    //                   ),
+    // FlatButton(
+    //                     shape: RoundedRectangleBorder(
+    //                         borderRadius: BorderRadius.all(Radius.circular(10))),
+    //                     color: Color.fromARGB(255, 170, 170, 170),
+    //                     child: Text('Cancel'),
+    //                     onPressed: () {
+    //                       Navigator.pop(context);
+    //                     },
+    //                   ),],
 
       
-    ),);
+    // ),);
+
+  // }
+
+
+
+    Future<void> _confirmDialogDelete(String id) async {
+    
+         showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this activity?'),
+            actions: [
+             
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancel'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+               // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () async{
+                 
+             
+                        DeleteCalendarActivity(id);
+                        //onDismissed();
+                        Navigator.pop(context);
+                             await Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Calendar(),
+                                            ),
+                                          );
+                            
+                 
+                 
+                },
+                child: const Text('Delete'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              ),
+            ],
+          );
+        });
+
+    
+
+      
+  }
+
+  void DeleteCalendarActivity(String id)async {
+    
+    String cid = id;
+    String DeleteCalendarActivity = '${MyConstant.domain}/famfam/deleteCalendarActivity.php?isAdd=true&id=$id' ;
+    
+    print('## target = $cid');
+
+    await Dio().get(DeleteCalendarActivity).then((value) {
+      if(value.toString()=='True'){
+        print('Activity Deleted');
+      }else{
+        print('Delete Error');
+      }
+    });
+    //Navigator.pushNamed(context, '/pinpost');
+    // getPinpostFromCircle();
 
   }
 }
