@@ -14,7 +14,7 @@ import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:famfam/models/pinpost_model.dart';
 import 'package:famfam/models/pinreply_model.dart';
-import 'package:famfam/widgets/slide_dots.dart';
+// import 'package:famfam/widgets/slide_dots.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ReplyPinScreen extends StatefulWidget {
