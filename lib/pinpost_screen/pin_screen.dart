@@ -137,7 +137,9 @@ Future<Null> pullUserSQLID() async {
     String author_id = userModels[0].id!;
     String author_fname = userModels[0].fname;
     String pin_text = input_pin_text;
-    
+    setState(() {
+      load = true;
+    });
     print('## text = $pin_text');
 
     String InsertPinpost = '${MyConstant.domain}/famfam/insertPin.php?isAdd=true&pin_text=$pin_text&author_id=$author_id&circle_id=$circle_id' ;
@@ -151,9 +153,7 @@ Future<Null> pullUserSQLID() async {
     }
     
   );
-  setState(() {
-    load = true;
-  });
+  
 
     getPinpostFromCircle().then((value) => getReplyNumberFromCircleID().then((value) => load = false));
     
@@ -421,7 +421,9 @@ Future<Null> pullUserSQLID() async {
     
     String target_pin_id = pin_id;
     String DeletePinpost = '${MyConstant.domain}/famfam/deletePinFromPinID.php?isAdd=true&pin_id=$target_pin_id' ;
-    
+    setState(() {
+    load = true;
+  });
     print('## target = $target_pin_id');
 
 
@@ -448,9 +450,7 @@ Future<Null> pullUserSQLID() async {
       }
     });
     //Navigator.pushNamed(context, '/pinpost');
-    setState(() {
-    load = true;
-  });
+    
 
     getPinpostFromCircle().then((value) => getReplyNumberFromCircleID().then((value) => load = false));
 
@@ -635,7 +635,7 @@ Future<Null> pullUserSQLID() async {
                         margin: EdgeInsets.only(bottom: index==pinpostModels.length-1 ? 100 :20),
                                   
                         decoration: BoxDecoration(
-                          color: Color(0xfffF5EC83),
+                          color: Color.fromARGB( 255,249, 234,184),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Stack(
@@ -686,7 +686,7 @@ Future<Null> pullUserSQLID() async {
                                           child: 
                                           RichText(text: TextSpan(                                         
                                             children: [
-                                              TextSpan(text: '${pinpostModels[index].number_of_reply} Replied',style: TextStyle(fontSize: 16,height: 1.5,color: Colors.black),
+                                              TextSpan(text: '${pinpostModels[index].number_of_reply} Replied',style: TextStyle(fontSize: 14,height: 1.5,color: Colors.black),
                                                 recognizer: TapGestureRecognizer()
                                                 ..onTap = (){
                                                   print('Tapped ==>> '+pinpostModels[index].pin_id);
@@ -808,7 +808,9 @@ Future<Null> pullUserSQLID() async {
                         child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color.fromARGB(255, 243, 230, 90)),
+                                  Color.fromARGB(255, 243, 230, 90)
+                                  
+                                  ),
                               shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0),

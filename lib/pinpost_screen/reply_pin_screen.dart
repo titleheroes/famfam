@@ -869,7 +869,7 @@ class _BodyState extends State<ReplyPinScreen> {
                                       ),
                                       margin: EdgeInsets.only(bottom: 0),
                                       decoration: BoxDecoration(
-                                        color: Color(0xfffF5EC83),
+                                        color: Color.fromARGB( 255,249, 234,184),
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       child: Stack(
@@ -1032,8 +1032,7 @@ class _BodyState extends State<ReplyPinScreen> {
                                                     ),
                                                     margin: EdgeInsets.only(bottom: index == pinreplyModels.length - 1 ? 100 : 20),
                                                     decoration: BoxDecoration(
-                                                      color: Color.fromARGB(
-                                                          255, 250, 244, 154),
+                                                      color: Color.fromARGB(255, 253, 240, 196),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               20),
