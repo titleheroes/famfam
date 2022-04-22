@@ -3,7 +3,6 @@ import 'dart:convert';
 class VoteModel {
   final String host_id;
   final String host_profile;
-  final String participant_id;
   final String circle_id;
   final String vote_id;
   final String vote_uid;
@@ -12,7 +11,6 @@ class VoteModel {
   VoteModel({
     required this.host_id,
     required this.host_profile,
-    required this.participant_id,
     required this.circle_id,
     required this.vote_id,
     required this.vote_uid,
@@ -23,7 +21,6 @@ class VoteModel {
   VoteModel copyWith({
     String? host_id,
     String? host_profile,
-    String? participant_id,
     String? circle_id,
     String? vote_id,
     String? vote_uid,
@@ -33,7 +30,6 @@ class VoteModel {
     return VoteModel(
       host_id: host_id ?? this.host_id,
       host_profile: host_profile ?? this.host_profile,
-      participant_id: participant_id ?? this.participant_id,
       circle_id: circle_id ?? this.circle_id,
       vote_id: vote_id ?? this.vote_id,
       vote_uid: vote_uid ?? this.vote_uid,
@@ -46,7 +42,6 @@ class VoteModel {
     return {
       'host_id': host_id,
       'host_profile': host_profile,
-      'participant_id': participant_id,
       'circle_id': circle_id,
       'vote_id': vote_id,
       'vote_uid': vote_uid,
@@ -59,7 +54,6 @@ class VoteModel {
     return VoteModel(
       host_id: map['host_id'] ?? '',
       host_profile: map['host_profile'] ?? '',
-      participant_id: map['participant_id'] ?? '',
       circle_id: map['circle_id'] ?? '',
       vote_id: map['vote_id'] ?? '',
       vote_uid: map['vote_uid'] ?? '',
@@ -75,7 +69,7 @@ class VoteModel {
 
   @override
   String toString() {
-    return 'VoteModel(host_id: $host_id, host_profile: $host_profile, participant_id: $participant_id, circle_id: $circle_id, vote_id: $vote_id, vote_uid: $vote_uid, vote_topic: $vote_topic, vote_final: $vote_final)';
+    return 'VoteModel(host_id: $host_id, host_profile: $host_profile, circle_id: $circle_id, vote_id: $vote_id, vote_uid: $vote_uid, vote_topic: $vote_topic, vote_final: $vote_final)';
   }
 
   @override
@@ -85,7 +79,6 @@ class VoteModel {
     return other is VoteModel &&
         other.host_id == host_id &&
         other.host_profile == host_profile &&
-        other.participant_id == participant_id &&
         other.circle_id == circle_id &&
         other.vote_id == vote_id &&
         other.vote_uid == vote_uid &&
@@ -97,7 +90,6 @@ class VoteModel {
   int get hashCode {
     return host_id.hashCode ^
         host_profile.hashCode ^
-        participant_id.hashCode ^
         circle_id.hashCode ^
         vote_id.hashCode ^
         vote_uid.hashCode ^
