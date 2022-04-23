@@ -1,12 +1,10 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:famfam/Calendar/calendar.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
 import 'package:famfam/constants.dart';
 import 'package:famfam/register.dart';
+import 'package:famfam/screens/components/body.dart';
 import 'package:famfam/screens/ticktik_screen.dart';
 //import 'package:flutter_famfam/screens/circle_screen.dart';
-import 'package:famfam/screens/todolist_screens.dart';
 import 'package:famfam/screens/voterandom_screen.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/check-in/Checkin.dart';
@@ -14,6 +12,7 @@ import 'package:famfam/loading.dart';
 import 'package:famfam/login.dart';
 import 'package:famfam/register_info.dart';
 import 'package:famfam/welcome.dart';
+import 'package:famfam/widgets/circle_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:famfam/services/service_locator.dart';
 import 'package:famfam/settingPage/ezmode/ezmode.dart';
@@ -72,11 +71,12 @@ void main() async {
         '/createcircle': (context) => createCircleScreen(),
         '/login': (context) => Login(),
         '/ticktik': (context) => TickTikScreen(),
-        '/todolist': (context) => ToDoListScreen(),
+        // '/todolist': (context) => TodoBody(),
         '/voterandom': (context) => VoteRandomScreen(),
         '/checkin': (context) => CheckIn(),
-        '/pinpost': (context) => PinScreen(),     
+        '/pinpost': (context) => PinScreen(),
         '/calendar': (context) => Calendar(),
+        '/ciecleLoading': (context) => CircleLoader()
       },
     ),
   );

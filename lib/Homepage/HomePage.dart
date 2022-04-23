@@ -8,8 +8,10 @@ import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:famfam/services/auth.dart';
 import 'package:famfam/services/my_constant.dart';
+import 'package:famfam/widgets/circle_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:famfam/services/auth.dart';
+import 'package:famfam/models/calendar_model.dart';
 import 'package:flutter/material.dart';
 // import 'package:famfam/Homepage/eachMenu.dart';
 
@@ -29,6 +31,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool load = true;
+  List<CalendarModel> calendarModels = [];
   List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
   String family = 'loading..';
@@ -83,6 +87,7 @@ class _HomePageState extends State<HomePage> {
         CircleModel model = CircleModel.fromMap(item);
         setState(() {
           circleModels.add(model);
+          load = false;
         });
       }
     });
@@ -94,141 +99,150 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(color: backgroundColor),
-        ),
-        SafeArea(child: menuHome()),
+        body: load
+            ? CircleLoader()
+            : Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(color: backgroundColor),
+                  ),
+                  SafeArea(child: menuHome()),
 
-        //Main Screen
-        TweenAnimationBuilder(
-            tween: Tween<double>(begin: 0, end: value),
-            duration: Duration(milliseconds: 500),
-            builder: (___, double val, __) {
-              return (Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, 0.001)
-                  ..setEntry(0, 3, -280 * val)
-                  ..rotateY(-(pi / 6) * val),
-                child: Scaffold(
                   //Main Screen
-                  body: SafeArea(
-                    child: SingleChildScrollView(
-                      child: Column(children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Stack(
-                            children: [
-                              Row(
-                                children: [
+                  TweenAnimationBuilder(
+                      tween: Tween<double>(begin: 0, end: value),
+                      duration: Duration(milliseconds: 500),
+                      builder: (___, double val, __) {
+                        return (Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.identity()
+                            ..setEntry(3, 2, 0.001)
+                            ..setEntry(0, 3, -280 * val)
+                            ..rotateY(-(pi / 6) * val),
+                          child: Scaffold(
+                            //Main Screen
+                            body: SafeArea(
+                              child: SingleChildScrollView(
+                                child: Column(children: [
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
-                                    child: CircleAvatar(
-                                      radius: 50,
-                                      backgroundColor: Colors.white,
-                                      backgroundImage:
-                                          NetworkImage(profileImage),
-                                    ),
-                                  ),
-                                  // Container(
-                                  //   margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
-                                  //   height: 90,
-                                  //   width: 90,
-                                  //   decoration: BoxDecoration(
-                                  //       shape: BoxShape.circle,
-                                  //       color: Colors.orange),
-                                  // ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(15, 20, 0, 0),
-                                        child: Text(
-                                          family,
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 22,
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        child: Row(
-                                          // mainAxisSize: MainAxisSize.min,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Stack(
+                                      children: [
+                                        Row(
                                           children: [
                                             Container(
                                               margin: EdgeInsets.fromLTRB(
-                                                  15, 0, 0, 0),
-                                              child: Text(
-                                                "Hey, ",
-                                                style: TextStyle(
-                                                  fontSize: 30,
-                                                ),
+                                                  20, 20, 0, 0),
+                                              child: CircleAvatar(
+                                                radius: 50,
+                                                backgroundColor: Colors.white,
+                                                backgroundImage:
+                                                    NetworkImage(profileImage),
                                               ),
                                             ),
-                                            Container(
-                                              child: Text(
-                                                name + "!",
-                                                style: TextStyle(
-                                                    fontSize: 30,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
+                                            // Container(
+                                            //   margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
+                                            //   height: 90,
+                                            //   width: 90,
+                                            //   decoration: BoxDecoration(
+                                            //       shape: BoxShape.circle,
+                                            //       color: Colors.orange),
+                                            // ),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  margin: EdgeInsets.fromLTRB(
+                                                      15, 20, 0, 0),
+                                                  child: Text(
+                                                    family,
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                      fontSize: 22,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  child: Row(
+                                                    // mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Container(
+                                                        margin:
+                                                            EdgeInsets.fromLTRB(
+                                                                15, 0, 0, 0),
+                                                        child: Text(
+                                                          "Hey, ",
+                                                          style: TextStyle(
+                                                            fontSize: 30,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        child: Text(
+                                                          name + "!",
+                                                          style: TextStyle(
+                                                              fontSize: 30,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      )
-                                    ],
+                                        Align(
+                                          alignment: Alignment.topRight,
+                                          child: Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 30, 30, 0),
+                                            child: IconButton(
+                                                icon: Icon(
+                                                  Icons.menu_open_rounded,
+                                                  size: 40,
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    value == 0
+                                                        ? value = 1
+                                                        : value = 0;
+                                                  });
+                                                }),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
+                                  Date(),
+                                  tabbar()
+                                ]),
                               ),
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: Container(
-                                  margin: EdgeInsets.fromLTRB(0, 30, 30, 0),
-                                  child: IconButton(
-                                      icon: Icon(
-                                        Icons.menu_open_rounded,
-                                        size: 40,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          value == 0 ? value = 1 : value = 0;
-                                        });
-                                      }),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                        Date(),
-                        tabbar()
-                      ]),
-                    ),
-                  ),
-                ),
-              ));
-            }),
+                        ));
+                      }),
 
-        //open drawer
-        // GestureDetector(
-        //   onHorizontalDragUpdate: (e) {
-        //     if (e.delta.dx < 0) {
-        //       setState(() {
-        //         value = 1;
-        //       });
-        //     } else {
-        //       setState(() {
-        //         value = 0;
-        //       });
-        //     }
-        //   },
-        // )
-      ],
-    ));
+                  //open drawer
+                  // GestureDetector(
+                  //   onHorizontalDragUpdate: (e) {
+                  //     if (e.delta.dx < 0) {
+                  //       setState(() {
+                  //         value = 1;
+                  //       });
+                  //     } else {
+                  //       setState(() {
+                  //         value = 0;
+                  //       });
+                  //     }
+                  //   },
+                  // )
+                ],
+              ));
   }
 }

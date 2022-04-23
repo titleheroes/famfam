@@ -1,13 +1,11 @@
 // ignore_for_file: prefer_const_constructors, file_names, non_constant_identifier_names
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
+import 'package:famfam/Homepage/HomePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
-
-// import 'package:famfam/Calendar/event.dart';
-// import 'package:famfam/Calendar/AddEvens.dart';
+import 'package:famfam/widgets/circle_loader.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:famfam/models/calendar_model.dart';
@@ -17,10 +15,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 // // ignore: unused_import
 // import 'package:famfam/Calendar/calendar.dart';
-
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -32,6 +28,7 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
+  
   List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
   List<CalendarModel> calendarModels = [];
@@ -241,7 +238,7 @@ Future<Null> pullCircle() async {
                           size: 45,
                         ),
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user)));
                         },
                       ),
                     ),
