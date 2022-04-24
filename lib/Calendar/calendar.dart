@@ -39,6 +39,14 @@ class _CalendarState extends State<Calendar> {
   TimeOfDay? time = TimeOfDay(hour: 12, minute: 12);
   TimeOfDay? time1 = TimeOfDay(hour: 12, minute: 12);
   bool isChecked = false;
+  DateTime? _dateTime;
+  String getText() {
+    if (_dateTime == null) {
+      return 'Select Date';
+    } else {
+      return DateFormat('dd-MM-yyyy').format(_dateTime!);
+    }
+  }
 
   final TextEditingController _eventControllertitle = TextEditingController();
   final TextEditingController _eventControllerlocation =
@@ -732,7 +740,7 @@ Future<Null> pullCircle() async {
                                 child: Row(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 50),
+                                      padding: const EdgeInsets.only(left: 15),
                                       child: Text(
                                         "Need Repeating? ",
                                         style: TextStyle(
@@ -741,20 +749,35 @@ Future<Null> pullCircle() async {
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 20),
-                                      child: Checkbox(
-                                        value: isChecked,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            isChecked = value!;
-                                            
-                                          });
-                                        },
-                                      ),
-                                    ),
+                                                                                                 Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3.0),
+                              ),
+                             
+                              Container(
+                                
+                                child: ElevatedButton(
+                                  child: Text(getText(),style: TextStyle(color: Color.fromARGB(255, 55, 55, 55)),),
+                                  style: ButtonStyle(
+                                    backgroundColor:MaterialStateProperty.all<Color>(Color.fromARGB(255, 251, 229, 190)) ,
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                              ))),
+                                  onPressed: () => pickDate(context),
+                                ),
+                              ),
+                            ],
+                          ),
+
                                   ],
                                 ),
+                                
+                                
                               ),
                             ),
                           ],
@@ -822,7 +845,8 @@ Future<Null> pullCircle() async {
                                 print('Insert  Successed');
                               }
                             });
-                            print("checkinsert");
+                            print('check');
+                            print(getText());
                             if (selectedEvents[selectedDay] != null) {
                               selectedEvents[selectedDay]?.add(
                                 CalendarModel(
@@ -1338,5 +1362,18 @@ Future<Null> pullCircle() async {
     // getPinpostFromCircle();
 
   }
+    Future pickDate(BuildContext context) async {
+    final initialDate = DateTime.now();
+    final newDate = await showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2100));
+
+    if (newDate == null) return;
+
+    setState(() => _dateTime = newDate);
+  }
+
 }
 
