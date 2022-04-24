@@ -28,7 +28,7 @@ class PinScreen extends StatefulWidget {
 class _BodyState extends State<PinScreen> {
   
   bool load = true;
-  bool? haveData;
+  bool haveData = false;
   List<UserModel> userModels = [];
   List<PinpostModel> pinpostModels = [];
   List<ReplyNumberModel> replynumberModels = [];
@@ -503,7 +503,8 @@ Future<Null> pullUserSQLID() async {
   Widget build(BuildContext context){
     
     final User user = FirebaseAuth.instance.currentUser!;
-    
+    Size size = MediaQuery.of(context).size;
+    double screen_height = MediaQuery.of(context).size.height;
     TextEditingController pinController = TextEditingController();
 
     void addItemToList() {
@@ -515,7 +516,7 @@ Future<Null> pullUserSQLID() async {
 
     
 
-    Size size = MediaQuery.of(context).size;
+    
 
 
 
@@ -601,7 +602,7 @@ Future<Null> pullUserSQLID() async {
               child: Container(
                 height: 50,
                 //color: Colors.cyan,
-                child: ListView.builder(
+                child: (haveData) ? ListView.builder(
                   physics: BouncingScrollPhysics(),
                   padding: const EdgeInsets.all(8),
                   itemCount: pinpostModels.length,
@@ -774,22 +775,42 @@ Future<Null> pullUserSQLID() async {
     
                     );
                     
-                    
-                    
-                    
-                    
-    
-    
                   }
     
-                  
-    
-    
-    
-    
-                ),
-    
+
+                ) : 
+
+                // Have no Pin Post
+                Center(
+                  child: Container(
+                    width: 250,
+                    height: 250,
+                    //color: Colors.pink,
+                    child: Column(children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        //color: Colors.green,
+                        child: SvgPicture.asset("assets/icons/leaf-fall.svg",height: 85, color: Colors.black.withOpacity(0.4),),
+                      ),
+                      Container(
+                        //width: 80,
+                        //color: Colors.yellow,
+                        child: Text("You don't have any Pin Post right now",style: TextStyle(
+                               color: Colors.grey[500],
+                                fontWeight:FontWeight.w500)),
+                      ),
+                      SizedBox(height: 120,)
+                      ]
+                      
+                      ),
+
+                  ),
                 
+                )
+                // Have no Pin Post
+
+
               )
     
             
@@ -799,6 +820,9 @@ Future<Null> pullUserSQLID() async {
     
             
                   ],),
+
+
+
                   Positioned(
                     bottom: 20,
                     right: 7,

@@ -30,6 +30,7 @@ class ReplyPinScreen extends StatefulWidget {
 
 class _BodyState extends State<ReplyPinScreen> {
   bool load = true;
+  bool haveReply = false;
   bool? havePinpostData;
   List<UserModel> userModels = [];
   List<PinpostModel> pinpostModels = [];
@@ -140,6 +141,7 @@ class _BodyState extends State<ReplyPinScreen> {
 
       if (getvalue.toString() == 'null') {
         //No Data
+
         setState(() {
           load = false;
           //haveData = false;
@@ -152,7 +154,7 @@ class _BodyState extends State<ReplyPinScreen> {
 
           setState(() {
             load = false;
-            //haveData = true;
+            haveReply = true;
             pinreplyModels.add(model);
           });
         }
@@ -997,7 +999,7 @@ class _BodyState extends State<ReplyPinScreen> {
                                         alignment: Alignment.topCenter,
                                         child: Padding(
                                           padding: EdgeInsets.only(
-                                              top: 10, bottom: 10),
+                                              top: 18, bottom: 10),
                                           child: Text(
                                             '${pinpostModels[0].number_of_reply} Replied',
                                             style: TextStyle(
