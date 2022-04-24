@@ -84,7 +84,10 @@ class _CalendarState extends State<Calendar> {
   //   print(selectedEvents);
   // }
 
-  Future<Null> insertCalendar() async {}
+  Future<Null> pullCalendarRepeating() async {
+
+    
+  }
 
   Future<Null> pullUserSQLID() async {
     final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
@@ -166,6 +169,7 @@ Future<Null> pullCircle() async {
                                   circle_id: model.circle_id,
                                   date: model.date,
                                   repeating: '',
+                                  repeat_end_date : model.repeat_end_date,
                                   time_end: model.time_end,
                                   time_start: model.time_start,
                                   user_id: model.user_id,
@@ -181,6 +185,7 @@ Future<Null> pullCircle() async {
                                   circle_id: model.circle_id,
                                   date: model.date,
                                   repeating: '',
+                                  repeat_end_date : model.repeat_end_date,
                                   time_end: model.time_end,
                                   time_start: model.time_start,
                                   user_id: model.user_id,
@@ -832,6 +837,7 @@ Future<Null> pullCircle() async {
                                 replacingTime1.minute.toString();
                           
                             String repeating = '';
+                            String repeat_end_date = getText().toString();
                             String circle_id =
                                 preferences.getString('circle_id')!;
                                  DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
@@ -839,7 +845,7 @@ Future<Null> pullCircle() async {
                             print(circle_id);
                             print(time_start);
                             String insertCalendar =
-                                '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$date&time_start=$time_start&time_end=$time_end&repeating=$repeating&circle_id=$circle_id&user_id=$user_id';
+                                '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$date&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
                             await Dio().get(insertCalendar).then((value) async {
                               if (value.toString() == 'true') {
                                 print('Insert  Successed');
@@ -856,6 +862,7 @@ Future<Null> pullCircle() async {
                                   circle_id: preferences.getString('circle_id')!,
                                   date: selectedDay.toString(),
                                   repeating: '',
+                                  repeat_end_date : getText().toString(),
                                   time_end: time_end.toString(),
                                   time_start: time_start.toString(),
                                   user_id: userModels[0].id!,
@@ -871,6 +878,7 @@ Future<Null> pullCircle() async {
                                   note: _eventControllernote.text,
                                   circle_id: preferences.getString('circle_id')!,
                                   repeating: '',
+                                  repeat_end_date : getText().toString(),
                                   date: selectedDay.toString(),
                                   time_end: time_end.toString(),
                                   time_start: time_start.toString(),

@@ -9,6 +9,7 @@ class CalendarModel {
   final String time_start;
   final String time_end;
   final String repeating;
+  final String? repeat_end_date;
   final String user_id;
   final String circle_id;
   CalendarModel({
@@ -20,6 +21,7 @@ class CalendarModel {
     required this.time_start,
     required this.time_end,
     required this.repeating,
+    required this.repeat_end_date,
     required this.user_id,
     required this.circle_id,
   });
@@ -33,6 +35,7 @@ class CalendarModel {
     String? time_start,
     String? time_end,
     String? repeating,
+    String? repeat_end_date,
     String? user_id,
     String? circle_id,
   }) {
@@ -45,6 +48,7 @@ class CalendarModel {
       time_start: time_start ?? this.time_start,
       time_end: time_end ?? this.time_end,
       repeating: repeating ?? this.repeating,
+      repeat_end_date: repeat_end_date ?? this.repeat_end_date,
       user_id: user_id ?? this.user_id,
       circle_id: circle_id ?? this.circle_id,
     );
@@ -60,6 +64,7 @@ class CalendarModel {
       'time_start': time_start,
       'time_end': time_end,
       'repeating': repeating,
+      'repeat_end_date': repeat_end_date,
       'user_id': user_id,
       'circle_id': circle_id,
     };
@@ -75,6 +80,7 @@ class CalendarModel {
       time_start: map['time_start'] ?? '',
       time_end: map['time_end'] ?? '',
       repeating: map['repeating'] ?? '',
+      repeat_end_date: map['repeat_end_date'] ?? '',
       user_id: map['user_id'] ?? '',
       circle_id: map['circle_id'] ?? '',
     );
@@ -87,7 +93,7 @@ class CalendarModel {
 
   @override
   String toString() {
-    return 'CalendarModel(id: $id, title: $title, location: $location, note: $note,date: $date, time_start: $time_start, time_end: $time_end, repeating: $repeating, user_id: $user_id, circle_id: $circle_id)';
+    return 'CalendarModel(id: $id, title: $title, location: $location, note: $note,date: $date, time_start: $time_start, time_end: $time_end, repeating: $repeating,repeat_end_date: $repeat_end_date, user_id: $user_id, circle_id: $circle_id)';
   }
 
   @override
@@ -103,6 +109,7 @@ class CalendarModel {
         other.time_start == time_start &&
         other.time_end == time_end &&
         other.repeating == repeating &&
+        other.repeat_end_date == repeat_end_date &&
         other.user_id == user_id &&
         other.circle_id == circle_id;
   }
@@ -117,6 +124,7 @@ class CalendarModel {
         time_start.hashCode ^
         time_end.hashCode ^
         repeating.hashCode ^
+        repeat_end_date.hashCode ^
         user_id.hashCode ^
         circle_id.hashCode;
   }

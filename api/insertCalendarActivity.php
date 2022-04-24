@@ -26,13 +26,14 @@ if (isset($_GET)) {
         $time_start = $_GET['time_start'];
         $time_end = $_GET['time_end'];
         $repeating = $_GET['repeating'];
+		$repeat_end_date = $_GET['repeat_end_date'];
         $user_id = $_GET['user_id'];
         $circle_id = $_GET['circle_id'];
         
 
 		
 							
-		$sql = "INSERT INTO `calendar_att`(`id`, `title`, `note`, `location`, `date`, `time_start`, `time_end`, `repeating`, `user_id`, `circle_id`) VALUES (Null,'$title','$note','$location','$date','$time_start','$time_end','$repeating','$user_id','$circle_id')";
+		$sql = "INSERT INTO `calendar_att`(`id`, `title`, `note`, `location`, `date`, `time_start`, `time_end`, `repeating`,`repeat_end_date`, `user_id`, `circle_id`) VALUES (Null,'$title','$note','$location','$date','$time_start','$time_end','$repeating',$repeat_end_date,'$user_id','$circle_id')";
 		
 
 		$result = mysqli_query($link, $sql);
