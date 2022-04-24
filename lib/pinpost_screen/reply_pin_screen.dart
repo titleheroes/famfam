@@ -895,13 +895,20 @@ class _BodyState extends State<ReplyPinScreen> {
                                                     padding: EdgeInsets.only(
                                                       left: 10,
                                                     ),
-                                                    child: Text(
-                                                      '${pinpostModels[0].fname}',
+                                                    child: 
+                                                    
+                                                      Container(
+                                                        //color: Colors.blue,
+                                                        width: 190,
+                                                        child: Text('${pinpostModels[0].fname}',
                                                       style: TextStyle(
                                                           fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.bold),
+                                                          fontWeight: FontWeight.bold,
+                                                          overflow: TextOverflow.ellipsis,),
                                                     ),
+                                                      ),
+
+
                                                   ),
                                                 ],
                                               ),
@@ -1064,14 +1071,20 @@ class _BodyState extends State<ReplyPinScreen> {
                                                                           .only(
                                                                     left: 10,
                                                                   ),
-                                                                  child: Text(
-                                                                    '${pinreplyModels[index].fname}',
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            20,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
+                                                                  child: 
+                                                                  
+                                                                  Container(
+                                                                    //color: Colors.blue,
+                                                                    width: 190,
+                                                                    child: Text('${pinreplyModels[index].fname}',
+                                                                              style: TextStyle(
+                                                                              fontSize: 20,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              overflow: TextOverflow.ellipsis,),
+                                                    ),
+                                                      ),
+
+
                                                                 ),
                                                               ],
                                                             ),

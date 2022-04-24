@@ -660,7 +660,14 @@ Future<Null> pullUserSQLID() async {
                                       padding: EdgeInsets.only(
                                         left: 10,
                                       ),
-                                      child: Text('${pinpostModels[index].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                      child: 
+                                      Container(
+                                        width: 190,
+                                        //color: Colors.blue,
+                                        child: Text('${pinpostModels[index].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+                                        overflow: TextOverflow.ellipsis,),
+                                      ),
+                                      
                                       
                                 ),
                                 
