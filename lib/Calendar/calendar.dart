@@ -734,7 +734,7 @@ Future<Null> pullCircle() async {
                                     Padding(
                                       padding: const EdgeInsets.only(left: 50),
                                       child: Text(
-                                        "Repeating? ",
+                                        "Need Repeating? ",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 22,
@@ -742,7 +742,7 @@ Future<Null> pullCircle() async {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 60),
+                                      padding: const EdgeInsets.only(left: 20),
                                       child: Checkbox(
                                         value: isChecked,
                                         onChanged: (value) {
