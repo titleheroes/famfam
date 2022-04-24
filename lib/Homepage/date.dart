@@ -29,6 +29,7 @@ class Date extends StatefulWidget {
 
 class _DateState extends State<Date> {
   bool load = true;
+  bool calendarHaveData = false;
   List<CalendarModel> calendarModels = [];
   List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
@@ -104,18 +105,28 @@ class _DateState extends State<Date> {
 
     String pullalendar =
         '${MyConstant.domain}/famfam/getCalendarwhereDate.php?isAdd=true&circle_id=$circle_id&date=$formattedDate';
-    try {
+   
+
       await Dio().get(pullalendar).then((value) async {
-        for (var item in json.decode(value.data)) {
+        if (value.toString()=='null'){
+          print('Today has no data');
+
+
+        }else{
+            for (var item in json.decode(value.data)) {
           CalendarModel model = CalendarModel.fromMap(item);
           setState(() {
             calendarModels.add(model);
+            calendarHaveData = true;
           });
         }
+
+        }
+
+
+
       });
-    } catch (e) {}
-    ;
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -190,11 +201,13 @@ class _DateState extends State<Date> {
                 padding: EdgeInsets.only(left: 10),
                 child: Expanded(child: Container(
                   
-                  color: Colors.red,
-                  child: ListView.builder(
+                  //color: Colors.red,
+                  
+                  child: (calendarHaveData) ? ListView.builder(
                     physics: BouncingScrollPhysics(),
                     itemCount: calendarModels.length,
                     itemBuilder: (BuildContext context, int index){
+                    
                       return Container(
                         
                         decoration: BoxDecoration(
@@ -203,6 +216,8 @@ class _DateState extends State<Date> {
                         ),
                         height: 55,
                         margin: EdgeInsets.only(bottom: 10),
+
+
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -228,7 +243,7 @@ class _DateState extends State<Date> {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 2),
                                   child: Container(
-                                    color: Colors.blue,
+                                    //color: Colors.blue,
                                     width: 70,
                                     child: Text(calendarModels[index].location,
                                                 style: TextStyle(color: Colors.grey,
@@ -250,7 +265,8 @@ class _DateState extends State<Date> {
                               ],
                             )
                           ],
-                        ),
+                        ) 
+
 
 
                       );
@@ -258,7 +274,10 @@ class _DateState extends State<Date> {
 
                     },
 
-                ),
+                ):Center(
+                  child: Text("You don't have today's activity",
+                          style: TextStyle(color: Colors.grey[500],fontWeight: FontWeight.w500),)
+                  ),
 
 
                 )),
