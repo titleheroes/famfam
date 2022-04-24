@@ -14,6 +14,7 @@ import 'package:famfam/settingPage/help/help.dart';
 import 'package:famfam/settingPage/notification/notification.dart';
 import 'package:famfam/settingPage/privacy/Privacy.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -92,10 +93,12 @@ class _settingPageState extends State<settingPage> {
                 ),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              HomePage(FirebaseAuth.instance.currentUser)));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomePage(FirebaseAuth.instance.currentUser),
+                    ),
+                  );
                 },
               ),
               elevation: 0,

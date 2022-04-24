@@ -16,6 +16,7 @@ import 'package:famfam/screens/ticktik_screen.dart';
 import 'package:favorite_button/favorite_button.dart';
 import 'package:famfam/models/ticktick_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/components/text_field_container.dart';
 import 'package:famfam/constants.dart';
@@ -242,6 +243,54 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
     });
   }
 
+  bool _isShown = true;
+
+  void _delete(BuildContext context, String topic_id) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this list?'),
+            actions: [
+              // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () async {
+                  String? my_order_id = topic_id;
+                  String deleteVote =
+                      '${MyConstant.domain}/famfam/deleteMyOrderWhereID.php?isAdd=true&my_order_id=$my_order_id';
+
+                  await Dio().get(deleteVote).then((value) async {
+                    Navigator.pop(context);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            TodoBody(tabSelected: tabController!.index),
+                      ),
+                    );
+                  });
+                },
+                child: const Text('Confirm'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              )
+            ],
+          );
+        });
+  }
+
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
 
@@ -293,7 +342,13 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                           "assets/icons/information-_1_.svg",
                           height: 30,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          infoDialog(
+                              context,
+                              'Circle List ?',
+                              'List of your jobs\nand assign job to others',
+                              0.2);
+                        },
                       ),
                     ],
                   ),
@@ -512,6 +567,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                             () {
                                                                           descDialog(
                                                                               context,
+                                                                              unfinishedModels[index].my_order_id!,
                                                                               unfinishedModels[index].my_order_topic,
                                                                               unfinishedModels[index].my_order_desc);
                                                                         },
@@ -665,9 +721,21 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                       child:
                                                                           Stack(
                                                                         children: [
-                                                                          RoundCheckBox(
-                                                                              isChecked: true,
-                                                                              onTap: null),
+                                                                          CircleAvatar(
+                                                                            radius:
+                                                                                20,
+                                                                            backgroundColor: Color.fromARGB(
+                                                                                255,
+                                                                                235,
+                                                                                113,
+                                                                                104),
+                                                                            child:
+                                                                                CircleAvatar(
+                                                                              radius: 15,
+                                                                              backgroundColor: Color.fromARGB(255, 235, 113, 104),
+                                                                              backgroundImage: AssetImage('assets/images/trash.png'),
+                                                                            ),
+                                                                          ),
                                                                           FlatButton(
                                                                             shape: RoundedRectangleBorder(
                                                                                 side: BorderSide(
@@ -678,7 +746,9 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                                 () {
                                                                               {
                                                                                 // ติ๊กถูก
-                                                                                Fluttertoast.showToast(msg: "You have finish this assignment already.", gravity: ToastGravity.BOTTOM);
+                                                                                print('click on delete ticktik ${finishedModels[index].my_order_topic}');
+                                                                                _isShown == true ? _delete(context, finishedModels[index].my_order_id!) : null;
+                                                                                // Fluttertoast.showToast(msg: "You have finish this assignment already.", gravity: ToastGravity.BOTTOM);
                                                                               }
                                                                             },
                                                                             child:
@@ -725,6 +795,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                           () {
                                                                         descDialog(
                                                                             context,
+                                                                            finishedModels[index].my_order_id!,
                                                                             finishedModels[index].my_order_topic,
                                                                             finishedModels[index].my_order_desc);
                                                                       },
@@ -989,10 +1060,12 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                             0,
                                                                         onPressed:
                                                                             () {
-                                                                          descDialog(
+                                                                          descDialogMyOrder(
                                                                               context,
+                                                                              myOrderModels[index].my_order_id!,
                                                                               myOrderModels[index].my_order_topic,
-                                                                              myOrderModels[index].my_order_desc);
+                                                                              myOrderModels[index].my_order_desc,
+                                                                              tabController!);
                                                                         },
                                                                         child:
                                                                             Align(
@@ -1077,7 +1150,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
       return Text(
         "Me to Myself",
         style: TextStyle(
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.w700,
           fontSize: 15,
         ),
       );
@@ -1086,7 +1159,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
       return Text(
         "Me to ${model[index].employee_fname}",
         style: TextStyle(
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.w700,
           fontSize: 15,
         ),
       );
@@ -1094,7 +1167,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
       return Text(
         "${model[index].owner_fname} to Myself",
         style: TextStyle(
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.w700,
           fontSize: 15,
         ),
       );
@@ -1801,7 +1874,13 @@ class _TickBodyState extends State<TickBody> {
                       "assets/icons/information-_1_.svg",
                       height: 30,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      infoDialog(
+                          context,
+                          'TickTick ?',
+                          'List of thing\nthat you can make and tick\nwhatever you want.',
+                          0.24);
+                    },
                   ),
                 ],
               ),
@@ -2490,11 +2569,10 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
   @override
   void initState() {
     super.initState();
-    pullUserSQLID();
-    pullAllVote().then((value) {
-      print(voteModels);
+    pullUserSQLID().then((value) {
+      pullAllVote();
+      pullAllRandom();
     });
-    pullAllRandom();
   }
 
   Future<Null> pullUserSQLID() async {
@@ -2552,6 +2630,93 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
         }
       });
     } catch (e) {}
+  }
+
+  bool _isShown = true;
+
+  void _deleteVote(BuildContext context, String topic_id) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this topic?'),
+            actions: [
+              // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () async {
+                  String? vote_id = topic_id;
+                  String deleteVote =
+                      '${MyConstant.domain}/famfam/deleteVoteWhereVoteID.php?isAdd=true&vote_id=$vote_id';
+
+                  await Dio().get(deleteVote).then((value) async {
+                    Navigator.pop(context);
+                    await Navigator.pushReplacementNamed(
+                        context, ('/voterandom'));
+                  });
+                },
+                child: const Text('Confirm'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              )
+            ],
+          );
+        });
+  }
+
+  void _deleteRandom(BuildContext context, String topic_id) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this topic?'),
+            actions: [
+              // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () async {
+                  // _isShown = false;
+                  // deletedTopicByID(topic_id: topic_id);
+
+                  String? random_id = topic_id;
+                  String deleteRandom =
+                      '${MyConstant.domain}/famfam/deleteRandomWhereRandomID.php?isAdd=true&random_id=$random_id';
+
+                  await Dio().get(deleteRandom).then((value) async {
+                    Navigator.pop(context);
+                    await Navigator.pushReplacementNamed(
+                        context, ('/voterandom'));
+                  });
+                },
+                child: const Text('Confirm'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              )
+            ],
+          );
+        });
   }
 
   // String polltopic;
@@ -2811,25 +2976,45 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                     alignment: Alignment.topRight,
                                                                                     child: Padding(
                                                                                       padding: const EdgeInsets.only(bottom: 30),
-                                                                                      child: PopUpMen(
-                                                                                        menuList: [
-                                                                                          PopupMenuItem(
-                                                                                            child: ListTile(
-                                                                                              leading: Icon(
-                                                                                                Icons.delete_rounded,
-                                                                                              ),
-                                                                                              title: Text("Delete"),
+                                                                                      child: Builder(
+                                                                                        builder: (context) {
+                                                                                          if (userModels[0].id == voteModels[index].host_id) {
+                                                                                            return
+                                                                                                // PopUpMen(
+                                                                                                //   menuList: [
+                                                                                                //     PopupMenuItem(
+                                                                                                //       child: ListTile(
+                                                                                                //         leading: Icon(
+                                                                                                //           Icons.delete_rounded,
+                                                                                                //         ),
+                                                                                                //         title: Text("Delete"),
+                                                                                                //         onTap: () {
+                                                                                                //           print('## You Click Delete form index = $index');
+                                                                                                //           // confirmDialogDelete(context, topicRandom[index]);
+                                                                                                //         },
+                                                                                                //       ),
+                                                                                                //     ),
+                                                                                                //   ],
+                                                                                                //   icon: SvgPicture.asset(
+                                                                                                //     "assets/icons/menu-dots.svg",
+                                                                                                //     height: 20,
+                                                                                                //   ),
+                                                                                                // );
+                                                                                                GestureDetector(
                                                                                               onTap: () {
-                                                                                                print('## You Click Delete form index = $index');
-                                                                                                // confirmDialogDelete(context, topicRandom[index]);
+                                                                                                print('click on delete ticktik ${voteModels[index].vote_topic}');
+                                                                                                _isShown == true ? _deleteVote(context, voteModels[index].vote_id) : null;
                                                                                               },
-                                                                                            ),
-                                                                                          ),
-                                                                                        ],
-                                                                                        icon: SvgPicture.asset(
-                                                                                          "assets/icons/menu-dots.svg",
-                                                                                          height: 20,
-                                                                                        ),
+                                                                                              child: Image(
+                                                                                                image: AssetImage('assets/images/trash.png'),
+                                                                                                fit: BoxFit.cover,
+                                                                                                height: 22,
+                                                                                              ),
+                                                                                            );
+                                                                                          } else {
+                                                                                            return Container();
+                                                                                          }
+                                                                                        },
                                                                                       ),
                                                                                     ),
                                                                                   ),
@@ -3193,25 +3378,24 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                       alignment: Alignment.topRight,
                                                                                       child: Padding(
                                                                                         padding: const EdgeInsets.only(bottom: 30),
-                                                                                        child: PopUpMen(
-                                                                                          menuList: [
-                                                                                            PopupMenuItem(
-                                                                                              child: ListTile(
-                                                                                                leading: Icon(
-                                                                                                  Icons.delete_rounded,
-                                                                                                ),
-                                                                                                title: Text("Delete"),
+                                                                                        child: Builder(
+                                                                                          builder: (context) {
+                                                                                            if (userModels[0].id == voteModels[index].host_id) {
+                                                                                              return GestureDetector(
                                                                                                 onTap: () {
-                                                                                                  print('## You Click Delete form index = $index');
-                                                                                                  confirmDialogDelete(context, topicRandom[index]);
+                                                                                                  print('click on delete ticktik ${topicRandom[index].random_topic}');
+                                                                                                  _isShown == true ? _deleteRandom(context, topicRandom[index].random_id!) : null;
                                                                                                 },
-                                                                                              ),
-                                                                                            ),
-                                                                                          ],
-                                                                                          icon: SvgPicture.asset(
-                                                                                            "assets/icons/menu-dots.svg",
-                                                                                            height: 20,
-                                                                                          ),
+                                                                                                child: Image(
+                                                                                                  image: AssetImage('assets/images/trash.png'),
+                                                                                                  fit: BoxFit.cover,
+                                                                                                  height: 22,
+                                                                                                ),
+                                                                                              );
+                                                                                            } else {
+                                                                                              return Container();
+                                                                                            }
+                                                                                          },
                                                                                         ),
                                                                                       ),
                                                                                     ),
@@ -3324,55 +3508,6 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
       ),
     );
   }
-}
-
-Future<Null> confirmDialogDelete(
-    BuildContext context, randomModel topicRandom) async {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text('Are you sure you want to delete this random?'),
-      titleTextStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 18,
-        fontWeight: FontWeight.w400,
-      ),
-      content: Row(
-        children: [
-          Expanded(
-            child: FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 18),
-              ),
-            ),
-          ),
-          Expanded(
-            child: FlatButton(
-              onPressed: () async {
-                String? random_id = topicRandom.random_id;
-                String deleteRandom =
-                    '${MyConstant.domain}/famfam/deleteRandomWhereRandomID.php?isAdd=true&random_id=$random_id';
-
-                await Dio().get(deleteRandom).then((value) async {
-                  Navigator.pop(context);
-                  await Navigator.pushReplacementNamed(
-                      context, ('/voterandom'));
-                });
-              },
-              child: Text(
-                'Delete',
-                style: TextStyle(color: Color(0xFFFFC34A), fontSize: 18),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
 }
 
 class PopUpMen extends StatefulWidget {
@@ -5192,7 +5327,7 @@ Future openDialogRandom(BuildContext context) => showDialog(
       });
     });
 
-Future descDialog(BuildContext context, String title, String desc) =>
+Future descDialog(BuildContext context, String id, String title, String desc) =>
     showDialog(
         context: context,
         builder: (context) {
@@ -5207,39 +5342,51 @@ Future descDialog(BuildContext context, String title, String desc) =>
                   ),
                   padding: EdgeInsets.all(20),
                   width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.35,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Stack(
-                        children: [
-                          Center(
-                            child: Text(
-                              title,
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: [
+                            Text(
+                              'Topic :',
                               style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black),
                             ),
-                          ),
-                          // Positioned(
-                          //   right: 0,
-                          //   top: -6,
-                          //   child: InkResponse(
-                          //     onTap: () {
-                          //       Navigator.of(context).pop();
-                          //     },
-                          //     child: CircleAvatar(
-                          //       child: Icon(
-                          //         Icons.close,
-                          //         color: Colors.black,
-                          //         size: 30,
-                          //       ),
-                          //       backgroundColor: Colors.transparent,
-                          //     ),
-                          //   ),
-                          // ),
-                        ],
+                            Positioned(
+                              right: 0,
+                              top: -6,
+                              child: InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: CircleAvatar(
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 30,
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black),
+                        ),
                       ),
                       SizedBox(height: 15),
                       Text(
@@ -5276,6 +5423,306 @@ Future descDialog(BuildContext context, String title, String desc) =>
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.066,
+                            width: MediaQuery.of(context).size.width * 0.864,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });
+
+Future descDialogMyOrder(BuildContext context, String id, String title,
+        String desc, TabController tabController) =>
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Center(
+              child: Material(
+                type: MaterialType.transparency,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: [
+                            Text(
+                              'Topic :',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                            Positioned(
+                              right: 0,
+                              top: -6,
+                              child: InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: CircleAvatar(
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 30,
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black),
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        'Description:',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        width: MediaQuery.of(context).size.height * 0.5,
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(49, 204, 204, 204),
+                          border: Border.all(
+                            color: Color(0xFFF9EE6D),
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20.0),
+                            topRight: const Radius.circular(20.0),
+                            bottomLeft: const Radius.circular(20.0),
+                            bottomRight: const Radius.circular(20.0),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 15, left: 15, right: 15, bottom: 15),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              desc,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.066,
+                            width: MediaQuery.of(context).size.width * 0.864,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        height: 50,
+                        width: MediaQuery.of(context).size.width * 0.864,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(255, 235, 113, 104),
+                            ),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(90.0),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Force Delete',
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black),
+                          ),
+                          onPressed: () {
+                            showCupertinoDialog(
+                                context: context,
+                                builder: (BuildContext ctx) {
+                                  return CupertinoAlertDialog(
+                                    title: const Text('Please Confirm'),
+                                    content: const Text(
+                                        'Are you sure to remove this list?'),
+                                    actions: [
+                                      // The "Yes" button
+                                      CupertinoDialogAction(
+                                        onPressed: () {
+                                          setState(() {
+                                            Navigator.of(context).pop();
+                                          });
+                                        },
+                                        child: const Text('Cancel'),
+                                        isDefaultAction: false,
+                                        isDestructiveAction: false,
+                                      ),
+                                      // The "No" button
+                                      CupertinoDialogAction(
+                                        onPressed: () async {
+                                          String? my_order_id = id;
+                                          String deleteVote =
+                                              '${MyConstant.domain}/famfam/deleteMyOrderWhereID.php?isAdd=true&my_order_id=$my_order_id';
+
+                                          await Dio()
+                                              .get(deleteVote)
+                                              .then((value) async {
+                                            Navigator.pop(context);
+                                            await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => TodoBody(
+                                                    tabSelected:
+                                                        tabController.index),
+                                              ),
+                                            );
+                                          });
+                                        },
+                                        child: const Text('Confirm'),
+                                        isDefaultAction: true,
+                                        isDestructiveAction: true,
+                                      )
+                                    ],
+                                  );
+                                });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });
+
+Future infoDialog(
+        BuildContext context, String title, String desc, double size) =>
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Center(
+              child: Material(
+                type: MaterialType.transparency,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Color(0xfffF5EC83),
+                  ),
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * size,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Text(
+                                title,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 0,
+                              top: -6,
+                              child: InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: CircleAvatar(
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 30,
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height:
+                            MediaQuery.of(context).size.height * (size - 0.1),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20.0),
+                            topRight: const Radius.circular(20.0),
+                            bottomLeft: const Radius.circular(20.0),
+                            bottomRight: const Radius.circular(20.0),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 15, left: 15, right: 15, bottom: 15),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Center(
+                              child: Text(
+                                desc,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.normal,
+                                ),
                               ),
                             ),
                           ),
