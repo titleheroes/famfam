@@ -185,40 +185,85 @@ class _DateState extends State<Date> {
 
           //แจ้งเตือน
          
-              Expanded(child: Container(
-                color: Colors.red,
-                child: ListView.builder(
-                  itemCount: calendarModels.length,
-                  itemBuilder: (BuildContext context, int index){
-                    return Container(
-                      color: Colors.white,
-                      height: 60,
-                      margin: EdgeInsets.only(bottom: 10),
+              Container(
+                width: 210,
+                padding: EdgeInsets.only(left: 10),
+                child: Expanded(child: Container(
+                  
+                  color: Colors.red,
+                  child: ListView.builder(
+                    physics: BouncingScrollPhysics(),
+                    itemCount: calendarModels.length,
+                    itemBuilder: (BuildContext context, int index){
+                      return Container(
+                        
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        height: 55,
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10,8,8,5),
+                              child: Text(calendarModels[index].title,
+                                          style: TextStyle(fontSize: 16,color: Colors.black),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                            ),
+
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 6),
+                                  child: Icon(
+                                    IconData(0xe3ab,fontFamily: 'MaterialIcons',),
+                                    color: Colors.yellow,
+                                    size: 15,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 2),
+                                  child: Container(
+                                    color: Colors.blue,
+                                    width: 70,
+                                    child: Text(calendarModels[index].location,
+                                                style: TextStyle(color: Colors.grey,
+                                                                overflow: TextOverflow.ellipsis,),),),
+                                ),
+
+                                Icon(
+                                    IconData(0xe738,fontFamily: 'MaterialIcons',),
+                                    color: Colors.yellow,
+                                    size: 15,
+                                  ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 2),
+                                  child: Text(calendarModels[index].time_start + ' - ' + calendarModels[index].time_end,
+                                              style: TextStyle(color: Colors.grey,
+                                                     overflow: TextOverflow.ellipsis,),),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
 
 
-                    );
+                      );
 
 
-                  },
+                    },
 
-              ),
-
-
-              ))
+                ),
 
 
+                )),
+              )
 
-              /*
-              ListView.builder(
-                  itemCount: calendarModels.length,
-                  itemBuilder: (BuildContext context, int index){
-                    return Text('aaaaaaaaaaa');
-
-
-                  },
-
-              ),
-            */
 
         
         ],
