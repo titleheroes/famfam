@@ -39,6 +39,7 @@ class _CalendarState extends State<Calendar> {
   TimeOfDay? time = TimeOfDay(hour: 12, minute: 12);
   TimeOfDay? time1 = TimeOfDay(hour: 12, minute: 12);
   bool isChecked = false;
+  bool repeat_selected = false;
   DateTime? _dateTime;
   String getText() {
     if (_dateTime == null) {
@@ -206,6 +207,81 @@ Future<Null> pullCircle() async {
     });
         }catch(e){}
     
+  }
+
+  List<DateTime> getDaysInBetween(DateTime startDate, DateTime endDate) {
+    List<DateTime> days = [];
+    for (int i = 0; i <= endDate.difference(startDate).inDays + 1; i++) {
+      days.add(startDate.add(Duration(days: i)));
+    }
+      
+      return days;
+  }
+
+   Future pickDate(BuildContext context) async {
+    final initialDate = selectedDay;
+    final nextDate = selectedDay.add(new Duration(days:1));
+    
+    final newDate = await showDatePicker(
+        context: context,
+        initialDate: nextDate,
+        firstDate: nextDate ,
+        lastDate: DateTime(2100));
+
+    if (newDate == null) return;
+    setState(() {
+      _dateTime = newDate;
+      repeat_selected = true;
+      print('repeat_selected ========>>>> '+repeat_selected.toString());
+      print('Picking ========>>>>> ' + _dateTime.toString());
+      
+      
+    });
+
+    
+    
+    getDaysInBetween(selectedDay, newDate);
+    print(getDaysInBetween(selectedDay, newDate));
+   
+  }
+
+  void insert_repeat(String calendar_title,String calendar_location, String calendar_note) async{
+     SharedPreferences preferences = await SharedPreferences.getInstance();
+                
+        String user_id = userModels[0].id!;
+        String title = calendar_title;
+        String note = calendar_note;
+        String location = calendar_location;
+        String date = selectedDay.toString();
+        var replacingTime = time!.replacing(
+        hour:time!.hour,
+        minute: time!.minute);
+        String? time_start = replacingTime.hour.toString() +
+            ":" +
+            replacingTime.minute.toString();
+        var replacingTime1 = time1!.replacing(
+        hour:time1!.hour,
+        minute: time1!.minute);
+        String? time_end = replacingTime1.hour.toString() +
+            ":" +
+            replacingTime1.minute.toString();
+      
+        String repeating = '1';
+        String repeat_end_date = getText().toString();
+        String circle_id =
+            preferences.getString('circle_id')!;
+              DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
+        
+        String insertCalendar =
+            '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$date&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
+        
+        await Dio().get(insertCalendar).then((value) async {
+          if (value.toString() == 'true') {
+            print('Insert  Successed');
+          }
+        });
+        
+
   }
 
 
@@ -577,7 +653,7 @@ Future<Null> pullCircle() async {
                                   ),
                                 ),
                                 Text(
-                                  "OR",
+                                  "To",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Expanded(
@@ -773,7 +849,7 @@ Future<Null> pullCircle() async {
                                               borderRadius:
                                                   BorderRadius.circular(5.0),
                                               ))),
-                                  onPressed: () => pickDate(context),
+                                  onPressed: ()  => pickDate(context),
                                 ),
                               ),
                             ],
@@ -795,7 +871,10 @@ Future<Null> pullCircle() async {
                             borderRadius: BorderRadius.all(Radius.circular(10))),
                         color: Color.fromARGB(255, 170, 170, 170),
                         child: Text('CANCEL'),
-                        onPressed: () {
+                        onPressed: () async{
+                          
+                          repeat_selected = false;
+                          print('repeat_selected =========>>>> '+repeat_selected.toString());
                           Navigator.pop(context);
                         },
                       ),
@@ -814,7 +893,7 @@ Future<Null> pullCircle() async {
                             Fluttertoast.showToast(msg: "Can't add activity because You did not input 'location' !", gravity: ToastGravity.BOTTOM);
 
                           }
-                          else {
+                          else if(repeat_selected.toString() == 'false'){
                             SharedPreferences preferences =
                                 await SharedPreferences.getInstance();
                 
@@ -836,8 +915,8 @@ Future<Null> pullCircle() async {
                                 ":" +
                                 replacingTime1.minute.toString();
                           
-                            String repeating = '';
-                            String repeat_end_date = getText().toString();
+                            String repeating = '0';
+                            String repeat_end_date = 'null';
                             String circle_id =
                                 preferences.getString('circle_id')!;
                                  DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
@@ -851,42 +930,16 @@ Future<Null> pullCircle() async {
                                 print('Insert  Successed');
                               }
                             });
-                            print('check');
-                            print(getText());
-                            if (selectedEvents[selectedDay] != null) {
-                              selectedEvents[selectedDay]?.add(
-                                CalendarModel(
-                                  title: _eventControllertitle.text,
-                                  location: _eventControllerlocation.text,
-                                  note: _eventControllernote.text,
-                                  circle_id: preferences.getString('circle_id')!,
-                                  date: selectedDay.toString(),
-                                  repeating: '',
-                                  repeat_end_date : getText().toString(),
-                                  time_end: time_end.toString(),
-                                  time_start: time_start.toString(),
-                                  user_id: userModels[0].id!,
-                                ),
-                              );
-                              print(selectedDay);
-                              print('check');
-                            } else {
-                              selectedEvents[selectedDay] = [
-                                CalendarModel(
-                                  title: _eventControllertitle.text,
-                                  location: _eventControllerlocation.text,
-                                  note: _eventControllernote.text,
-                                  circle_id: preferences.getString('circle_id')!,
-                                  repeating: '',
-                                  repeat_end_date : getText().toString(),
-                                  date: selectedDay.toString(),
-                                  time_end: time_end.toString(),
-                                  time_start: time_start.toString(),
-                                  user_id: userModels[0].id!,
-                                )
-                              ];
-                            }
+                            
+
+                          }else if(repeat_selected.toString() == 'true'){
+                            print('5555555555555555555555555555');
+                            insert_repeat(_eventControllertitle.text, _eventControllerlocation.text, _eventControllernote.text);
+
+
                           }
+
+
                           Navigator.pop(context);
                           
                           _eventControllertitle.clear();
@@ -1370,18 +1423,7 @@ Future<Null> pullCircle() async {
     // getPinpostFromCircle();
 
   }
-    Future pickDate(BuildContext context) async {
-    final initialDate = DateTime.now();
-    final newDate = await showDatePicker(
-        context: context,
-        initialDate: initialDate,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2100));
-
-    if (newDate == null) return;
-
-    setState(() => _dateTime = newDate);
-  }
+   
 
 }
 

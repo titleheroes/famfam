@@ -33,7 +33,7 @@ if (isset($_GET)) {
 
 		
 							
-		$sql = "INSERT INTO `calendar_att`(`id`, `title`, `note`, `location`, `date`, `time_start`, `time_end`, `repeating`,`repeat_end_date`, `user_id`, `circle_id`) VALUES (Null,'$title','$note','$location','$date','$time_start','$time_end','$repeating',$repeat_end_date,'$user_id','$circle_id')";
+		$sql = "INSERT INTO `calendar_att`(`id`, `title`, `note`, `location`, `date`, `time_start`, `time_end`, `repeating`,`repeat_end_date`, `user_id`, `circle_id`) VALUES (Null,'$title','$note','$location','$date','$time_start','$time_end','$repeating','$repeat_end_date','$user_id','$circle_id')";
 		
 
 		$result = mysqli_query($link, $sql);
