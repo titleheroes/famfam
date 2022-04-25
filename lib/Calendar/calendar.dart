@@ -915,8 +915,13 @@ Future<Null> pullCircle() async {
                                 ":" +
                                 replacingTime1.minute.toString();
                           
+<<<<<<< Updated upstream
                             String repeating = '0';
                             String repeat_end_date = 'null';
+=======
+                            String repeating = '';
+                            String repeat_end_date = _dateTime.toString();
+>>>>>>> Stashed changes
                             String circle_id =
                                 preferences.getString('circle_id')!;
                                  DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
@@ -1423,7 +1428,25 @@ Future<Null> pullCircle() async {
     // getPinpostFromCircle();
 
   }
+<<<<<<< Updated upstream
    
+=======
+    Future pickDate(BuildContext context) async {
+    final initialDate = DateTime.now();
+    final newDate = await showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2100));
+
+    if (newDate == null) return;
+
+    setState(() => 
+    
+    _dateTime = newDate);
+    print(_dateTime);
+  }
+>>>>>>> Stashed changes
 
 }
 
