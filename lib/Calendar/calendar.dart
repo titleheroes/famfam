@@ -915,9 +915,12 @@ Future<Null> pullCircle() async {
                                 ":" +
                                 replacingTime1.minute.toString();
                           
+
+                            String repeating = '0';
                             String repeat_end_date = 'null';
-                                 DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
-                                '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$date&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
+                            String circle_id = preferences.getString('circle_id')!;
+                            DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
+                            String insertCalendar = '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$date&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
                             await Dio().get(insertCalendar).then((value) async {
                               if (value.toString() == 'true') {
                                 print('Insert  Successed');
@@ -1416,3 +1419,6 @@ Future<Null> pullCircle() async {
     // getPinpostFromCircle();
 
   }
+
+
+}
