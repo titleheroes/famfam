@@ -86,7 +86,7 @@ class _CalendarState extends State<Calendar> {
 
   Future<Null> pullCalendarRepeating() async {
 
-    
+
   }
 
   Future<Null> pullUserSQLID() async {
@@ -1258,46 +1258,7 @@ Future<Null> pullCircle() async {
                                 
   }
   
-  // Future<Null> confirmDialogDelete(int index) async{
-    
-    // showDialog(context: context, builder: (context) =>AlertDialog(
-    //   title: ListTile(leading: Text('Do you want to delete  "${selectedEvents[selectedDay]![index].title}"  ?',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-      
-    // ),actions: [FlatButton(
-    //                     shape: RoundedRectangleBorder(
-    //                         borderRadius: BorderRadius.all(Radius.circular(10))),
-    //                     color: Color.fromARGB(255, 246, 135, 65),
-    //                     child: Text('Delete'),
-    //                     onPressed: () async {
-    //                       print(selectedEvents[selectedDay]![index].id);
-    //                       String? id = selectedEvents[selectedDay]![index].id;
-    //                       print('## confirm delete at id  = ${selectedEvents[selectedDay]![index].id}');
-    //                       String apiDeleteCalendarwhereId = '${MyConstant.domain}/famfam/deleteCalendarActivity.php?isAdd=true&id=$id';
-    //                       await Dio().get(apiDeleteCalendarwhereId).then((value) async {
-    //                         Navigator.pop(context);
-    //                         await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Calendar()));
-    //                         // pullCalendar();
-                            
 
-    //                       });
-
-                          
-    //                     },
-    //                   ),
-    // FlatButton(
-    //                     shape: RoundedRectangleBorder(
-    //                         borderRadius: BorderRadius.all(Radius.circular(10))),
-    //                     color: Color.fromARGB(255, 170, 170, 170),
-    //                     child: Text('Cancel'),
-    //                     onPressed: () {
-    //                       Navigator.pop(context);
-    //                     },
-    //                   ),],
-
-      
-    // ),);
-
-  // }
 
 
 
