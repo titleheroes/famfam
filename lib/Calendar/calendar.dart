@@ -169,7 +169,7 @@ Future<Null> pullCircle() async {
                                   note:model.note,
                                   circle_id: model.circle_id,
                                   date: model.date,
-                                  repeating: '',
+                                  repeating: model.repeating,
                                   repeat_end_date : model.repeat_end_date,
                                   time_end: model.time_end,
                                   time_start: model.time_start,
@@ -185,7 +185,7 @@ Future<Null> pullCircle() async {
                                   note:model.note,
                                   circle_id: model.circle_id,
                                   date: model.date,
-                                  repeating: '',
+                                  repeating: model.repeating,
                                   repeat_end_date : model.repeat_end_date,
                                   time_end: model.time_end,
                                   time_start: model.time_start,
@@ -242,7 +242,7 @@ Future<Null> pullCircle() async {
     
     getDaysInBetween(selectedDay, newDate);
     print(getDaysInBetween(selectedDay, newDate));
-   
+    
   }
 
   void insert_repeat(String calendar_title,String calendar_location, String calendar_note) async{
@@ -387,7 +387,10 @@ Future<Null> pullCircle() async {
 
                   }
                   return TableCalendar(
+
+                    
                     focusedDay: selectedDay,
+                    
                     firstDay: DateTime(1990),
                     lastDay: DateTime(2050),
                     calendarFormat: format,
@@ -406,8 +409,8 @@ Future<Null> pullCircle() async {
                         focusedDay = focusDay;
                       });
                       // ignore: avoid_print
-                      print(focusedDay);
-                      print(selectedDay);
+                      print('FocusedDay =====>>>'+focusedDay.toString());
+                      print('SelectedDay =========>>>'+selectedDay.toString());
                     },
                     selectedDayPredicate: (DateTime date) {
                       return isSameDay(selectedDay, date);
@@ -490,6 +493,8 @@ Future<Null> pullCircle() async {
                     ),
                     daysOfWeekHeight: 50,
                   );
+
+                 
                 }
               ),
               SizedBox(
@@ -948,7 +953,7 @@ Future<Null> pullCircle() async {
                             
 
                           }else if(repeat_selected.toString() == 'true'){
-                            print('5555555555555555555555555555');
+                            
                             insert_repeat(_eventControllertitle.text, _eventControllerlocation.text, _eventControllernote.text);
 
 
@@ -1275,8 +1280,17 @@ Future<Null> pullCircle() async {
                                                               IconButton(
                                                                       onPressed:
                                                                        () {
-                                                                         print('### click delete from index = $index');
-                                                                         _confirmDialogDelete(selectedEvents[selectedDay]![index].id.toString());
+                                                                         print('### click delete from index = ' + selectedEvents[selectedDay]![index].id.toString());
+                                                                         print('### Repeating status = ' + selectedEvents[selectedDay]![index].repeating.toString());
+                                                                         if(selectedEvents[selectedDay]![index].repeating.toString() == '0'){
+                                                                              _confirmDialogDelete(selectedEvents[selectedDay]![index].id.toString());
+                                                                         }else{
+
+                                                                           print('55555555555555');
+                                                                           _confirmRepeatDialogDelete(selectedEvents[selectedDay]![index].id.toString());
+
+                                                                         }
+                                                                         
                                                                      
                                                                        },
                                                                       icon: SvgPicture.asset(
@@ -1326,50 +1340,10 @@ Future<Null> pullCircle() async {
                                 
   }
   
-  // Future<Null> confirmDialogDelete(int index) async{
-    
-    // showDialog(context: context, builder: (context) =>AlertDialog(
-    //   title: ListTile(leading: Text('Do you want to delete  "${selectedEvents[selectedDay]![index].title}"  ?',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-      
-    // ),actions: [FlatButton(
-    //                     shape: RoundedRectangleBorder(
-    //                         borderRadius: BorderRadius.all(Radius.circular(10))),
-    //                     color: Color.fromARGB(255, 246, 135, 65),
-    //                     child: Text('Delete'),
-    //                     onPressed: () async {
-    //                       print(selectedEvents[selectedDay]![index].id);
-    //                       String? id = selectedEvents[selectedDay]![index].id;
-    //                       print('## confirm delete at id  = ${selectedEvents[selectedDay]![index].id}');
-    //                       String apiDeleteCalendarwhereId = '${MyConstant.domain}/famfam/deleteCalendarActivity.php?isAdd=true&id=$id';
-    //                       await Dio().get(apiDeleteCalendarwhereId).then((value) async {
-    //                         Navigator.pop(context);
-    //                         await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Calendar()));
-    //                         // pullCalendar();
-                            
-
-    //                       });
-
-                          
-    //                     },
-    //                   ),
-    // FlatButton(
-    //                     shape: RoundedRectangleBorder(
-    //                         borderRadius: BorderRadius.all(Radius.circular(10))),
-    //                     color: Color.fromARGB(255, 170, 170, 170),
-    //                     child: Text('Cancel'),
-    //                     onPressed: () {
-    //                       Navigator.pop(context);
-    //                     },
-    //                   ),],
-
-      
-    // ),);
-
-  // }
+  
 
 
-
-    Future<void> _confirmDialogDelete(String id) async {
+Future<void> _confirmDialogDelete(String id) async {
     
          showCupertinoDialog(
         context: context,
@@ -1415,9 +1389,6 @@ Future<Null> pullCircle() async {
           );
         });
 
-    
-
-      
   }
 
   void DeleteCalendarActivity(String id)async {
@@ -1434,10 +1405,58 @@ Future<Null> pullCircle() async {
         print('Delete Error');
       }
     });
-    //Navigator.pushNamed(context, '/pinpost');
-    // getPinpostFromCircle();
+    
+  }
+
+  Future<void> _confirmRepeatDialogDelete(String id) async {
+    
+         showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this repeat activity?'),
+            actions: [
+             
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancel'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+               // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () async{
+                 
+             
+                        DeleteCalendarActivity(id);
+                        //onDismissed();
+                        Navigator.pop(context);
+                             await Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Calendar(),
+                                            ),
+                                          );
+                            
+                 
+                 
+                },
+                child: const Text('Confirm'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              ),
+            ],
+          );
+        });
 
   }
+
+
 
 
 }

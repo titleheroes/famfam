@@ -275,7 +275,7 @@ class _DateState extends State<Date> {
                     },
 
                 ):Center(
-                  child: Text("You don't have today's activity",
+                  child: Text("You don't have activity today",
                           style: TextStyle(color: Colors.grey[500],fontWeight: FontWeight.w500),)
                   ),
 
