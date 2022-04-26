@@ -242,11 +242,11 @@ Future<Null> pullCircle() async {
     
     getDaysInBetween(selectedDay, newDate);
     print(getDaysInBetween(selectedDay, newDate));
-    
+
   }
 
   void insert_repeat(String calendar_title,String calendar_location, String calendar_note) async{
-     SharedPreferences preferences = await SharedPreferences.getInstance();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
                 
         String user_id = userModels[0].id!;
         String title = calendar_title;
@@ -1286,8 +1286,16 @@ Future<Null> pullCircle() async {
                                                                               _confirmDialogDelete(selectedEvents[selectedDay]![index].id.toString());
                                                                          }else{
 
-                                                                           print('55555555555555');
-                                                                           _confirmRepeatDialogDelete(selectedEvents[selectedDay]![index].id.toString());
+                                                                            String re_id = selectedEvents[selectedDay]![index].id.toString();                                                         
+                                                                            String re_title = selectedEvents[selectedDay]![index].title.toString();
+                                                                            String re_location = selectedEvents[selectedDay]![index].location.toString();
+                                                                            String re_note = selectedEvents[selectedDay]![index].note.toString();
+
+                                                                            print('### Title status = ' + re_title);
+                                                                            print('### Location status = ' + re_location);
+                                                                            print('### Note status = ' + re_note);
+
+                                                                           _confirmRepeatDialogDelete(re_id, re_title, re_location, re_note);
 
                                                                          }
                                                                          
@@ -1408,7 +1416,7 @@ Future<void> _confirmDialogDelete(String id) async {
     
   }
 
-  Future<void> _confirmRepeatDialogDelete(String id) async {
+  Future<void> _confirmRepeatDialogDelete(String re_id, String re_title, String re_location, String re_note) async {
     
          showCupertinoDialog(
         context: context,
@@ -1432,7 +1440,8 @@ Future<void> _confirmDialogDelete(String id) async {
                 onPressed: () async{
                  
              
-                        DeleteCalendarActivity(id);
+                        DeleteCalendarRepeatActivity(re_title,re_location,re_note);
+                        
                         //onDismissed();
                         Navigator.pop(context);
                              await Navigator.pushReplacement(
@@ -1454,6 +1463,24 @@ Future<void> _confirmDialogDelete(String id) async {
           );
         });
 
+  }
+
+  void DeleteCalendarRepeatActivity(String re_title, String re_location, String re_note)async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String circle_id = preferences.getString('circle_id')!;
+
+    String DeleteCalendarRepeatActivity = '${MyConstant.domain}/famfam/deleteCalendarRepeatActivity.php?isAdd=true&circle_id=$circle_id&title=$re_title&location=$re_location&note=$re_note' ;
+    
+    
+
+    await Dio().get(DeleteCalendarRepeatActivity).then((value) {
+      if(value.toString()=='True'){
+        print('Activity Deleted');
+      }else{
+        print('Delete Error');
+      }
+    });
+    
   }
 
 
