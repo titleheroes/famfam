@@ -334,7 +334,7 @@ class _BodyState extends State<ReplyPinScreen> {
                   
                   Navigator.of(context).pop();
                 },
-                child: const Text('Edit',style: TextStyle(color: Colors.blue),),
+                child: const Text('Confirm',style: TextStyle(color: Colors.blue),),
                 
               )
             ],
@@ -406,7 +406,7 @@ class _BodyState extends State<ReplyPinScreen> {
                   
                   Navigator.of(context).pop();
                 },
-                child: const Text('Edit',style: TextStyle(color: Colors.blue),),
+                child: const Text('Confirm',style: TextStyle(color: Colors.blue),),
                 
               )
             ],
@@ -537,7 +537,7 @@ class _BodyState extends State<ReplyPinScreen> {
                   DeletePinpost(pin_id);
                   Navigator.of(context).pop();
                 },
-                child: const Text('Delete',style: TextStyle(color: Colors.red),),
+                child: const Text('Confirm',style: TextStyle(color: Colors.red),),
                 
               )
             ],
@@ -576,7 +576,7 @@ class _BodyState extends State<ReplyPinScreen> {
                   DeletePinReply(pin_reply_id);
                   Navigator.of(context).pop();
                 },
-                child: const Text('Delete',style: TextStyle(color: Colors.red),),
+                child: const Text('Confirm',style: TextStyle(color: Colors.red),),
                 
               )
             ],

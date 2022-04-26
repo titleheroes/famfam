@@ -300,10 +300,13 @@ Future<Null> pullUserSQLID() async {
                     }
                   }   
                   );
-                  getPinpostFromCircle();
+                  setState(() {
+                    load = true;
+                  });
+                  getPinpostFromCircle().then((value) => load = false);
                   Navigator.of(context).pop();
                 },
-                child: const Text('Edit',style: TextStyle(color: Colors.blue),),
+                child: const Text('Confirm',style: TextStyle(color: Colors.blue),),
                 
               )
             ],
@@ -342,7 +345,7 @@ Future<Null> pullUserSQLID() async {
                   DeletePinpost(pin_id);
                   Navigator.of(context).pop();
                 },
-                child: const Text('Delete',style: TextStyle(color: Colors.red),),
+                child: const Text('Confirm',style: TextStyle(color: Colors.red),),
                 
               )
             ],
