@@ -29,6 +29,7 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   
+  bool load = true;
   List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
   List<CalendarModel> calendarModels = [];
@@ -44,9 +45,13 @@ class _CalendarState extends State<Calendar> {
   String getText() {
     if (_dateTime == null) {
       return 'Select Date';
-    } else {
+    } 
+    
+    else {
+      //return 'Select Date';
       return DateFormat('dd-MM-yyyy').format(_dateTime!);
     }
+    
   }
 
   final TextEditingController _eventControllertitle = TextEditingController();
@@ -58,10 +63,14 @@ class _CalendarState extends State<Calendar> {
     // print('........${selectedDay}');
     selectedEvents = {};
     super.initState();
-    pullUserSQLID().then((value){
-      pullCircle().then((value){
-        pullCalendar();
+    pullUserSQLID().then((value){pullCircle().then((value){ 
+      
+      setState(() {
+        pullCalendar().then((value) => load = false);
       });
+      
+      
+    });
       
     });
     
@@ -133,6 +142,11 @@ Future<Null> pullCircle() async {
   }
 
   Future<Null> pullCalendar() async {
+
+    setState(() {
+      load = true;
+      selectedEvents.clear();
+    });
     if(calendarModels.length != 0){
       calendarModels.clear();
 
@@ -161,7 +175,9 @@ Future<Null> pullCircle() async {
        
           // tempDate = model.date as DateTime ;
           if (selectedEvents[tempDate] != null) {
-           selectedEvents[tempDate]?.add(
+            
+            setState(() {
+              selectedEvents[tempDate]?.add(
                                 CalendarModel(
                                   id: model.id,
                                   title:model.title,
@@ -175,8 +191,9 @@ Future<Null> pullCircle() async {
                                   time_start: model.time_start,
                                   user_id: model.user_id,
                                 ),
-                              );}
-                              else{
+                              );
+            });
+           }else{
                                 selectedEvents[tempDate] = [
                                   CalendarModel(
                                   id: model.id,
@@ -197,6 +214,7 @@ Future<Null> pullCircle() async {
                               }
                               // print(selectedEvents[tempDate]);
                               // print(model.date);
+
                               print(tempDate);
                               
                              
@@ -245,9 +263,54 @@ Future<Null> pullCircle() async {
 
   }
 
-  void insert_repeat(String calendar_title,String calendar_location, String calendar_note) async{
+  Future<void> insert_act(String title, String note, String location) async{
+    setState () {
+      load = true;
+    }
+      SharedPreferences preferences =
+          await SharedPreferences.getInstance();
+
+      String user_id = userModels[0].id!;
+      
+      String date = selectedDay.toString();
+      var replacingTime = time!.replacing(
+      hour:time!.hour,
+      minute: time!.minute);
+      String? time_start = replacingTime.hour.toString() +
+          ":" +
+          replacingTime.minute.toString();
+      var replacingTime1 = time1!.replacing(
+      hour:time1!.hour,
+      minute: time1!.minute);
+      String? time_end = replacingTime1.hour.toString() +
+          ":" +
+          replacingTime1.minute.toString();
+    
+
+      String repeating = '0';
+      String repeat_end_date = 'null';
+      String circle_id = preferences.getString('circle_id')!;
+      DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
+      String insertCalendar = '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$date&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
+      await Dio().get(insertCalendar).then((value) async {
+        if (value.toString() == 'true') {
+          print('Insert  Successed');
+         
+        }
+
+      });
+
+  }
+
+
+  Future<void> insert_repeat(String calendar_title,String calendar_location, String calendar_note) async{
+        
+        setState(() {
+          load = true;
+        });
+        
         SharedPreferences preferences = await SharedPreferences.getInstance();
-                
+            
         String user_id = userModels[0].id!;
         String title = calendar_title;
         String note = calendar_note;
@@ -278,7 +341,7 @@ Future<Null> pullCircle() async {
 
 
 
-        for(int i = 0;i<repeat_series.length;i++){
+      for(int i = 0;i<repeat_series.length;i++){
 
           String target_day = repeat_series[i].toString();
 
@@ -296,8 +359,8 @@ Future<Null> pullCircle() async {
 
         });
 
-        }
-        
+      }
+      
 
         
 
@@ -317,7 +380,7 @@ Future<Null> pullCircle() async {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
-      body: ListView(
+      body: load ? CircleLoader() : ListView(
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -547,12 +610,23 @@ Future<Null> pullCircle() async {
                                   //       SizedBox(
                                   //         height: 5,
                                   //       ),
-                                   
-                                 LayoutBuilder(builder: (context, constraints) =>BuildListView(constraints),),
-                                  Container()
+
+                                 Container(
+                                   //color: Colors.blue,
+                                   child: LayoutBuilder(builder: (context, constraints) =>BuildListView(constraints),)
+                                  ),
+
+                                
+                                 Container(
+                                    //color: Colors.red,
+                                    child: LayoutBuilder(builder: (context, constraints) =>BuildRepeatListView(constraints),)
+                                  )
                                 ],
                               ),
-                            )
+                            ),
+                            
+
+
                           ],
                         )
                       ],
@@ -560,13 +634,16 @@ Future<Null> pullCircle() async {
                   ),
                 ),
               ),
+
+
             ],
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      
+      floatingActionButton: load ? null : FloatingActionButton.extended(
         backgroundColor: Color(0xfffA2A2A2),
-        onPressed: () => showDialog(
+        onPressed: () =>  showDialog(
             context: context,
             builder: (context) {
               String contentText = "Content of Dialog";
@@ -864,7 +941,7 @@ Future<Null> pullCircle() async {
                               Container(
                                 
                                 child: ElevatedButton(
-                                  child: Text(getText(),style: TextStyle(color: Color.fromARGB(255, 55, 55, 55)),),
+                                  child: Text('Select Date',style: TextStyle(color: Color.fromARGB(255, 55, 55, 55)),),
                                   style: ButtonStyle(
                                     backgroundColor:MaterialStateProperty.all<Color>(Color.fromARGB(255, 251, 229, 190)) ,
                                       shape: MaterialStateProperty.all<
@@ -873,7 +950,10 @@ Future<Null> pullCircle() async {
                                               borderRadius:
                                                   BorderRadius.circular(5.0),
                                               ))),
-                                  onPressed: ()  => pickDate(context),
+                                  onPressed: () async {
+                                    pickDate(context);
+                                  }
+                                  
                                 ),
                               ),
                             ],
@@ -917,44 +997,24 @@ Future<Null> pullCircle() async {
                             Fluttertoast.showToast(msg: "Can't add activity because You did not input 'location' !", gravity: ToastGravity.BOTTOM);
 
                           }
-                          else if(repeat_selected.toString() == 'false'){
-                            SharedPreferences preferences =
-                                await SharedPreferences.getInstance();
-                
-                            String user_id = userModels[0].id!;
+                          else if(repeat_selected.toString() == 'false') {
+                            setState (() {
+                              load = true;
+                            },);
                             String title = _eventControllertitle.text;
                             String note = _eventControllernote.text;
                             String location = _eventControllerlocation.text;
-                            String date = selectedDay.toString();
-                            var replacingTime = time!.replacing(
-                            hour:time!.hour,
-                            minute: time!.minute);
-                            String? time_start = replacingTime.hour.toString() +
-                                ":" +
-                                replacingTime.minute.toString();
-                            var replacingTime1 = time1!.replacing(
-                            hour:time1!.hour,
-                            minute: time1!.minute);
-                            String? time_end = replacingTime1.hour.toString() +
-                                ":" +
-                                replacingTime1.minute.toString();
-                          
-
-                            String repeating = '0';
-                            String repeat_end_date = 'null';
-                            String circle_id = preferences.getString('circle_id')!;
-                            DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
-                            String insertCalendar = '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$date&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
-                            await Dio().get(insertCalendar).then((value) async {
-                              if (value.toString() == 'true') {
-                                print('Insert  Successed');
-                              }
-                            });
+                            insert_act(title,note,location).then((value) => pullCalendar().then((value) => load = false));
                             
 
                           }else if(repeat_selected.toString() == 'true'){
                             
-                            insert_repeat(_eventControllertitle.text, _eventControllerlocation.text, _eventControllernote.text);
+                            setState (() {
+                              load = true;
+                            },);
+                            insert_repeat(_eventControllertitle.text, _eventControllerlocation.text, _eventControllernote.text)
+                            .then((value) => pullCalendar().then((value) => load = false));
+                            
 
 
                           }
@@ -966,16 +1026,26 @@ Future<Null> pullCircle() async {
                           _eventControllerlocation.clear();
                           _eventControllernote.clear();
                 
-                          setState(() {});
-                          isChecked = false;
                           
+                          // setState(() {
+                          //   load = true;
+                          // });
+                          
+
+                          isChecked = false;
+
+                          /*
+                          sleep(Duration(seconds:3));
                           await Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   Calendar(),
                                             ),
-                                          );
+                          );
+                          */
+
+
                                           return;
                         },
                       ),
@@ -996,7 +1066,7 @@ Future<Null> pullCircle() async {
     );
   }
 
-  Container BuildListView(BoxConstraints constraints) {
+  Container BuildRepeatListView(BoxConstraints constraints) {
     // DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
    
     // tempDate = tempDate.toUtc();
@@ -1026,7 +1096,7 @@ Future<Null> pullCircle() async {
            
             //  ..._getEventsfromDay(selectedDay).map(
             //                               (CalendarModel event) => 
-          
+              selectedEvents[selectedDay]![index].repeating == '0' ? Container() :
               Container(
                 
                 margin: EdgeInsets.only(bottom: index == selectedEvents[selectedDay]!.length-1 ? 230 :10),
@@ -1289,13 +1359,371 @@ Future<Null> pullCircle() async {
                                                                             String re_id = selectedEvents[selectedDay]![index].id.toString();                                                         
                                                                             String re_title = selectedEvents[selectedDay]![index].title.toString();
                                                                             String re_location = selectedEvents[selectedDay]![index].location.toString();
+                                                                            String re_endDate = selectedEvents[selectedDay]![index].repeat_end_date.toString();
                                                                             String re_note = selectedEvents[selectedDay]![index].note.toString();
 
                                                                             print('### Title status = ' + re_title);
                                                                             print('### Location status = ' + re_location);
                                                                             print('### Note status = ' + re_note);
+                                                                            print('### end date status = ' + re_endDate);
 
-                                                                           _confirmRepeatDialogDelete(re_id, re_title, re_location, re_note);
+                                                                           _confirmRepeatDialogDelete(re_id, re_title, re_location, re_note, re_endDate);
+
+                                                                         }
+                                                                         
+                                                                     
+                                                                       },
+                                                                      icon: SvgPicture.asset(
+                                                                      "assets/icons/trash.svg",
+                                                                        height: 20,
+                                                                        ),
+                                                                    ),],
+                                                              
+                                                          ),
+                                                          
+                                                          
+                                                           
+                                                          
+                                                        ),
+          
+        ],
+                                                          
+                                                          ), 
+                                                            
+                                                                      
+                                                                        
+                                                        
+                                                            
+                                                            
+                                                            
+                                                            
+                                                            
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+              ),
+         
+                                          // )
+        ],
+       )
+                                        
+                                        
+                                    ),
+                                  ),
+      );
+
+    
+    
+                                
+                                
+  }
+
+
+
+  Container BuildListView(BoxConstraints constraints) {
+    // DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
+   
+    // tempDate = tempDate.toUtc();
+    // tempDate = tempDate.subtract(Duration(hours: 17));
+    Size size = MediaQuery.of(context).size;
+    print(selectedEvents[selectedDay]);
+    for(int i = 0;selectedEvents[selectedDay]==null;i++){
+     
+      if(i== 3){
+        break;
+      }
+    }
+   
+
+    
+      return selectedEvents[selectedDay] == null?
+      Container(
+
+      ):Container(
+       
+
+        child: ListView.builder(itemCount: selectedEvents[selectedDay]?.length, itemBuilder: ((context, index) =>
+        
+     Row(
+        
+        children: [
+           
+            //  ..._getEventsfromDay(selectedDay).map(
+            //                               (CalendarModel event) => 
+              selectedEvents[selectedDay]![index].repeating == '1' ? Container() :
+              Container(
+                
+                margin: EdgeInsets.only(bottom: index == selectedEvents[selectedDay]!.length-1 ? 230 :10),
+                child: Padding(
+                    
+                                                padding: const EdgeInsets.fromLTRB(10, 0, 20, 5),
+                                                //margin: EdgeInsets.only(bottom: 50),
+                                                child: Row(
+                                                  children: [
+                                                    Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                            left: 1,
+                                                          ),
+                                                          child: Text(
+                                                            // calendarModels[index].time_start,
+                                                            selectedEvents[selectedDay]![index].time_start,
+                                                            style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Colors
+                                                                    .black54),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 8,
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                            left: 1,
+                                                          ),
+                                                          child: Text(
+                                                           selectedEvents[selectedDay]![index].time_end,
+                                                            style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Colors
+                                                                    .black54),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 20),
+                                                      child: Container(
+                                                        width: size.width * 0.7,
+                                                        // 
+                                                        decoration: BoxDecoration(
+                                                            color: Color(
+                                                                0xfffE7C581),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10)),
+                                                         child: ExpansionTile(
+        title: Column(
+                                                          children: [
+                                                            
+                                                          Row(
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .only(
+                                                                          left: 5,
+                                                                          top: 6),
+                                                                  child: Text("",
+                                                                      style: TextStyle(
+                                                                          fontWeight:
+                                                                              FontWeight
+                                                                                  .w400,
+                                                                          fontSize:
+                                                                              19)),
+                                                                ),
+                                                                Flexible(
+                                                                  child: Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .only(
+                                                                      left: 20,
+                                                                      top: 6,
+                                                                      right: 5,
+                                                                    ),
+                                                                    child: Text(
+                                                                      selectedEvents[selectedDay]![index].title,
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              19,
+                                                                          color: Colors
+                                                                              .black),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                 
+                                                              ],
+                                                          
+                                                            ),
+                                                                
+                                                            Row(
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .only(
+                                                                          left:
+                                                                              28,
+                                                                          top: 5,
+                                                                          right:
+                                                                              7,
+                                                                              ),
+                                                                  child: Icon(
+                                                                    IconData(
+                                                                        0xf009e,
+                                                                        fontFamily:
+                                                                            'MaterialIcons'),
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            245,
+                                                                            245,
+                                                                            245),
+                                                                    size: 13,
+                                                                  ),
+                                                                ),
+                                                                 Flexible(
+                                                                        child:   Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .only(
+                                                                          left: 1,
+                                                                          top: 5,
+                                                                          bottom:
+                                                                              5),
+                                                                  child: Text(
+                                                                    selectedEvents[selectedDay]![index].location,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            15,
+                                                                        color: Color(
+                                                                            0xfff707070)),
+                                                                  ),
+                                                                ),
+                                                                  ),
+                                                                 
+                                                             
+                                                              ],
+                                                            ),
+                                                            
+                                                          ],),
+                                                          children:
+                                                           <Widget>[
+                                                        ListTile(
+                                                          title: 
+                                                          Row(
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            30,
+                                                                        right: 1,
+                                                                        bottom:
+                                                                            10),
+                                                                child:
+                                                                (selectedEvents[selectedDay]![index]
+                                                                          .note.isEmpty)
+                                            ? Column(children: [
+                                                
+                                                
+                                               Container(
+                                                                  decoration: BoxDecoration(
+                                                                      color: Color.fromARGB(
+                                                                          123,
+                                                                          255,
+                                                                          255,
+                                                                          255),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              2)),
+                                                                  width:
+                                                                      size.width *
+                                                                          0.44,
+                                                                  child:
+                                                                  Flexible(
+                                                                      child:Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                            9.0),
+                                                                    child: Text(
+                                                                      "You didn't write a note!!",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              13,
+                                                                          color: Color.fromARGB(
+                                                                              255,
+                                                                              83,
+                                                                              83,
+                                                                              83)),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                
+                                                                ),
+                                              ])
+                                              :Container(
+                                                                  decoration: BoxDecoration(
+                                                                      color: Color.fromARGB(
+                                                                          123,
+                                                                          255,
+                                                                          255,
+                                                                          255),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              2)),
+                                                                  width:
+                                                                      size.width *
+                                                                          0.44,
+                                                                  child:
+                                                                  Flexible(
+                                                                      child:Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                            9.0),
+                                                                    child: Text(
+                                                                      selectedEvents[selectedDay]![index]
+                                                                          .note,
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              15,
+                                                                          color: Color.fromARGB(
+                                                                              255,
+                                                                              83,
+                                                                              83,
+                                                                              83)),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                
+                                                                ),
+
+                                                            
+                                                              
+                                                                
+                                                              ),
+                                                              IconButton(
+                                                                      onPressed:
+                                                                       () {
+                                                                         print('### click delete from index = ' + selectedEvents[selectedDay]![index].id.toString());
+                                                                         print('### Repeating status = ' + selectedEvents[selectedDay]![index].repeating.toString());
+                                                                         if(selectedEvents[selectedDay]![index].repeating.toString() == '0'){
+                                                                              _confirmDialogDelete(selectedEvents[selectedDay]![index].id.toString());
+                                                                         }else{
+
+                                                                            String re_id = selectedEvents[selectedDay]![index].id.toString();                                                         
+                                                                            String re_title = selectedEvents[selectedDay]![index].title.toString();
+                                                                            String re_location = selectedEvents[selectedDay]![index].location.toString();
+                                                                            String re_endDate = selectedEvents[selectedDay]![index].repeat_end_date.toString();
+                                                                            String re_note = selectedEvents[selectedDay]![index].note.toString();
+
+                                                                            print('### Title status = ' + re_title);
+                                                                            print('### Location status = ' + re_location);
+                                                                            print('### Note status = ' + re_note);
+                                                                            print('### end date status = ' + re_endDate);
+
+                                                                           _confirmRepeatDialogDelete(re_id, re_title, re_location, re_note, re_endDate);
 
                                                                          }
                                                                          
@@ -1416,7 +1844,7 @@ Future<void> _confirmDialogDelete(String id) async {
     
   }
 
-  Future<void> _confirmRepeatDialogDelete(String re_id, String re_title, String re_location, String re_note) async {
+  Future<void> _confirmRepeatDialogDelete(String re_id, String re_title, String re_location, String re_note, String re_endDate) async {
     
          showCupertinoDialog(
         context: context,
@@ -1440,7 +1868,7 @@ Future<void> _confirmDialogDelete(String id) async {
                 onPressed: () async{
                  
              
-                        DeleteCalendarRepeatActivity(re_title,re_location,re_note);
+                        DeleteCalendarRepeatActivity(re_title,re_location,re_note,re_endDate);
                         
                         //onDismissed();
                         Navigator.pop(context);
@@ -1465,11 +1893,11 @@ Future<void> _confirmDialogDelete(String id) async {
 
   }
 
-  void DeleteCalendarRepeatActivity(String re_title, String re_location, String re_note)async {
+  void DeleteCalendarRepeatActivity(String re_title, String re_location, String re_note, String re_endDate)async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String circle_id = preferences.getString('circle_id')!;
 
-    String DeleteCalendarRepeatActivity = '${MyConstant.domain}/famfam/deleteCalendarRepeatActivity.php?isAdd=true&circle_id=$circle_id&title=$re_title&location=$re_location&note=$re_note' ;
+    String DeleteCalendarRepeatActivity = '${MyConstant.domain}/famfam/deleteCalendarRepeatActivity.php?isAdd=true&circle_id=$circle_id&title=$re_title&location=$re_location&note=$re_note&repeat_end_date=$re_endDate' ;
     
     
 
