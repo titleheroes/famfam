@@ -268,18 +268,37 @@ Future<Null> pullCircle() async {
       
         String repeating = '1';
         String repeat_end_date = getText().toString();
-        String circle_id =
-            preferences.getString('circle_id')!;
-              DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
+
+        List repeat_series = getDaysInBetween(selectedDay, _dateTime!);
+        print(repeat_series);
+
+        String circle_id = preferences.getString('circle_id')!;
+        DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
         
-        String insertCalendar =
-            '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$date&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
+
+
+
+        for(int i = 0;i<repeat_series.length;i++){
+
+          String target_day = repeat_series[i].toString();
+
+          String insertCalendar =
+            '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$target_day&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
         
+
+
         await Dio().get(insertCalendar).then((value) async {
           if (value.toString() == 'true') {
-            print('Insert  Successed');
+            print('Insert  Successed index: '+i.toString());
+          }else{
+            print('Insert failed');
           }
+
         });
+
+        }
+        
+
         
 
   }
