@@ -41,19 +41,9 @@ class _CalendarState extends State<Calendar> {
   TimeOfDay? time1 = TimeOfDay(hour: 12, minute: 12);
   bool isChecked = false;
   bool repeat_selected = false;
-  DateTime? _dateTime;
-  String getText() {
-    if (_dateTime == null) {
-      return 'Select Date';
-    } 
-    
-    else {
-      //return 'Select Date';
-      return DateFormat('dd-MM-yyyy').format(_dateTime!);
-    }
-    
-  }
-
+  DateTime? newdate;
+  
+  String _dateTime = 'Select day';
   final TextEditingController _eventControllertitle = TextEditingController();
   final TextEditingController _eventControllerlocation =
       TextEditingController();
@@ -236,32 +226,7 @@ Future<Null> pullCircle() async {
       return days;
   }
 
-   Future pickDate(BuildContext context) async {
-    final initialDate = selectedDay;
-    final nextDate = selectedDay.add(new Duration(days:1));
-    
-    final newDate = await showDatePicker(
-        context: context,
-        initialDate: nextDate,
-        firstDate: nextDate ,
-        lastDate: DateTime(2100));
-
-    if (newDate == null) return;
-    setState(() {
-      _dateTime = newDate;
-      repeat_selected = true;
-      print('repeat_selected ========>>>> '+repeat_selected.toString());
-      print('Picking ========>>>>> ' + _dateTime.toString());
-      
-      
-    });
-
-    
-    
-    getDaysInBetween(selectedDay, newDate);
-    print(getDaysInBetween(selectedDay, newDate));
-
-  }
+   
 
   Future<void> insert_act(String title, String note, String location) async{
     setState () {
@@ -330,9 +295,9 @@ Future<Null> pullCircle() async {
             replacingTime1.minute.toString();
       
         String repeating = '1';
-        String repeat_end_date = getText().toString();
+        String repeat_end_date = _dateTime;
 
-        List repeat_series = getDaysInBetween(selectedDay, _dateTime!);
+        List repeat_series = getDaysInBetween(selectedDay, newdate!);
         print(repeat_series);
 
         String circle_id = preferences.getString('circle_id')!;
@@ -938,23 +903,51 @@ Future<Null> pullCircle() async {
                                 padding: const EdgeInsets.only(top: 3.0),
                               ),
                              
-                              Container(
-                                
-                                child: ElevatedButton(
-                                  child: Text('Select Date',style: TextStyle(color: Color.fromARGB(255, 55, 55, 55)),),
-                                  style: ButtonStyle(
-                                    backgroundColor:MaterialStateProperty.all<Color>(Color.fromARGB(255, 251, 229, 190)) ,
-                                      shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0),
-                                              ))),
-                                  onPressed: () async {
-                                    pickDate(context);
-                                  }
-                                  
-                                ),
+                              StatefulBuilder(builder: (context, setState)
+    {
+
+                                  return Container(
+                                    
+                                    child: ElevatedButton(
+                                      child: Text(_dateTime,style: TextStyle(color: Color.fromARGB(255, 55, 55, 55)),),
+                                      style: ButtonStyle(
+                                        backgroundColor:MaterialStateProperty.all<Color>(Color.fromARGB(255, 251, 229, 190)) ,
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5.0),
+                                                  ))),
+                                      onPressed: () async {
+                                        final initialDate = selectedDay;
+                                          final nextDate = selectedDay.add(new Duration(days:1));
+                                          
+                                          final newDates = await showDatePicker(
+                                              context: context,
+                                              initialDate: nextDate,
+                                              firstDate: nextDate ,
+                                              lastDate: DateTime(2100));
+
+                                          if (newDates == null) return;
+                                          setState(() {
+                                            _dateTime = DateFormat('dd-MM-yyyy').format(newDates);
+                                            repeat_selected = true;
+                                            newdate = newDates;
+                                            /*
+                                            print('repeat_selected ========>>>> '+repeat_selected.toString());
+                                            print('Picking ========>>>>> ' + _dateTime.toString());
+                                            */
+                                            
+                                          });
+
+                                          getDaysInBetween(selectedDay, newDates);
+                                          print(getDaysInBetween(selectedDay, newDates));
+
+                                      }
+                                      
+                                    ),
+                                  );
+                                }
                               ),
                             ],
                           ),
@@ -976,7 +969,11 @@ Future<Null> pullCircle() async {
                         color: Color.fromARGB(255, 170, 170, 170),
                         child: Text('CANCEL'),
                         onPressed: () async{
-                          
+                          setState(() {
+                                            _dateTime = 'Select Date';
+                                            
+                                            
+                                          });
                           repeat_selected = false;
                           print('repeat_selected =========>>>> '+repeat_selected.toString());
                           Navigator.pop(context);
