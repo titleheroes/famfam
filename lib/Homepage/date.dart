@@ -197,7 +197,7 @@ class _DateState extends State<Date> {
           //แจ้งเตือน
          
               Container(
-                width: 210,
+                width: 200,
                 padding: EdgeInsets.only(left: 10),
                 child: Expanded(child: Container(
                   
@@ -215,6 +215,7 @@ class _DateState extends State<Date> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         height: 55,
+                        
                         margin: EdgeInsets.only(bottom: 10),
 
 
@@ -244,7 +245,7 @@ class _DateState extends State<Date> {
                                   padding: const EdgeInsets.only(left: 2),
                                   child: Container(
                                     //color: Colors.blue,
-                                    width: 70,
+                                    width: 60,
                                     child: Text(calendarModels[index].location,
                                                 style: TextStyle(color: Colors.grey,
                                                                 overflow: TextOverflow.ellipsis,),),),
