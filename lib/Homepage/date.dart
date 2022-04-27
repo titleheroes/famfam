@@ -105,28 +105,21 @@ class _DateState extends State<Date> {
 
     String pullalendar =
         '${MyConstant.domain}/famfam/getCalendarwhereDate.php?isAdd=true&circle_id=$circle_id&date=$formattedDate';
-   
 
-      await Dio().get(pullalendar).then((value) async {
-        if (value.toString()=='null'){
-          print('Today has no data');
-
-
-        }else{
-            for (var item in json.decode(value.data)) {
+    await Dio().get(pullalendar).then((value) async {
+      if (value.toString() == 'null') {
+        print('Today has no data');
+      } else {
+        for (var item in json.decode(value.data)) {
           CalendarModel model = CalendarModel.fromMap(item);
           setState(() {
             calendarModels.add(model);
             calendarHaveData = true;
           });
         }
-
-        }
-
-
-
-      });
-  } 
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,97 +188,103 @@ class _DateState extends State<Date> {
           //end line
 
           //แจ้งเตือน
-         
-              Container(
-                width: 200,
-                padding: EdgeInsets.only(left: 10),
-                child: Expanded(child: Container(
-                  
-                  //color: Colors.red,
-                  
-                  child: (calendarHaveData) ? ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: calendarModels.length,
-                    itemBuilder: (BuildContext context, int index){
-                    
-                      return Container(
-                        
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        height: 55,
-                        
-                        margin: EdgeInsets.only(bottom: 10),
 
+          Container(
+            width: 200,
+            padding: EdgeInsets.only(
+              left: 4,
+              top: 8,
+            ),
+            child: Expanded(
+                child: Container(
+              //color: Colors.red,
 
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(10,8,8,5),
-                              child: Text(calendarModels[index].title,
-                                          style: TextStyle(fontSize: 16,color: Colors.black),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+              child: (calendarHaveData)
+                  ? ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      itemCount: calendarModels.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
                             ),
-
-                            Row(
+                            height: 55,
+                            margin: EdgeInsets.only(bottom: 7),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 6),
-                                  child: Icon(
-                                    IconData(0xe3ab,fontFamily: 'MaterialIcons',),
-                                    color: Colors.yellow,
-                                    size: 15,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 8, 8, 5),
+                                  child: Text(
+                                    calendarModels[index].title,
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 2),
-                                  child: Container(
-                                    //color: Colors.blue,
-                                    width: 60,
-                                    child: Text(calendarModels[index].location,
-                                                style: TextStyle(color: Colors.grey,
-                                                                overflow: TextOverflow.ellipsis,),),),
-                                ),
-
-                                Icon(
-                                    IconData(0xe738,fontFamily: 'MaterialIcons',),
-                                    color: Colors.yellow,
-                                    size: 15,
-                                  ),
-
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 2),
-                                  child: Text(calendarModels[index].time_start + ' - ' + calendarModels[index].time_end,
-                                              style: TextStyle(color: Colors.grey,
-                                                     overflow: TextOverflow.ellipsis,),),
-                                ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 6),
+                                      child: Icon(
+                                        IconData(
+                                          0xe3ab,
+                                          fontFamily: 'MaterialIcons',
+                                        ),
+                                        color: Colors.yellow,
+                                        size: 15,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 2),
+                                      child: Container(
+                                        //color: Colors.blue,
+                                        width: 60,
+                                        child: Text(
+                                          calendarModels[index].location,
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Icon(
+                                      IconData(
+                                        0xe738,
+                                        fontFamily: 'MaterialIcons',
+                                      ),
+                                      color: Colors.yellow,
+                                      size: 15,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 2),
+                                      child: Text(
+                                        calendarModels[index].time_start +
+                                            ' - ' +
+                                            calendarModels[index].time_end,
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
                               ],
-                            )
-                          ],
-                        ) 
-
-
-
-                      );
-
-
-                    },
-
-                ):Center(
-                  child: Text("You don't have activity today",
-                          style: TextStyle(color: Colors.grey[500],fontWeight: FontWeight.w500),)
-                  ),
-
-
-                )),
-              )
-
-
-        
+                            ));
+                      },
+                    )
+                  : Center(
+                      child: Text(
+                      "You don't have activity today",
+                      style: TextStyle(
+                          color: Colors.grey[500], fontWeight: FontWeight.w500),
+                    )),
+            )),
+          )
         ],
       ),
     );
