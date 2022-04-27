@@ -1781,7 +1781,7 @@ class _TickBodyState extends State<TickBody> {
                     Navigator.of(context).pop();
                   });
                 },
-                child: const Text('Cancle'),
+                child: const Text('Cancel'),
                 isDefaultAction: false,
                 isDestructiveAction: false,
               ),
@@ -1792,7 +1792,7 @@ class _TickBodyState extends State<TickBody> {
                   deletedTopicByID(topic_id: topic_id);
                   Navigator.of(context).pop();
                 },
-                child: const Text('Yes'),
+                child: const Text('Confirm'),
                 isDefaultAction: true,
                 isDestructiveAction: true,
               )
