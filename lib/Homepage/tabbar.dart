@@ -54,6 +54,18 @@ class _tabbarState extends State<tabbar> {
   List<list_today_Model> list_to_do_Models = [];
   bool load = true;
 
+
+  List<String> fire_type = ['urgent', 'fast'];
+  List<String> dumbbell_type = ['exercise', 'workout', 'running', 'jogging'];
+  List<String> money_type = ['money', 'bank', 'pay', 'paid'];
+  List<String> beer_type = ['party', 'drink', 'drunk'];
+  List<String> clock_type = ['alarm', 'wake'];
+  List<String> paper_type = ['meeting', 'appoint', 'doctor'];
+  List<String> star_type = ['star'];
+  List<String> shop_type = ['shop', 'shopping', 'buy'];
+
+
+
   void addItemToList(String text, String iconnum) {
     setState(() {
       print(iconnum);
@@ -415,16 +427,76 @@ class _tabbarState extends State<tabbar> {
                       print('Input Text =====> ${nameController.text}');
                       print(nameController.text.contains('workout'));
 
+                      String text_input = nameController.text.toLowerCase();
+                      bool detected = false;
 
                       //if no icon selected
                       if (numicon == '0'){
 
-                        if( nameController.text.contains('workout') ||  nameController.text.contains('exercise')){
-                          numicon = '2';
-                        } else if( nameController.text.contains('shopping') ){
-                          numicon = '8';
+                        
+                        for(int i=0; i < fire_type.length;i++){
+                          if(text_input.contains(fire_type[i])) {
+                            detected = true;
+                            numicon = '1';
+                          }
                         }
 
+                        for(int i=0; i < dumbbell_type.length;i++){
+                          if(text_input.contains(dumbbell_type[i])) {
+                            detected = true;
+                            numicon = '2';
+                          }
+                        }
+
+                        for(int i=0; i < money_type.length;i++){
+                          if(text_input.contains(money_type[i])) {
+                            detected = true;
+                            numicon = '3';
+                          }
+                        }
+
+                        for(int i=0; i < beer_type.length;i++){
+                          if(text_input.contains(beer_type[i])) {
+                            detected = true;
+                            numicon = '4';
+                          }
+                        }
+
+                        for(int i=0; i < clock_type.length;i++){
+                          if(text_input.contains(clock_type[i])) {
+                            detected = true;
+                            numicon = '5';
+                          }
+                        }
+
+                        for(int i=0; i < paper_type.length;i++){
+                          if(text_input.contains(paper_type[i])) {
+                            detected = true;
+                            numicon = '6';
+                          }
+                        }
+
+                        for(int i=0; i < star_type.length;i++){
+                          if(text_input.contains(star_type[i])) {
+                            detected = true;
+                            numicon = '7';
+                          }
+                        }
+
+                        for(int i=0; i < shop_type.length;i++){
+                          if(text_input.contains(shop_type[i])) {
+                            detected = true;
+                            numicon = '8';
+                          }
+                        }
+
+                        
+
+                      }
+                      
+                      if(numicon == '0'){
+                        //Default icon                       
+                        numicon = '7';
                       }
                       
                       
