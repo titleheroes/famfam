@@ -23,7 +23,7 @@ if (isset($_GET)) {
 		
 		
 		
-		$sql = "INSERT INTO `today_i_do`(`id`, `user_id`, `list_to_do`) VALUES (NULL,'$user_id','$list_to_do')";
+		$sql = "INSERT INTO `today_i_do`(`id`, `user_id`, `list_to_do`, `icon`) VALUES (NULL,'$user_id','$list_to_do','$icon')";
 
 		$result = mysqli_query($link, $sql);
 

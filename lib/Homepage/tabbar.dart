@@ -48,7 +48,7 @@ class _tabbarState extends State<tabbar> {
   final List<String> icon = <String>[];
 
   TextEditingController nameController = TextEditingController();
-  String numicon = '';
+  String numicon = '0';
   int num = 0;
   List<UserModel> userModels = [];
   List<list_today_Model> list_to_do_Models = [];
@@ -128,22 +128,32 @@ class _tabbarState extends State<tabbar> {
       await Dio().get(pullData).then((value) async {
         for (var item in json.decode(value.data)) {
           list_today_Model list_model = list_today_Model.fromMap(item);
-          print(item);
+          print('List =====> ${list_model.list_to_do} icon ====> ${list_model.icon}');
+
           setState(() {
+            
             list_to_do_Models.add(list_model);
           });
         }
+
       });
     } catch (e) {}
   }
 
   Future<Null> InsertDatatoday({String? list_to_do, String? icon}) async {
-    String? member_id = userModels[0].id;
 
+    String? member_id = userModels[0].id;
+    String APIinsertData =
+        '${MyConstant.domain}/famfam/insertDataToday_IDO.php?isAdd=true&user_id=$member_id&list_to_do=$list_to_do&icon=$icon';
     print('###UID ==> ' + '$member_id');
     print('##icon $icon');
-    String APIinsertData =
-        '${MyConstant.domain}/famfam/insertDataToday_IDO.php?user_id=$member_id &list_to_do=$list_to_do&isAdd=true&icon=$icon';
+    
+    
+    
+    
+
+    
+    
     await Dio().get(APIinsertData).then((value) {
       if (value.toString() == 'true') {
         print('Insert Today I Do Successed');
@@ -242,6 +252,8 @@ class _tabbarState extends State<tabbar> {
                     SizedBox(
                       width: 35,
                     ),
+                    
+
                     GestureDetector(
                         onTap: () {
                           numicon = '1';
@@ -252,6 +264,8 @@ class _tabbarState extends State<tabbar> {
                           fit: BoxFit.cover,
                           height: 46,
                         )),
+
+
                     SizedBox(
                       width: 20,
                     ),
@@ -374,6 +388,11 @@ class _tabbarState extends State<tabbar> {
                       child:
                           Text('Cancel', style: TextStyle(color: Colors.white)),
                       onPressed: () {
+                        numicon = '0';
+
+                        
+
+                        print( 'numicon ====>  ${numicon}');
                         Navigator.pop(context);
                       },
                     ),
@@ -392,12 +411,27 @@ class _tabbarState extends State<tabbar> {
                     ),
                     child: Text('Add', style: TextStyle(color: Colors.white)),
                     onPressed: () {
-                      print(numicon);
+                      print('Selected icon ======> ${numicon}');
+                      print('Input Text =====> ${nameController.text}');
+                      print(nameController.text.contains('workout'));
+
+
+                      //if no icon selected
+                      if (numicon == '0'){
+
+                        if( nameController.text.contains('workout') ||  nameController.text.contains('exercise')){
+                          numicon = '2';
+                        } else if( nameController.text.contains('shopping') ){
+                          numicon = '8';
+                        }
+
+                      }
+                      
+                      
                       addItemToList(nameController.text, numicon);
-                      InsertDatatoday(
-                          list_to_do: nameController.text, icon: numicon);
+                      InsertDatatoday(list_to_do: nameController.text, icon: numicon);
                       nameController.text = '';
-                      numicon = '';
+                      numicon = '0';
                       Navigator.pop(context);
                     },
                   ),
@@ -695,7 +729,11 @@ class _tabbarState extends State<tabbar> {
                                                             ),
                                                           ),
                                                         ),
+                                                        
                                                         onPressed: () {
+                                                          numicon = '0';
+                                                          
+
                                                           _displayTextInputDialog(
                                                               context);
                                                         },
