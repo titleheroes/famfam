@@ -5,6 +5,7 @@ import 'package:famfam/Homepage/menuHome.dart';
 import 'package:famfam/Homepage/tabbar.dart';
 import 'package:famfam/check-in/Checkin.dart';
 import 'package:famfam/models/circle_model.dart';
+import 'package:famfam/models/history_for_user_model.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:famfam/services/auth.dart';
 import 'package:famfam/services/my_constant.dart';
@@ -31,6 +32,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
+  List<HistoryForUserModel> historyForUserModel = [];
   String family = 'loading..';
   String name = 'loading..';
   String profileImage =

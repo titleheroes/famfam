@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:famfam/Calendar/calendar.dart';
+import 'package:famfam/Homepage/history.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
 import 'package:famfam/constants.dart';
 import 'package:famfam/register.dart';
@@ -75,7 +76,7 @@ void main() async {
         // '/todolist': (context) => TodoBody(),
         '/voterandom': (context) => VoteRandomScreen(),
         '/checkin': (context) => CheckIn(),
-        '/pinpost': (context) => PinScreen(),     
+        '/pinpost': (context) => PinScreen(),
         '/calendar': (context) => Calendar(),
       },
     ),
