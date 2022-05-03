@@ -223,10 +223,8 @@ class _tabbarState extends State<tabbar> {
 
             print('ssssss '+ count_today_Models[0].toString());
             int new_count = int.parse(count_today_Models[0].count)+1 ;
-
-            
-                  String update_count_today =
-                  '${MyConstant.domain}/famfam/updateCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text&count=$new_count ';
+            String update_count_today =
+              '${MyConstant.domain}/famfam/updateCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text&count=$new_count ';
 
             Dio().get(update_count_today).then((value) async{
                     
