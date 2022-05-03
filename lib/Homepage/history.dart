@@ -5,6 +5,7 @@ import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/Homepage/tabbar.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/history_my_order_model.dart';
+import 'package:famfam/models/history_pinpost_model.dart';
 import 'package:famfam/models/my_order_model.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:famfam/screens/components/body.dart';
@@ -27,6 +28,7 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
   List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
   List<HistoryMyOrderModel> historyMyOrderModels = [];
+  List<HistoryPinPostModel> historyPinPostModels = [];
 
   @override
   void initState() {
@@ -35,6 +37,9 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
       pullCircle().then((value) {
         pullHistoryMyOrder().then((value) {
           historyMyOrderModels.reversed;
+        });
+        pullHistoryPinPost().then((value) {
+          historyPinPostModels.reversed;
         });
       });
     });
@@ -87,14 +92,34 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
 
     String pullHistoryMyOrderr =
         '${MyConstant.domain}/famfam/getHistoryMyOrderRelation.php?isAdd=true&circle_id=$circle_id&user_id=$user_id';
-    await Dio().get(pullHistoryMyOrderr).then((value) async {
-      for (var item in json.decode(value.data)) {
-        HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
-        setState(() {
-          historyMyOrderModels.add(model);
-        });
-      }
-    });
+    try {
+      await Dio().get(pullHistoryMyOrderr).then((value) async {
+        for (var item in json.decode(value.data)) {
+          HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
+          setState(() {
+            historyMyOrderModels.add(model);
+          });
+        }
+      });
+    } catch (e) {}
+  }
+
+  Future<Null> pullHistoryPinPost() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? circle_id = preferences.getString('circle_id');
+
+    String pullHistoryPinPost =
+        '${MyConstant.domain}/famfam/getHistoryPinPostRelation.php?isAdd=true&circle_id=$circle_id';
+    try {
+      await Dio().get(pullHistoryPinPost).then((value) async {
+        for (var item in json.decode(value.data)) {
+          HistoryPinPostModel model = HistoryPinPostModel.fromMap(item);
+          setState(() {
+            historyPinPostModels.add(model);
+          });
+        }
+      });
+    } catch (e) {}
   }
 
   Widget build(BuildContext context) {
@@ -240,398 +265,354 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
                                             ),
                                           )
                                         : Expanded(
-                                            child: ListView.builder(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                itemCount:
-                                                    historyMyOrderModels.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return Column(
-                                                    children: [
-                                                      Container(
-                                                        constraints:
-                                                            const BoxConstraints(
-                                                                minHeight: 80),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .fromLTRB(
-                                                                  15,
-                                                                  15,
-                                                                  15,
-                                                                  15),
-                                                          child: Builder(
-                                                              builder:
-                                                                  (context) {
-                                                            print(historyMyOrderModels[
-                                                                    index]
-                                                                .my_order_status);
-                                                            if (historyMyOrderModels[
-                                                                        index]
-                                                                    .my_order_status ==
-                                                                'false') {
-                                                              return Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        '${historyMyOrderModels[index].owner_fname}',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              18,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
+                                            child: Align(
+                                              alignment: Alignment.topCenter,
+                                              child: ListView.builder(
+                                                  reverse: true,
+                                                  shrinkWrap: true,
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  itemCount:
+                                                      historyMyOrderModels
+                                                          .length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    return Column(
+                                                      children: [
+                                                        Container(
+                                                          constraints:
+                                                              const BoxConstraints(
+                                                                  minHeight:
+                                                                      80),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .fromLTRB(
+                                                                    15,
+                                                                    15,
+                                                                    15,
+                                                                    15),
+                                                            child: Builder(
+                                                                builder:
+                                                                    (context) {
+                                                              print(historyMyOrderModels[
+                                                                      index]
+                                                                  .my_order_status);
+                                                              if (historyMyOrderModels[
+                                                                          index]
+                                                                      .my_order_status ==
+                                                                  'false') {
+                                                                return Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          '${historyMyOrderModels[index].owner_fname}',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
                                                                         ),
-                                                                      ),
-                                                                      Text(
-                                                                        ' has Assigned ',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              18,
-                                                                          fontWeight:
-                                                                              FontWeight.normal,
+                                                                        Text(
+                                                                          ' has Assigned ',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.normal,
+                                                                          ),
                                                                         ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        '${historyMyOrderModels[index].my_order_topic}',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              18,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Text(
-                                                                    ' to you.',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          18,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .normal,
+                                                                      ],
                                                                     ),
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            } else {
-                                                              return Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(
-                                                                    'You has finished Assigned ',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          18,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .normal,
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    '${historyMyOrderModels[index].my_order_topic}',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          18,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        'from',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              18,
-                                                                          fontWeight:
-                                                                              FontWeight.normal,
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          "' ${historyMyOrderModels[index].my_order_topic} '",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
                                                                         ),
+                                                                      ],
+                                                                    ),
+                                                                    Text(
+                                                                      ' to you.',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            18,
+                                                                        fontWeight:
+                                                                            FontWeight.normal,
                                                                       ),
-                                                                      Text(
-                                                                        ' ${historyMyOrderModels[index].owner_fname}',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              18,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              } else {
+                                                                return Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      'You has finished Assigned ',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            18,
+                                                                        fontWeight:
+                                                                            FontWeight.normal,
+                                                                      ),
+                                                                    ),
+                                                                    Text(
+                                                                      "' ${historyMyOrderModels[index].my_order_topic} '",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            18,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          'from',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.normal,
+                                                                          ),
                                                                         ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            }
-                                                          }),
+                                                                        Text(
+                                                                          ' ${historyMyOrderModels[index].owner_fname}',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              }
+                                                            }),
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Divider(),
-                                                    ],
-                                                  );
-                                                }),
+                                                        Divider(),
+                                                      ],
+                                                    );
+                                                  }),
+                                            ),
                                           ),
                                   ),
-                                  // Container(
-                                  //   child: finishedModels.isEmpty
-                                  //       ? Padding(
-                                  //           padding: const EdgeInsets.only(
-                                  //               top: 12.0),
-                                  //           child: Container(
-                                  //             //height: 100,
-                                  //             //width: 100,
-                                  //             decoration: BoxDecoration(
-                                  //                 //color: Colors.pink.shade700,
-                                  //                 //borderRadius: BorderRadius.circular(30),
-                                  //                 ),
-                                  //             child: Column(
-                                  //               mainAxisAlignment:
-                                  //                   MainAxisAlignment.center,
-                                  //               crossAxisAlignment:
-                                  //                   CrossAxisAlignment.center,
-                                  //               children: <Widget>[
-                                  //                 SvgPicture.asset(
-                                  //                   "assets/icons/leaf-fall.svg",
-                                  //                   height: 85,
-                                  //                   color: Colors.black
-                                  //                       .withOpacity(0.4),
-                                  //                 ),
-                                  //                 SizedBox(
-                                  //                   height: 1,
-                                  //                 ),
-                                  //                 Text(
-                                  //                   "You don't have any list right now.",
-                                  //                   style: TextStyle(
-                                  //                     color: Colors.black
-                                  //                         .withOpacity(0.5),
-                                  //                     fontSize: 18,
-                                  //                   ),
-                                  //                 ),
-                                  //               ],
-                                  //             ),
-                                  //           ),
-                                  //         )
-                                  //       : Expanded(
-                                  //           child: ListView.builder(
-                                  //               padding:
-                                  //                   const EdgeInsets.all(8),
-                                  //               itemCount:
-                                  //                   finishedModels.length,
-                                  //               itemBuilder:
-                                  //                   (BuildContext context,
-                                  //                       int index) {
-                                  //                 return Container(
-                                  //                   child: Column(
-                                  //                     children: [
-                                  //                       Container(
-                                  //                         height: 80,
-                                  //                         margin:
-                                  //                             EdgeInsets.only(
-                                  //                                 bottom: 6),
-                                  //                         decoration:
-                                  //                             BoxDecoration(
-                                  //                           borderRadius:
-                                  //                               BorderRadius
-                                  //                                   .circular(
-                                  //                                       10),
-                                  //                           color: Color(
-                                  //                               0xfffFFC34A),
-                                  //                         ),
-                                  //                         child: Padding(
-                                  //                           padding:
-                                  //                               const EdgeInsets
-                                  //                                       .fromLTRB(
-                                  //                                   10,
-                                  //                                   10,
-                                  //                                   10,
-                                  //                                   10),
-                                  //                           child: Row(
-                                  //                             // mainAxisAlignment:
-                                  //                             //     MainAxisAlignment
-                                  //                             //         .spaceBetween,
-                                  //                             children: <
-                                  //                                 Widget>[
-                                  //                               Padding(
-                                  //                                 padding: const EdgeInsets
-                                  //                                         .only(
-                                  //                                     left: 6,
-                                  //                                     right: 2),
-                                  //                                 child: Builder(builder:
-                                  //                                     (BuildContext
-                                  //                                         context) {
-                                  //                                   return Container(
-                                  //                                     width: 40,
-                                  //                                     height:
-                                  //                                         40,
-                                  //                                     child:
-                                  //                                         Stack(
-                                  //                                       children: [
-                                  //                                         CircleAvatar(
-                                  //                                           radius:
-                                  //                                               20,
-                                  //                                           backgroundColor: Color.fromARGB(
-                                  //                                               255,
-                                  //                                               235,
-                                  //                                               113,
-                                  //                                               104),
-                                  //                                           child:
-                                  //                                               CircleAvatar(
-                                  //                                             radius: 15,
-                                  //                                             backgroundColor: Color.fromARGB(255, 235, 113, 104),
-                                  //                                             backgroundImage: AssetImage('assets/images/trash.png'),
-                                  //                                           ),
-                                  //                                         ),
-                                  //                                         FlatButton(
-                                  //                                           shape: RoundedRectangleBorder(
-                                  //                                               side: BorderSide(
-                                  //                                                 color: Colors.transparent,
-                                  //                                               ),
-                                  //                                               borderRadius: BorderRadius.circular(50)),
-                                  //                                           onPressed:
-                                  //                                               () {
-                                  //                                             {
-                                  //                                               // ติ๊กถูก
-                                  //                                               print('click on delete ticktik ${finishedModels[index].my_order_topic}');
-                                  //                                               _isShown == true ? _delete(context, finishedModels[index].my_order_id!) : null;
-                                  //                                               // Fluttertoast.showToast(msg: "You have finish this assignment already.", gravity: ToastGravity.BOTTOM);
-                                  //                                             }
-                                  //                                           },
-                                  //                                           child:
-                                  //                                               Container(),
-                                  //                                         ),
-                                  //                                       ],
-                                  //                                     ),
-                                  //                                   );
-                                  //                                 }),
-                                  //                               ),
-                                  //                               const VerticalDivider(
-                                  //                                 width: 20,
-                                  //                                 thickness:
-                                  //                                     1.5,
-                                  //                                 indent: 5,
-                                  //                                 endIndent: 5,
-                                  //                                 color: Colors
-                                  //                                     .white,
-                                  //                               ),
-                                  //                               Expanded(
-                                  //                                 child:
-                                  //                                     Padding(
-                                  //                                   padding: EdgeInsets
-                                  //                                       .fromLTRB(
-                                  //                                           0,
-                                  //                                           3,
-                                  //                                           10,
-                                  //                                           0),
-                                  //                                   child:
-                                  //                                       RaisedButton(
-                                  //                                     color:
-                                  //                                         Color(
-                                  //                                       0xfffFFC34A,
-                                  //                                     ),
-                                  //                                     elevation:
-                                  //                                         0,
-                                  //                                     hoverElevation:
-                                  //                                         0,
-                                  //                                     focusElevation:
-                                  //                                         0,
-                                  //                                     highlightElevation:
-                                  //                                         0,
-                                  //                                     onPressed:
-                                  //                                         () {
-                                  //                                       descDialog(
-                                  //                                           context,
-                                  //                                           finishedModels[index].my_order_id!,
-                                  //                                           finishedModels[index].my_order_topic,
-                                  //                                           finishedModels[index].my_order_desc);
-                                  //                                     },
-                                  //                                     child:
-                                  //                                         Align(
-                                  //                                       alignment:
-                                  //                                           Alignment.centerLeft,
-                                  //                                       child:
-                                  //                                           Column(
-                                  //                                         crossAxisAlignment:
-                                  //                                             CrossAxisAlignment.start,
-                                  //                                         children: [
-                                  //                                           CheckMe(index,
-                                  //                                               finishedModels),
-                                  //                                           SizedBox(
-                                  //                                             height: 5,
-                                  //                                           ),
-                                  //                                           Text(
-                                  //                                             '${finishedModels[index].my_order_topic}',
-                                  //                                             style: TextStyle(
-                                  //                                               fontSize: 18,
-                                  //                                               fontWeight: FontWeight.normal,
-                                  //                                             ),
-                                  //                                           ),
-                                  //                                         ],
-                                  //                                       ),
-                                  //                                     ),
-                                  //                                   ),
-                                  //                                 ),
-                                  //                               ),
-                                  //                               Align(
-                                  //                                 alignment:
-                                  //                                     Alignment
-                                  //                                         .topRight,
-                                  //                                 child:
-                                  //                                     Padding(
-                                  //                                   padding:
-                                  //                                       const EdgeInsets.fromLTRB(
-                                  //                                           0,
-                                  //                                           5,
-                                  //                                           5,
-                                  //                                           5),
-                                  //                                   child:
-                                  //                                       CircleAvatar(
-                                  //                                     radius:
-                                  //                                         25,
-                                  //                                     backgroundImage:
-                                  //                                         NetworkImage(
-                                  //                                             finishedModels[index].employee_profile),
-                                  //                                   ),
-                                  //                                 ),
-                                  //                               ),
-                                  //                             ],
-                                  //                           ),
-                                  //                         ),
-                                  //                       ),
-                                  //                     ],
-                                  //                   ),
-                                  //                 );
-                                  //               }),
-                                  //         ),
-                                  // ),
+                                  Container(
+                                    child: historyPinPostModels.isEmpty
+                                        ? Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 12.0),
+                                            child: Container(
+                                              //height: 100,
+                                              //width: 100,
+                                              decoration: BoxDecoration(
+                                                  //color: Colors.pink.shade700,
+                                                  //borderRadius: BorderRadius.circular(30),
+                                                  ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: <Widget>[
+                                                  SvgPicture.asset(
+                                                    "assets/icons/leaf-fall.svg",
+                                                    height: 85,
+                                                    color: Colors.black
+                                                        .withOpacity(0.4),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 1,
+                                                  ),
+                                                  Text(
+                                                    "You don't have any list right now.",
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.5),
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        : Expanded(
+                                            child: Align(
+                                              alignment: Alignment.topCenter,
+                                              child: ListView.builder(
+                                                  reverse: true,
+                                                  shrinkWrap: true,
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  itemCount:
+                                                      historyPinPostModels
+                                                          .length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    return Column(
+                                                      children: [
+                                                        Container(
+                                                          constraints:
+                                                              const BoxConstraints(
+                                                                  minHeight:
+                                                                      55),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .fromLTRB(
+                                                                    15,
+                                                                    15,
+                                                                    15,
+                                                                    15),
+                                                            child: Builder(
+                                                                builder:
+                                                                    (context) {
+                                                              if (historyPinPostModels[
+                                                                          index]
+                                                                      .history_isreply ==
+                                                                  '') {
+                                                                return Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          '${historyPinPostModels[index].author_name}',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          ' has posting the PinPost ',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.normal,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              } else {
+                                                                return Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          historyPinPostModels[index]
+                                                                              .history_isreply,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          ' has replied to ',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.normal,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          "${historyPinPostModels[index].author_name}'s",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          " PinPost",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.normal,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              }
+                                                            }),
+                                                          ),
+                                                        ),
+                                                        Divider(),
+                                                      ],
+                                                    );
+                                                  }),
+                                            ),
+                                          ),
+                                  ),
                                   // Container(
                                   //   child: myOrderModels.isEmpty
                                   //       ? Padding(
@@ -897,7 +878,7 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
                                   //               }),
                                   //         ),
                                   // )
-                                  Container(),
+
                                   Container(),
                                 ],
                               ),

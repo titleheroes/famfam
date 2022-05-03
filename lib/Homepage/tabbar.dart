@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/models/history_my_order_model.dart';
 import 'package:famfam/models/my_order_model.dart';
 import 'package:famfam/screens/components/body.dart';
 import 'package:famfam/models/list_today_ido.dart';
@@ -21,6 +22,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/ticktick_model.dart';
+import 'package:uuid/uuid.dart';
 
 class tabbar extends StatefulWidget {
   const tabbar({Key? key}) : super(key: key);
@@ -860,12 +862,44 @@ class _tabbarState extends State<tabbar> {
                                                                               } else {
                                                                                 //ทำเสร็จไป UPDATE DATABASE
                                                                                 var user = FirebaseAuth.instance.currentUser;
+                                                                                SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                                                String? circle_id = preferences.getString('circle_id');
+                                                                                String? user_id = userModels[0].id;
                                                                                 String? my_order_id = unfinishedModels[index].my_order_id;
+                                                                                String owner_fname = unfinishedModels[index].owner_fname;
+                                                                                String my_order_topic = unfinishedModels[index].my_order_topic;
                                                                                 String my_order_status = 'true';
                                                                                 String apiUpdateStatusMyOrder = '${MyConstant.domain}/famfam/updateStatusMyOrder.php?isAdd=true&my_order_id=$my_order_id&my_order_status=$my_order_status';
                                                                                 await Dio().get(apiUpdateStatusMyOrder).then((value) async {
-                                                                                  Navigator.pop(context);
-                                                                                  await Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(user)));
+                                                                                  List<HistoryMyOrderModel> historyMyOrderModel = [];
+                                                                                  var uuid = Uuid();
+                                                                                  String history_my_order_uid = uuid.v1();
+                                                                                  String InsertHistoryMyOrder = '${MyConstant.domain}/famfam/insertHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid&owner_fname=$owner_fname&my_order_topic=$my_order_topic&my_order_status=$my_order_status';
+                                                                                  await Dio().get(InsertHistoryMyOrder).then((value) async {
+                                                                                    String getHistoryMyOrder = '${MyConstant.domain}/famfam/getHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid';
+                                                                                    await Dio().get(getHistoryMyOrder).then((value) async {
+                                                                                      for (var item in json.decode(value.data)) {
+                                                                                        HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
+                                                                                        setState(() {
+                                                                                          historyMyOrderModel.add(model);
+                                                                                        });
+                                                                                      }
+                                                                                      String history_my_order_id = historyMyOrderModel[0].history_my_order_id;
+                                                                                      String InsertHistoryMyOrderRelation = '${MyConstant.domain}/famfam/insertHistoryMyOrderRelation.php?isAdd=true&history_my_order_id=$history_my_order_id&circle_id=$circle_id&user_id=$user_id';
+                                                                                      await Dio().get(InsertHistoryMyOrderRelation).then((value) async {
+                                                                                        int history_statuss = 1;
+                                                                                        String updateHistoryForUserStatus = '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
+                                                                                        await Dio().get(updateHistoryForUserStatus).then((value) async {
+                                                                                          await Navigator.push(
+                                                                                            context,
+                                                                                            MaterialPageRoute(
+                                                                                              builder: (context) => HomePage(user),
+                                                                                            ),
+                                                                                          );
+                                                                                        });
+                                                                                      });
+                                                                                    });
+                                                                                  });
                                                                                 });
                                                                               }
                                                                             }

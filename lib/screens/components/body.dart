@@ -515,12 +515,44 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                                     Fluttertoast.showToast(msg: "You can't finish other people assignment.", gravity: ToastGravity.BOTTOM);
                                                                                   } else {
                                                                                     //ทำเสร็จไป UPDATE DATABASE
+                                                                                    SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                                                    String? circle_id = preferences.getString('circle_id');
+                                                                                    String? user_id = userModels[0].id;
                                                                                     String? my_order_id = unfinishedModels[index].my_order_id;
+                                                                                    String owner_fname = unfinishedModels[index].owner_fname;
+                                                                                    String my_order_topic = unfinishedModels[index].my_order_topic;
                                                                                     String my_order_status = 'true';
                                                                                     String apiUpdateStatusMyOrder = '${MyConstant.domain}/famfam/updateStatusMyOrder.php?isAdd=true&my_order_id=$my_order_id&my_order_status=$my_order_status';
                                                                                     await Dio().get(apiUpdateStatusMyOrder).then((value) async {
-                                                                                      Navigator.pop(context);
-                                                                                      await Navigator.push(context, MaterialPageRoute(builder: (context) => TodoBody(tabSelected: tabController!.index)));
+                                                                                      List<HistoryMyOrderModel> historyMyOrderModel = [];
+                                                                                      var uuid = Uuid();
+                                                                                      String history_my_order_uid = uuid.v1();
+                                                                                      String InsertHistoryMyOrder = '${MyConstant.domain}/famfam/insertHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid&owner_fname=$owner_fname&my_order_topic=$my_order_topic&my_order_status=$my_order_status';
+                                                                                      await Dio().get(InsertHistoryMyOrder).then((value) async {
+                                                                                        String getHistoryMyOrder = '${MyConstant.domain}/famfam/getHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid';
+                                                                                        await Dio().get(getHistoryMyOrder).then((value) async {
+                                                                                          for (var item in json.decode(value.data)) {
+                                                                                            HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
+                                                                                            setState(() {
+                                                                                              historyMyOrderModel.add(model);
+                                                                                            });
+                                                                                          }
+                                                                                          String history_my_order_id = historyMyOrderModel[0].history_my_order_id;
+                                                                                          String InsertHistoryMyOrderRelation = '${MyConstant.domain}/famfam/insertHistoryMyOrderRelation.php?isAdd=true&history_my_order_id=$history_my_order_id&circle_id=$circle_id&user_id=$user_id';
+                                                                                          await Dio().get(InsertHistoryMyOrderRelation).then((value) async {
+                                                                                            int history_statuss = 1;
+                                                                                            String updateHistoryForUserStatus = '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
+                                                                                            await Dio().get(updateHistoryForUserStatus).then((value) async {
+                                                                                              await Navigator.push(
+                                                                                                context,
+                                                                                                MaterialPageRoute(
+                                                                                                  builder: (context) => TodoBody(tabSelected: tabController!.index),
+                                                                                                ),
+                                                                                              );
+                                                                                            });
+                                                                                          });
+                                                                                        });
+                                                                                      });
                                                                                     });
                                                                                   }
                                                                                 }

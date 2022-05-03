@@ -191,7 +191,9 @@ class _ProfileState extends State<Profile> {
                         backgroundColor: Colors.white,
                         backgroundImage: _imageFile == null
                             ? NetworkImage(profile) as ImageProvider
-                            : FileImage(File(_imageFile!.path)),
+                            : FileImage(
+                                File(_imageFile!.path),
+                              ),
                       ),
                     ),
                   ),
@@ -328,6 +330,7 @@ class _ProfileState extends State<Profile> {
                 child: Row(
                   children: [
                     Container(
+                      width: 160,
                       child: Text(
                         Info,
                         style: TextStyle(

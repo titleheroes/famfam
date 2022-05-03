@@ -216,26 +216,26 @@ class _MenuHomeState extends State<menuHome> {
                     fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(
-              height: 15,
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.pushNamed(context, '/checkin');
-              },
-              leading: Icon(
-                Icons.gps_fixed,
-                color: Colors.white,
-                size: 35,
-              ),
-              title: Text(
-                "Check-In",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
+            // SizedBox(
+            //   height: 15,
+            // ),
+            // ListTile(
+            //   onTap: () {
+            //     Navigator.pushNamed(context, '/checkin');
+            //   },
+            //   leading: Icon(
+            //     Icons.gps_fixed,
+            //     color: Colors.white,
+            //     size: 35,
+            //   ),
+            //   title: Text(
+            //     "Check-In",
+            //     style: TextStyle(
+            //         color: Colors.white,
+            //         fontSize: 25,
+            //         fontWeight: FontWeight.bold),
+            //   ),
+            // ),
             SizedBox(
               height: 15,
             ),
