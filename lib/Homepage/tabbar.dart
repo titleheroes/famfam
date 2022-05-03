@@ -22,6 +22,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/ticktick_model.dart';
+import 'package:famfam/models/count_today_model.dart';
 
 class tabbar extends StatefulWidget {
   const tabbar({Key? key}) : super(key: key);
@@ -152,15 +153,47 @@ class _tabbarState extends State<tabbar> {
     } catch (e) {}
   }
 
+  bool? getCountToday_byword(String? today_i_do_text)  {
+    String? member_id = userModels[0].id;
+
+    String get_count_today =
+        '${MyConstant.domain}/famfam/getCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text ';
+    print('text =====> $today_i_do_text');
+    Dio().get(get_count_today).then((value) {
+
+      if (value.toString() == 'null') {
+        print('result ====> $value');
+        return true ;
+      } else  {
+        print('result2 ====> $value');
+        return false ;
+      }
+
+    });
+
+
+  }
+
   Future<Null> InsertDatatoday({String? list_to_do, String? icon}) async {
 
     String? member_id = userModels[0].id;
+
+    String? today_i_do_text = list_to_do;
+    int count = 1;
+
+
     String APIinsertData =
         '${MyConstant.domain}/famfam/insertDataToday_IDO.php?isAdd=true&user_id=$member_id&list_to_do=$list_to_do&icon=$icon';
     print('###UID ==> ' + '$member_id');
     print('##icon $icon');
+
     
+
+    String insert_count_data =
+        '${MyConstant.domain}/famfam/insertCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text&count=$count';
     
+    String get_count_today =
+        '${MyConstant.domain}/famfam/getCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text ';
     
     
 
@@ -169,8 +202,38 @@ class _tabbarState extends State<tabbar> {
     await Dio().get(APIinsertData).then((value) {
       if (value.toString() == 'true') {
         print('Insert Today I Do Successed');
+
+        
+        Dio().get(get_count_today).then((get_value) {
+
+          if (get_value.toString() == 'null') {
+            //new data
+            print('result ====> $get_value');
+
+            Dio().get(insert_count_data).then((value) {
+              print('inserted count');
+            });
+
+
+          } else  {
+            //have the same data
+
+            print('result2 ====> $get_value');
+            print('aaaaaaaa '+ json.decode(get_value.data).toString() );
+          }
+
+        });
+
+
+        
+
+
       }
+
     });
+
+
+
   }
 
   Future<Null> DeleteDatatoday({String? list_to_do}) async {
