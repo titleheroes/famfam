@@ -4,29 +4,25 @@ class count_today_Model {
 
   final String id;
   final String user_id;
-  final String today_id_do_text;
+  final String? today_i_do_text;
   final String count;
   count_today_Model({
     required this.id,
     required this.user_id,
-    required this.today_id_do_text,
+    required this.today_i_do_text,
     required this.count,
   });
-
-
-
-
 
   count_today_Model copyWith({
     String? id,
     String? user_id,
-    String? today_id_do_text,
+    String? today_i_do_text,
     String? count,
   }) {
     return count_today_Model(
       id: id ?? this.id,
       user_id: user_id ?? this.user_id,
-      today_id_do_text: today_id_do_text ?? this.today_id_do_text,
+      today_i_do_text: today_i_do_text ?? this.today_i_do_text,
       count: count ?? this.count,
     );
   }
@@ -36,7 +32,7 @@ class count_today_Model {
   
     result.addAll({'id': id});
     result.addAll({'user_id': user_id});
-    result.addAll({'today_id_do_text': today_id_do_text});
+    result.addAll({'today_i_do_text': today_i_do_text});
     result.addAll({'count': count});
   
     return result;
@@ -46,7 +42,7 @@ class count_today_Model {
     return count_today_Model(
       id: map['id'] ?? '',
       user_id: map['user_id'] ?? '',
-      today_id_do_text: map['today_id_do_text'] ?? '',
+      today_i_do_text: map['today_i_do_text'] ?? '',
       count: map['count'] ?? '',
     );
   }
@@ -57,7 +53,7 @@ class count_today_Model {
 
   @override
   String toString() {
-    return 'count_today_Model(id: $id, user_id: $user_id, today_id_do_text: $today_id_do_text, count: $count)';
+    return 'count_today_Model(id: $id, user_id: $user_id, today_i_do_text: $today_i_do_text, count: $count)';
   }
 
   @override
@@ -67,7 +63,7 @@ class count_today_Model {
     return other is count_today_Model &&
       other.id == id &&
       other.user_id == user_id &&
-      other.today_id_do_text == today_id_do_text &&
+      other.today_i_do_text == today_i_do_text &&
       other.count == count;
   }
 
@@ -75,7 +71,8 @@ class count_today_Model {
   int get hashCode {
     return id.hashCode ^
       user_id.hashCode ^
-      today_id_do_text.hashCode ^
+      today_i_do_text.hashCode ^
       count.hashCode;
   }
 }
+ 

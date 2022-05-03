@@ -52,6 +52,7 @@ class _tabbarState extends State<tabbar> {
   String numicon = '0';
   int num = 0;
   List<UserModel> userModels = [];
+  List<count_today_Model> count_today_Models = [];
   List<list_today_Model> list_to_do_Models = [];
   bool load = true;
 
@@ -153,29 +154,13 @@ class _tabbarState extends State<tabbar> {
     } catch (e) {}
   }
 
-  bool? getCountToday_byword(String? today_i_do_text)  {
-    String? member_id = userModels[0].id;
-
-    String get_count_today =
-        '${MyConstant.domain}/famfam/getCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text ';
-    print('text =====> $today_i_do_text');
-    Dio().get(get_count_today).then((value) {
-
-      if (value.toString() == 'null') {
-        print('result ====> $value');
-        return true ;
-      } else  {
-        print('result2 ====> $value');
-        return false ;
-      }
-
-    });
-
-
-  }
+  
 
   Future<Null> InsertDatatoday({String? list_to_do, String? icon}) async {
 
+    setState(() {
+      count_today_Models.clear;
+    });
     String? member_id = userModels[0].id;
 
     String? today_i_do_text = list_to_do;
@@ -194,6 +179,8 @@ class _tabbarState extends State<tabbar> {
     
     String get_count_today =
         '${MyConstant.domain}/famfam/getCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text ';
+
+    
     
     
 
@@ -217,9 +204,38 @@ class _tabbarState extends State<tabbar> {
 
           } else  {
             //have the same data
+            
 
+            
             print('result2 ====> $get_value');
-            print('aaaaaaaa '+ json.decode(get_value.data).toString() );
+            for (var item in json.decode(get_value.data)) {
+              count_today_Model model = count_today_Model.fromMap(item);
+              
+              setState(() {
+                
+                count_today_Models.clear();
+                count_today_Models.add(model);
+                
+                
+              });
+
+            }
+
+            print('ssssss '+ count_today_Models[0].toString());
+            int new_count = int.parse(count_today_Models[0].count)+1 ;
+
+            
+                  String update_count_today =
+                  '${MyConstant.domain}/famfam/updateCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text&count=$new_count ';
+
+            Dio().get(update_count_today).then((value) async{
+                    
+            });
+            
+
+            
+
+
           }
 
         });
