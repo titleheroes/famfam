@@ -23,6 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/ticktick_model.dart';
 import 'package:famfam/models/count_today_model.dart';
+import 'package:famfam/models/count_byUser_model.dart';
 
 class tabbar extends StatefulWidget {
   const tabbar({Key? key}) : super(key: key);
@@ -53,7 +54,9 @@ class _tabbarState extends State<tabbar> {
   int num = 0;
   List<UserModel> userModels = [];
   List<count_today_Model> count_today_Models = [];
+  List<count_byUser_Model> count_byUser_Models = [];
   List<list_today_Model> list_to_do_Models = [];
+  bool have_recommend = false;
   bool load = true;
 
 
@@ -91,7 +94,7 @@ class _tabbarState extends State<tabbar> {
   @override
   void initState() {
     super.initState();
-    pullUserSQLID();
+    pullUserSQLID().then((value) => getCountToday_byUser());
   }
 
   void addItemfromStart() {
@@ -128,6 +131,7 @@ class _tabbarState extends State<tabbar> {
     addItemfromStart();
     pullCircle();
     pullMyOrderUnfinished();
+    
     setState(() {
       load = false;
     });
@@ -199,6 +203,7 @@ class _tabbarState extends State<tabbar> {
 
             Dio().get(insert_count_data).then((value) {
               print('inserted count');
+              getCountToday_byUser();
             });
 
 
@@ -220,14 +225,14 @@ class _tabbarState extends State<tabbar> {
               });
 
             }
-
+            
             print('ssssss '+ count_today_Models[0].toString());
             int new_count = int.parse(count_today_Models[0].count)+1 ;
             String update_count_today =
               '${MyConstant.domain}/famfam/updateCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text&count=$new_count ';
 
             Dio().get(update_count_today).then((value) async{
-                    
+              getCountToday_byUser();
             });
             
 
@@ -247,6 +252,48 @@ class _tabbarState extends State<tabbar> {
     });
 
 
+
+  }
+
+  Future<Null> getCountToday_byUser() async{
+    setState(() {
+      have_recommend = false;
+    });
+    String? member_id = userModels[0].id;
+    String get_count_byUser =
+        '${MyConstant.domain}/famfam/getCountTodaybyUser.php?isAdd=true&user_id=$member_id ';
+
+    if (count_byUser_Models.length != 0) {
+      count_byUser_Models.clear();
+    } else {}
+
+    await Dio().get(get_count_byUser).then((value) {
+      //print(value);
+
+      if (value.toString() == 'null') {
+        //No Data
+        setState(() {
+          have_recommend = false;
+        });
+      } else {
+
+        //Have Data
+        for (var item in json.decode(value.data)) {
+          count_byUser_Model model = count_byUser_Model.fromMap(item);
+          print('text ==>> ${model.today_i_do_text} by user_id = ${model.user_id} count = ${model.count}');
+
+          setState(() {
+            if(int.parse(model.count) >= 5){
+              have_recommend = true;
+            }           
+            count_byUser_Models.add(model);
+            
+          });
+
+        }
+
+      }
+    });
 
   }
 
@@ -454,12 +501,119 @@ class _tabbarState extends State<tabbar> {
                           height: 46,
                         )),
                   ],
-                )
+                ),
+                 
               ],
             ),
             SizedBox(
-              height: 30,
+              height: 20,
+              
             ),
+
+            Container(
+                //color: Colors.green,
+                child: (have_recommend)? Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 18),
+                      child: Text('You\'ve done...',style: TextStyle(fontSize: 18),),
+                    ),
+                  ],
+                ):null,
+            ),
+
+
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: (have_recommend)? Container(
+                width: 500,
+                height: 50,
+                child: Expanded(child: Container(
+                  //color: Colors.red,
+
+                  /*
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Text('You\'ve done...', style: TextStyle(fontSize: 18,),),
+                    ),
+                 
+
+                  ],),
+                  */
+
+                  /*
+                  child: GridView.builder(
+                    itemCount: count_byUser_Models.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisExtent: 60),           
+                    //physics: BouncingScrollPhysics(),
+
+                    itemBuilder: (BuildContext context,int index){
+
+                      return
+                      
+                      Container(
+                        width: 50,
+                        margin: EdgeInsets.only(left: 10,right: 10,bottom: 10), 
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                             backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 255, 205, 67)),
+                          ),
+                          onPressed: (){
+                            print('${count_byUser_Models[index].today_i_do_text}');
+                            nameController.text = '${count_byUser_Models[index].today_i_do_text}';
+                          }, 
+                          child: Text('${count_byUser_Models[index].today_i_do_text}' ,style: TextStyle(fontSize: 16),)),
+                      ) ;
+                    },  
+                   ),
+                   */
+
+                  
+                  child: (count_byUser_Models.length != 0 && have_recommend)? ListView.builder(
+                    itemCount: count_byUser_Models.length,
+                    scrollDirection: Axis.horizontal,
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: (BuildContext context,int index){
+                      return 
+                      
+                      (int.parse(count_byUser_Models[index].count) >= 5) ?
+                      Container(
+                        width: 100,
+                        margin: EdgeInsets.only( left: index == 0 ? 10:6,bottom: 10), 
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                            ),
+                            backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 255, 205, 67)),
+                          ),
+                          onPressed: (){
+                            print('${count_byUser_Models[index].today_i_do_text}');
+                            nameController.text = '${count_byUser_Models[index].today_i_do_text}';
+                          }, 
+                          child: Text('${count_byUser_Models[index].today_i_do_text}' ,
+                          overflow: TextOverflow.ellipsis,style: 
+                          TextStyle(fontSize: 16,color: Colors.black),)),
+                      ):Container() ;
+                    },
+                  ) :null
+                  
+
+
+
+                )),
+              ):null,
+            ),
+            
+
             Center(
                 child: Row(
               children: [
@@ -491,7 +645,7 @@ class _tabbarState extends State<tabbar> {
                   width: 10,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 2),
+                  padding: EdgeInsets.only(right: 2,left: 18),
                   child: TextButton(
                     style: TextButton.styleFrom(
                       minimumSize: Size(150, 40),
