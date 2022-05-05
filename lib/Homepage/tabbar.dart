@@ -583,7 +583,7 @@ class _tabbarState extends State<tabbar> {
                       
                       (int.parse(count_byUser_Models[index].count) >= 5) ?
                       Container(
-                        width: 100,
+                        //width: 100,
                         margin: EdgeInsets.only( left: index == 0 ? 10:6,bottom: 10), 
                         child: ElevatedButton(
                           style: ButtonStyle(
@@ -601,7 +601,7 @@ class _tabbarState extends State<tabbar> {
                           }, 
                           child: Text('${count_byUser_Models[index].today_i_do_text}' ,
                           overflow: TextOverflow.ellipsis,style: 
-                          TextStyle(fontSize: 16,color: Colors.black),)),
+                          TextStyle(fontSize: 16,color: Colors.white),)),
                       ):Container() ;
                     },
                   ) :null
