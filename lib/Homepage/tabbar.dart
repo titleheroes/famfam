@@ -522,7 +522,7 @@ class _tabbarState extends State<tabbar> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 18),
-                        child: Text('You\'ve done...',style: TextStyle(fontSize: 18),),
+                        child: Text('You\'ve done frequently',style: TextStyle(fontSize: 18),),
                       ),
                     ],
                   ):null,
