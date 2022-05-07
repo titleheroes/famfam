@@ -21,7 +21,7 @@ if (isset($_GET)) {
 		$user_id = $_GET['user_id'];
         $today_i_do_text = $_GET['today_i_do_text'];
 
-		$result = mysqli_query($link, "SELECT * FROM `count_today_i_do` WHERE user_id = $user_id  ");
+		$result = mysqli_query($link, "SELECT * FROM `count_today_i_do` WHERE user_id = $user_id ORDER by count DESC ");
 
 		if ($result) {
 
