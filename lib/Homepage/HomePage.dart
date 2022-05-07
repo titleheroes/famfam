@@ -12,6 +12,7 @@ import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/widgets/circle_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:famfam/services/auth.dart';
+import 'package:famfam/models/calendar_model.dart';
 import 'package:flutter/material.dart';
 // import 'package:famfam/Homepage/eachMenu.dart';
 
@@ -30,6 +31,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool load = true;
+  List<CalendarModel> calendarModels = [];
   List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
   List<HistoryForUserModel> historyForUserModel = [];

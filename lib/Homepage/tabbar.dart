@@ -51,7 +51,7 @@ class _tabbarState extends State<tabbar> {
   final List<String> list_todo = <String>[];
   final List<String> icon = <String>[];
 
-  TextEditingController nameController = TextEditingController();
+  TextEditingController nameController = TextEditingController();micon = '';
   String numicon = '0';
   int num = 0;
   List<UserModel> userModels = [];
@@ -337,7 +337,6 @@ class _tabbarState extends State<tabbar> {
                     filled: true,
                   ),
                 )),
-
             actions: <Widget>[
               Column(
                 children: [
@@ -1620,9 +1619,6 @@ class _tabbarState extends State<tabbar> {
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
                                               ),
                                             ],
                                           ),
