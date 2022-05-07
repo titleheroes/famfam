@@ -19,11 +19,11 @@ if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
 				
 	$user_id = $_GET['user_id'];
-		$list_to_do = $_GET['list_to_do'];
+	$list_to_do = $_GET['list_to_do'];
+	$icon = $_GET['icon'];	
 		
 		
-		
-		$sql = "INSERT INTO `today_i_do`(`id`, `user_id`, `list_to_do`) VALUES (NULL,'$user_id','$list_to_do')";
+		$sql = "INSERT INTO `today_i_do`(`id`, `user_id`, `list_to_do`, `icon`) VALUES (NULL,'$user_id','$list_to_do','$icon')";
 
 		$result = mysqli_query($link, $sql);
 

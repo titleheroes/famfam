@@ -85,42 +85,59 @@ class _CreateAndJoinCircleState extends State<CreateAndJoinCircle> {
                     children: [
                       Container(
                         padding: EdgeInsets.only(left: 15),
-                        child: Text('Create Circle',
-                            style: TextStyle(color: Colors.black)),
+                        child: Text(
+                          'Create Circle',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Container(
-                          padding:
-                              EdgeInsets.only(top: 10, left: 25, right: 25),
-                          child: TextField(
-                              controller: CreateCircleController,
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.grey.shade500),
-                                  ),
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                  border: OutlineInputBorder(),
-                                  hintText: 'Type your Circle name',
-                                  hintStyle:
-                                      TextStyle(color: Colors.grey[500])))),
-                      SizedBox(
-                        height: 15,
+                        padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+                        child: TextField(
+                          controller: CreateCircleController,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade500),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            border: OutlineInputBorder(),
+                            hintText: 'Type your Circle name',
+                            hintStyle: TextStyle(color: Colors.grey[500]),
+                          ),
+                        ),
                       ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      // Create Circle Button
                       Center(
                         child: SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
+                          width: MediaQuery.of(context).size.width - 120,
                           height: 50,
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: Color(0xFFFFC34A), elevation: 0),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color(0xFFFFC34A)),
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(90.0),
+                                ),
+                              ),
+                            ),
                             child: Text(
                               'Create Circle',
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
                             onPressed: () async {
                               if (CreateCircleController.text != null &&
@@ -337,7 +354,7 @@ class _CreateAndJoinCircleState extends State<CreateAndJoinCircle> {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
                       Center(
                         child: Divider(
@@ -353,7 +370,13 @@ class _CreateAndJoinCircleState extends State<CreateAndJoinCircle> {
                       ),
                       Container(
                         padding: EdgeInsets.only(left: 15),
-                        child: Text('Join Circle'),
+                        child: Text(
+                          'Join Circle',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                       SizedBox(
                         height: 10,
@@ -374,22 +397,30 @@ class _CreateAndJoinCircleState extends State<CreateAndJoinCircle> {
                                   hintStyle:
                                       TextStyle(color: Colors.grey[500])))),
                       SizedBox(
-                        height: 15,
+                        height: 20,
                       ),
+                      // Join Circle Button
                       Center(
                         child: SizedBox(
+                          width: MediaQuery.of(context).size.width - 120,
                           height: 50,
-                          width: MediaQuery.of(context).size.width / 2,
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: Color(0xFFFFC34A),
-                                // padding:
-                                //     EdgeInsets.fromLTRB(20, 20, 0, 10),
-                                elevation: 0),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color(0xFFFFC34A)),
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(90.0),
+                                ),
+                              ),
+                            ),
                             child: Text(
                               'Join Circle',
                               style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
                             onPressed: () async {
                               List<CircleModel> circleModels = [];
@@ -442,7 +473,7 @@ class _CreateAndJoinCircleState extends State<CreateAndJoinCircle> {
                         ),
                       ),
                       SizedBox(
-                        height: 15,
+                        height: 20,
                       ),
                     ]),
               ),

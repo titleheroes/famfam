@@ -20,7 +20,7 @@ if (isset($_GET)) {
 				
 		$id = $_GET['user_id'];
 
-		$result = mysqli_query($link, "SELECT `list_to_do` FROM `today_i_do` WHERE user_id = $id");
+		$result = mysqli_query($link, "SELECT * FROM `today_i_do` WHERE user_id = $id");
 
 		if ($result) {
 

@@ -7,6 +7,7 @@ import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/circleScreen/components/HeaderCircle.dart';
 import 'package:famfam/circleScreen/createCricle/createciecleScreen.dart';
 import 'package:famfam/models/circle_model.dart';
+import 'package:famfam/models/user_model.dart';
 import 'package:famfam/services/my_constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,12 +32,29 @@ class Random_id extends StatefulWidget {
 }
 
 class _Random_idState extends State<Random_id> {
+  List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
 
   @override
   void initState() {
     super.initState();
+    pullUserSQLID();
     pullCircle();
+  }
+
+  Future<Null> pullUserSQLID() async {
+    final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
+    String uid = getUID;
+    String pullUser =
+        '${MyConstant.domain}/famfam/getUserWhereUID.php?isAdd=true&uid=$uid';
+    await Dio().get(pullUser).then((value) async {
+      for (var item in json.decode(value.data)) {
+        UserModel model = UserModel.fromMap(item);
+        setState(() {
+          userModels.add(model);
+        });
+      }
+    });
   }
 
   Future<Null> pullCircle() async {
@@ -244,19 +262,32 @@ class _Random_idState extends State<Random_id> {
                                                       ),
                                                     ),
                                                   ),
-                                                  onPressed: () {
-                                                    Navigator
-                                                        .pushAndRemoveUntil(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                              builder:
-                                                                  (context) =>
-                                                                      HomePage(
-                                                                          user),
-                                                            ),
-                                                            (Route<dynamic>
-                                                                    route) =>
-                                                                false);
+                                                  onPressed: () async {
+                                                    String? user_id =
+                                                        userModels[0].id;
+                                                    String? circle_id =
+                                                        circleModels[0]
+                                                            .circle_id;
+                                                    String
+                                                        insertHistoryTemplate =
+                                                        "${MyConstant.domain}/famfam/insertHistory_for_User.php?isAdd=true&user_id=$user_id&circle_id=$circle_id";
+                                                    await Dio()
+                                                        .get(
+                                                            insertHistoryTemplate)
+                                                        .then((value) {
+                                                      Navigator
+                                                          .pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        HomePage(
+                                                                            user),
+                                                              ),
+                                                              (Route<dynamic>
+                                                                      route) =>
+                                                                  false);
+                                                    });
                                                   },
                                                   child: Text(
                                                     "Next",
