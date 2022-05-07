@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/models/history_my_order_model.dart';
 import 'package:famfam/models/my_order_model.dart';
 import 'package:famfam/screens/components/body.dart';
 import 'package:famfam/models/list_today_ido.dart';
@@ -22,6 +23,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/ticktick_model.dart';
+import 'package:uuid/uuid.dart';
 import 'package:famfam/models/count_today_model.dart';
 import 'package:famfam/models/count_byUser_model.dart';
 
@@ -1245,13 +1247,37 @@ class _tabbarState extends State<tabbar> {
                                               width: 40,
                                               height: 40,
                                               decoration: BoxDecoration(
-                                                  color: Color(0xfffF9EE6D),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          100)),
-                                              child: Icon(
-                                                Icons.info_outline_rounded,
-                                                size: 30,
+                                                color: Color(0xfffF9EE6D),
+                                                borderRadius:
+                                                    BorderRadius.circular(100),
+                                              ),
+                                              child: ClipOval(
+                                                child: Material(
+                                                  color: Color(
+                                                      0xfffF9EE6D), // Button color
+                                                  child: InkWell(
+                                                    splashColor: Colors.white
+                                                        .withOpacity(
+                                                            0.1), // Splash color
+                                                    onTap: () {
+                                                      infoDialog(
+                                                          context,
+                                                          'Circle List ?',
+                                                          'List of your jobs\nand assign job to others',
+                                                          0.2);
+                                                    },
+                                                    child: SizedBox(
+                                                      width: 56,
+                                                      height: 56,
+                                                      child: Icon(
+                                                        Icons
+                                                            .info_outline_rounded,
+                                                        color: Colors.black,
+                                                        size: 30,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                             SizedBox(
@@ -1402,12 +1428,44 @@ class _tabbarState extends State<tabbar> {
                                                                               } else {
                                                                                 //ทำเสร็จไป UPDATE DATABASE
                                                                                 var user = FirebaseAuth.instance.currentUser;
+                                                                                SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                                                String? circle_id = preferences.getString('circle_id');
+                                                                                String? user_id = userModels[0].id;
                                                                                 String? my_order_id = unfinishedModels[index].my_order_id;
+                                                                                String owner_fname = unfinishedModels[index].owner_fname;
+                                                                                String my_order_topic = unfinishedModels[index].my_order_topic;
                                                                                 String my_order_status = 'true';
                                                                                 String apiUpdateStatusMyOrder = '${MyConstant.domain}/famfam/updateStatusMyOrder.php?isAdd=true&my_order_id=$my_order_id&my_order_status=$my_order_status';
                                                                                 await Dio().get(apiUpdateStatusMyOrder).then((value) async {
-                                                                                  Navigator.pop(context);
-                                                                                  await Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(user)));
+                                                                                  List<HistoryMyOrderModel> historyMyOrderModel = [];
+                                                                                  var uuid = Uuid();
+                                                                                  String history_my_order_uid = uuid.v1();
+                                                                                  String InsertHistoryMyOrder = '${MyConstant.domain}/famfam/insertHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid&owner_fname=$owner_fname&my_order_topic=$my_order_topic&my_order_status=$my_order_status';
+                                                                                  await Dio().get(InsertHistoryMyOrder).then((value) async {
+                                                                                    String getHistoryMyOrder = '${MyConstant.domain}/famfam/getHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid';
+                                                                                    await Dio().get(getHistoryMyOrder).then((value) async {
+                                                                                      for (var item in json.decode(value.data)) {
+                                                                                        HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
+                                                                                        setState(() {
+                                                                                          historyMyOrderModel.add(model);
+                                                                                        });
+                                                                                      }
+                                                                                      String history_my_order_id = historyMyOrderModel[0].history_my_order_id;
+                                                                                      String InsertHistoryMyOrderRelation = '${MyConstant.domain}/famfam/insertHistoryMyOrderRelation.php?isAdd=true&history_my_order_id=$history_my_order_id&circle_id=$circle_id&user_id=$user_id';
+                                                                                      await Dio().get(InsertHistoryMyOrderRelation).then((value) async {
+                                                                                        int history_statuss = 1;
+                                                                                        String updateHistoryForUserStatus = '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
+                                                                                        await Dio().get(updateHistoryForUserStatus).then((value) async {
+                                                                                          await Navigator.push(
+                                                                                            context,
+                                                                                            MaterialPageRoute(
+                                                                                              builder: (context) => HomePage(user),
+                                                                                            ),
+                                                                                          );
+                                                                                        });
+                                                                                      });
+                                                                                    });
+                                                                                  });
                                                                                 });
                                                                               }
                                                                             }
@@ -1454,6 +1512,8 @@ class _tabbarState extends State<tabbar> {
                                                                         () {
                                                                       descDialog(
                                                                           context,
+                                                                          unfinishedModels[index]
+                                                                              .my_order_id!,
                                                                           unfinishedModels[index]
                                                                               .my_order_topic,
                                                                           unfinishedModels[index]
@@ -1592,17 +1652,66 @@ class _tabbarState extends State<tabbar> {
 
                           //page3
                           Container(
-                              margin: EdgeInsets.only(right: 0),
                               child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        265, 20, 00, 0),
-                                    child: Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        height: 40,
-                                        child: ElevatedButton(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(215, 20, 0, 0),
+                                child: Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    height: 40,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          height: 40,
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xfffF9EE6D),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100),
+                                                ),
+                                                child: ClipOval(
+                                                  child: Material(
+                                                    color: Color(
+                                                        0xfffF9EE6D), // Button color
+                                                    child: InkWell(
+                                                      splashColor: Colors.white
+                                                          .withOpacity(
+                                                              0.1), // Splash color
+                                                      onTap: () {
+                                                        infoDialog(
+                                                            context,
+                                                            'TickTick ?',
+                                                            'List of thing\nthat you can make and tick\nwhatever you want.',
+                                                            0.24);
+                                                      },
+                                                      child: SizedBox(
+                                                        width: 56,
+                                                        height: 56,
+                                                        child: Icon(
+                                                          Icons
+                                                              .info_outline_rounded,
+                                                          color: Colors.black,
+                                                          size: 30,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        ElevatedButton(
                                           style: ButtonStyle(
                                             backgroundColor:
                                                 MaterialStateProperty.all<
@@ -1642,9 +1751,37 @@ class _tabbarState extends State<tabbar> {
                                             ],
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ),
+                                ),
+                              ),
+                              Container(
+                                  child: (list_topic.isEmpty)
+                                      ? Column(children: [
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      8)),
+
+                                          Container(
+                                            child: SvgPicture.asset(
+                                              "assets/icons/leaf-fall.svg",
+                                              height: 85,
+                                              color:
+                                                  Colors.black.withOpacity(0.4),
+                                            ),
+                                          ),
+                                          Text(
+                                            "You don't have any list right now",
+                                            style: TextStyle(
+                                                color: Colors.grey[500],
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        ])
+
                                   Container(
                                       child: (list_topic.isEmpty)
                                           ? Column(children: [
@@ -1707,32 +1844,39 @@ class _tabbarState extends State<tabbar> {
                                                                 CrossAxisAlignment
                                                                     .start,
                                                             children: [
-                                                              Row(
-                                                                children: [
-                                                                  Container(
-                                                                    margin: EdgeInsets.only(
+                                                              Container(
+                                                                margin: EdgeInsets
+                                                                    .only(
                                                                         left:
                                                                             15,
                                                                         top:
                                                                             15),
-                                                                    child: Text(
-                                                                        '${list_topic[index].topic}',
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                22,
-                                                                            fontWeight:
-                                                                                FontWeight.bold)),
-                                                                  ),
-                                                                  Spacer(),
-                                                                  Container(
-                                                                    child: IconButton(
-                                                                        iconSize: 22,
-                                                                        icon: Icon(
+                                                                child: Text(
+                                                                    '${list_topic[index].topic}',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            22,
+                                                                        fontWeight:
+                                                                            FontWeight.bold)),
+                                                              ),
+                                                              Spacer(),
+                                                              Container(
+                                                                child:
+                                                                    IconButton(
+                                                                        iconSize:
+                                                                            22,
+                                                                        icon:
+                                                                            Icon(
                                                                           Icons
                                                                               .favorite,
                                                                         ),
-                                                                        color: list_topic[index].fav ? Colors.red : Colors.white,
-                                                                        onPressed: () async {
+                                                                        color: list_topic[index].fav
+                                                                            ? Colors
+                                                                                .red
+                                                                            : Colors
+                                                                                .white,
+                                                                        onPressed:
+                                                                            () async {
                                                                           // bool
                                                                           //     isChecked =
                                                                           //     false;
@@ -1869,3 +2013,111 @@ class _tabbarState extends State<tabbar> {
     }
   }
 }
+
+Future infoDialog(
+        BuildContext context, String title, String desc, double size) =>
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Center(
+              child: Material(
+                type: MaterialType.transparency,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Color(0xfffF5EC83),
+                  ),
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * size,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Text(
+                                title,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 0,
+                              top: -6,
+                              child: InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: CircleAvatar(
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 30,
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height:
+                            MediaQuery.of(context).size.height * (size - 0.1),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20.0),
+                            topRight: const Radius.circular(20.0),
+                            bottomLeft: const Radius.circular(20.0),
+                            bottomRight: const Radius.circular(20.0),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 15, left: 15, right: 15, bottom: 15),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Center(
+                              child: Text(
+                                desc,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.066,
+                            width: MediaQuery.of(context).size.width * 0.864,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });

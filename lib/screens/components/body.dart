@@ -5,9 +5,14 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:famfam/models/history_for_user_model.dart';
+import 'package:famfam/models/history_my_order_model.dart';
 import 'package:famfam/models/my_order_model.dart';
 import 'package:famfam/models/random_model.dart';
 import 'package:famfam/models/user_model.dart';
+import 'package:famfam/models/vote_model.dart';
+import 'package:famfam/models/vote_participant_model.dart';
+import 'package:famfam/models/voteoption_model.dart';
 import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/screens/ticktik_screen.dart';
 import 'package:famfam/widgets/circle_loader.dart';
@@ -15,6 +20,7 @@ import 'package:famfam/widgets/circle_loader.dart';
 import 'package:favorite_button/favorite_button.dart';
 import 'package:famfam/models/ticktick_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/components/text_field_container.dart';
 import 'package:famfam/constants.dart';
@@ -242,6 +248,54 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
     });
   }
 
+  bool _isShown = true;
+
+  void _delete(BuildContext context, String topic_id) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this list?'),
+            actions: [
+              // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () async {
+                  String? my_order_id = topic_id;
+                  String deleteVote =
+                      '${MyConstant.domain}/famfam/deleteMyOrderWhereID.php?isAdd=true&my_order_id=$my_order_id';
+
+                  await Dio().get(deleteVote).then((value) async {
+                    Navigator.pop(context);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            TodoBody(tabSelected: tabController!.index),
+                      ),
+                    );
+                  });
+                },
+                child: const Text('Confirm'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              )
+            ],
+          );
+        });
+  }
+
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
 
@@ -293,7 +347,13 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                           "assets/icons/information-_1_.svg",
                           height: 30,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          infoDialog(
+                              context,
+                              'Circle List ?',
+                              'List of your jobs\nand assign job to others',
+                              0.2);
+                        },
                       ),
                     ],
                   ),
@@ -397,7 +457,10 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                     child: Column(
                                                       children: [
                                                         Container(
-                                                          height: 80,
+                                                          constraints:
+                                                              const BoxConstraints(
+                                                                  minHeight:
+                                                                      80),
                                                           margin:
                                                               EdgeInsets.only(
                                                                   bottom: 6),
@@ -458,12 +521,44 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                                     Fluttertoast.showToast(msg: "You can't finish other people assignment.", gravity: ToastGravity.BOTTOM);
                                                                                   } else {
                                                                                     //ทำเสร็จไป UPDATE DATABASE
+                                                                                    SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                                                    String? circle_id = preferences.getString('circle_id');
+                                                                                    String? user_id = userModels[0].id;
                                                                                     String? my_order_id = unfinishedModels[index].my_order_id;
+                                                                                    String owner_fname = unfinishedModels[index].owner_fname;
+                                                                                    String my_order_topic = unfinishedModels[index].my_order_topic;
                                                                                     String my_order_status = 'true';
                                                                                     String apiUpdateStatusMyOrder = '${MyConstant.domain}/famfam/updateStatusMyOrder.php?isAdd=true&my_order_id=$my_order_id&my_order_status=$my_order_status';
                                                                                     await Dio().get(apiUpdateStatusMyOrder).then((value) async {
-                                                                                      Navigator.pop(context);
-                                                                                      await Navigator.push(context, MaterialPageRoute(builder: (context) => TodoBody(tabSelected: tabController!.index)));
+                                                                                      List<HistoryMyOrderModel> historyMyOrderModel = [];
+                                                                                      var uuid = Uuid();
+                                                                                      String history_my_order_uid = uuid.v1();
+                                                                                      String InsertHistoryMyOrder = '${MyConstant.domain}/famfam/insertHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid&owner_fname=$owner_fname&my_order_topic=$my_order_topic&my_order_status=$my_order_status';
+                                                                                      await Dio().get(InsertHistoryMyOrder).then((value) async {
+                                                                                        String getHistoryMyOrder = '${MyConstant.domain}/famfam/getHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid';
+                                                                                        await Dio().get(getHistoryMyOrder).then((value) async {
+                                                                                          for (var item in json.decode(value.data)) {
+                                                                                            HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
+                                                                                            setState(() {
+                                                                                              historyMyOrderModel.add(model);
+                                                                                            });
+                                                                                          }
+                                                                                          String history_my_order_id = historyMyOrderModel[0].history_my_order_id;
+                                                                                          String InsertHistoryMyOrderRelation = '${MyConstant.domain}/famfam/insertHistoryMyOrderRelation.php?isAdd=true&history_my_order_id=$history_my_order_id&circle_id=$circle_id&user_id=$user_id';
+                                                                                          await Dio().get(InsertHistoryMyOrderRelation).then((value) async {
+                                                                                            int history_statuss = 1;
+                                                                                            String updateHistoryForUserStatus = '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
+                                                                                            await Dio().get(updateHistoryForUserStatus).then((value) async {
+                                                                                              await Navigator.push(
+                                                                                                context,
+                                                                                                MaterialPageRoute(
+                                                                                                  builder: (context) => TodoBody(tabSelected: tabController!.index),
+                                                                                                ),
+                                                                                              );
+                                                                                            });
+                                                                                          });
+                                                                                        });
+                                                                                      });
                                                                                     });
                                                                                   }
                                                                                 }
@@ -512,6 +607,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                             () {
                                                                           descDialog(
                                                                               context,
+                                                                              unfinishedModels[index].my_order_id!,
                                                                               unfinishedModels[index].my_order_topic,
                                                                               unfinishedModels[index].my_order_desc);
                                                                         },
@@ -623,7 +719,10 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                     child: Column(
                                                       children: [
                                                         Container(
-                                                          height: 80,
+                                                          constraints:
+                                                              const BoxConstraints(
+                                                                  minHeight:
+                                                                      80),
                                                           margin:
                                                               EdgeInsets.only(
                                                                   bottom: 6),
@@ -665,9 +764,21 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                       child:
                                                                           Stack(
                                                                         children: [
-                                                                          RoundCheckBox(
-                                                                              isChecked: true,
-                                                                              onTap: null),
+                                                                          CircleAvatar(
+                                                                            radius:
+                                                                                20,
+                                                                            backgroundColor: Color.fromARGB(
+                                                                                255,
+                                                                                235,
+                                                                                113,
+                                                                                104),
+                                                                            child:
+                                                                                CircleAvatar(
+                                                                              radius: 15,
+                                                                              backgroundColor: Color.fromARGB(255, 235, 113, 104),
+                                                                              backgroundImage: AssetImage('assets/images/trash.png'),
+                                                                            ),
+                                                                          ),
                                                                           FlatButton(
                                                                             shape: RoundedRectangleBorder(
                                                                                 side: BorderSide(
@@ -678,7 +789,9 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                                 () {
                                                                               {
                                                                                 // ติ๊กถูก
-                                                                                Fluttertoast.showToast(msg: "You have finish this assignment already.", gravity: ToastGravity.BOTTOM);
+                                                                                print('click on delete ticktik ${finishedModels[index].my_order_topic}');
+                                                                                _isShown == true ? _delete(context, finishedModels[index].my_order_id!) : null;
+                                                                                // Fluttertoast.showToast(msg: "You have finish this assignment already.", gravity: ToastGravity.BOTTOM);
                                                                               }
                                                                             },
                                                                             child:
@@ -725,6 +838,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                           () {
                                                                         descDialog(
                                                                             context,
+                                                                            finishedModels[index].my_order_id!,
                                                                             finishedModels[index].my_order_topic,
                                                                             finishedModels[index].my_order_desc);
                                                                       },
@@ -788,6 +902,8 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                           ),
                                   ),
                                   Container(
+                                    constraints:
+                                        const BoxConstraints(minHeight: 80),
                                     child: myOrderModels.isEmpty
                                         ? Padding(
                                             padding: const EdgeInsets.only(
@@ -838,7 +954,10 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                     child: Column(
                                                       children: [
                                                         Container(
-                                                          height: 80,
+                                                          constraints:
+                                                              const BoxConstraints(
+                                                                  minHeight:
+                                                                      80),
                                                           margin:
                                                               EdgeInsets.only(
                                                                   bottom: 6),
@@ -936,12 +1055,44 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                                       Fluttertoast.showToast(msg: "You can't finish other people assignment.", gravity: ToastGravity.BOTTOM);
                                                                                     } else {
                                                                                       //ทำเสร็จไป UPDATE DATABASE
+                                                                                      SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                                                      String? circle_id = preferences.getString('circle_id');
+                                                                                      String? user_id = userModels[0].id;
                                                                                       String? my_order_id = myOrderModels[index].my_order_id;
+                                                                                      String owner_fname = myOrderModels[index].owner_fname;
+                                                                                      String my_order_topic = myOrderModels[index].my_order_topic;
                                                                                       String my_order_status = 'true';
                                                                                       String apiUpdateStatusMyOrder = '${MyConstant.domain}/famfam/updateStatusMyOrder.php?isAdd=true&my_order_id=$my_order_id&my_order_status=$my_order_status';
                                                                                       await Dio().get(apiUpdateStatusMyOrder).then((value) async {
-                                                                                        Navigator.pop(context);
-                                                                                        await Navigator.push(context, MaterialPageRoute(builder: (context) => TodoBody(tabSelected: tabController!.index)));
+                                                                                        List<HistoryMyOrderModel> historyMyOrderModel = [];
+                                                                                        var uuid = Uuid();
+                                                                                        String history_my_order_uid = uuid.v1();
+                                                                                        String InsertHistoryMyOrder = '${MyConstant.domain}/famfam/insertHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid&owner_fname=$owner_fname&my_order_topic=$my_order_topic&my_order_status=$my_order_status';
+                                                                                        await Dio().get(InsertHistoryMyOrder).then((value) async {
+                                                                                          String getHistoryMyOrder = '${MyConstant.domain}/famfam/getHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid';
+                                                                                          await Dio().get(getHistoryMyOrder).then((value) async {
+                                                                                            for (var item in json.decode(value.data)) {
+                                                                                              HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
+                                                                                              setState(() {
+                                                                                                historyMyOrderModel.add(model);
+                                                                                              });
+                                                                                            }
+                                                                                            String history_my_order_id = historyMyOrderModel[0].history_my_order_id;
+                                                                                            String InsertHistoryMyOrderRelation = '${MyConstant.domain}/famfam/insertHistoryMyOrderRelation.php?isAdd=true&history_my_order_id=$history_my_order_id&circle_id=$circle_id&user_id=$user_id';
+                                                                                            await Dio().get(InsertHistoryMyOrderRelation).then((value) async {
+                                                                                              int history_statuss = 1;
+                                                                                              String updateHistoryForUserStatus = '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
+                                                                                              await Dio().get(updateHistoryForUserStatus).then((value) async {
+                                                                                                await Navigator.push(
+                                                                                                  context,
+                                                                                                  MaterialPageRoute(
+                                                                                                    builder: (context) => TodoBody(tabSelected: tabController!.index),
+                                                                                                  ),
+                                                                                                );
+                                                                                              });
+                                                                                            });
+                                                                                          });
+                                                                                        });
                                                                                       });
                                                                                     }
                                                                                   }
@@ -989,10 +1140,12 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                             0,
                                                                         onPressed:
                                                                             () {
-                                                                          descDialog(
+                                                                          descDialogMyOrder(
                                                                               context,
+                                                                              myOrderModels[index].my_order_id!,
                                                                               myOrderModels[index].my_order_topic,
-                                                                              myOrderModels[index].my_order_desc);
+                                                                              myOrderModels[index].my_order_desc,
+                                                                              tabController!);
                                                                         },
                                                                         child:
                                                                             Align(
@@ -1077,7 +1230,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
       return Text(
         "Me to Myself",
         style: TextStyle(
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.w700,
           fontSize: 15,
         ),
       );
@@ -1086,7 +1239,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
       return Text(
         "Me to ${model[index].employee_fname}",
         style: TextStyle(
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.w700,
           fontSize: 15,
         ),
       );
@@ -1094,7 +1247,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
       return Text(
         "${model[index].owner_fname} to Myself",
         style: TextStyle(
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.w700,
           fontSize: 15,
         ),
       );
@@ -1437,6 +1590,9 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                     ToastGravity
                                                                         .BOTTOM);
                                                           } else {
+                                                            List<HistoryMyOrderModel>
+                                                                historyMyOrderModel =
+                                                                [];
                                                             SharedPreferences
                                                                 preferences =
                                                                 await SharedPreferences
@@ -1487,14 +1643,83 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                     apiInsertMyOrder)
                                                                 .then(
                                                                     (value) async {
-                                                              Navigator.pop(
-                                                                  context);
-                                                              await Navigator.pushReplacement(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder: (context) =>
-                                                                          TodoBody(
-                                                                              tabSelected: tabSelected)));
+                                                              var uuid = Uuid();
+                                                              String
+                                                                  history_my_order_uid =
+                                                                  uuid.v1();
+                                                              String
+                                                                  InsertHistoryMyOrder =
+                                                                  '${MyConstant.domain}/famfam/insertHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid&owner_fname=$owner_fname&my_order_topic=$my_order_topic&my_order_status=$my_order_status';
+                                                              await Dio()
+                                                                  .get(
+                                                                      InsertHistoryMyOrder)
+                                                                  .then(
+                                                                      (value) async {
+                                                                String
+                                                                    getHistoryMyOrder =
+                                                                    '${MyConstant.domain}/famfam/getHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid';
+                                                                await Dio()
+                                                                    .get(
+                                                                        getHistoryMyOrder)
+                                                                    .then(
+                                                                        (value) async {
+                                                                  for (var item
+                                                                      in json.decode(
+                                                                          value
+                                                                              .data)) {
+                                                                    HistoryMyOrderModel
+                                                                        model =
+                                                                        HistoryMyOrderModel.fromMap(
+                                                                            item);
+                                                                    setState(
+                                                                        () {
+                                                                      historyMyOrderModel
+                                                                          .add(
+                                                                              model);
+                                                                    });
+                                                                  }
+                                                                  print(
+                                                                      historyMyOrderModel);
+                                                                  String
+                                                                      history_my_order_id =
+                                                                      historyMyOrderModel[
+                                                                              0]
+                                                                          .history_my_order_id;
+                                                                  String?
+                                                                      user_id =
+                                                                      userModels[
+                                                                              0]
+                                                                          .id;
+                                                                  String
+                                                                      InsertHistoryMyOrderRelation =
+                                                                      '${MyConstant.domain}/famfam/insertHistoryMyOrderRelation.php?isAdd=true&history_my_order_id=$history_my_order_id&circle_id=$circle_id&user_id=$user_id';
+                                                                  await Dio()
+                                                                      .get(
+                                                                          InsertHistoryMyOrderRelation)
+                                                                      .then(
+                                                                          (value) async {
+                                                                    int history_statuss =
+                                                                        1;
+                                                                    String
+                                                                        updateHistoryForUserStatus =
+                                                                        '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
+                                                                    await Dio()
+                                                                        .get(
+                                                                            updateHistoryForUserStatus)
+                                                                        .then(
+                                                                            (value) async {
+                                                                      await Navigator
+                                                                          .pushReplacement(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              TodoBody(tabSelected: tabSelected),
+                                                                        ),
+                                                                      );
+                                                                    });
+                                                                  });
+                                                                });
+                                                              });
                                                             });
                                                           }
                                                         },
@@ -1804,7 +2029,6 @@ class _TickBodyState extends State<TickBody> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
     return load
         ? CircleLoader()
         : LoaderOverlay(
@@ -2512,12 +2736,56 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
 
   final List<String> topicPoll = <String>[];
   List<randomModel> topicRandom = [];
+  List<VoteModel> voteModels = [];
   var user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
     super.initState();
-    pullAllRandom();
+    pullUserSQLID().then((value) {
+      pullAllVote();
+      pullAllRandom();
+    });
+  }
+
+  Future<Null> pullUserSQLID() async {
+    final String getUID = FirebaseAuth.instance.currentUser!.uid.toString();
+    String uid = getUID;
+    String pullUser =
+        '${MyConstant.domain}/famfam/getUserWhereUID.php?isAdd=true&uid=$uid';
+    await Dio().get(pullUser).then((value) async {
+      if (value.toString() == null ||
+          value.toString() == 'null' ||
+          value.toString() == '') {
+        FirebaseAuth.instance.signOut();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.clear();
+      } else {
+        for (var item in json.decode(value.data)) {
+          UserModel model = UserModel.fromMap(item);
+          setState(() {
+            userModels.add(model);
+          });
+        }
+      }
+    });
+  }
+
+  Future<Null> pullAllVote() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? circle_id = preferences.getString('circle_id');
+    String pullAllVote =
+        '${MyConstant.domain}/famfam/getVoteAll.php?isAdd=true&circle_id=$circle_id';
+    try {
+      await Dio().get(pullAllVote).then((value) async {
+        for (var item in json.decode(value.data)) {
+          VoteModel model = VoteModel.fromMap(item);
+          setState(() {
+            voteModels.add(model);
+          });
+        }
+      });
+    } catch (e) {}
   }
 
   Future<Null> pullAllRandom() async {
@@ -2535,6 +2803,93 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
         }
       });
     } catch (e) {}
+  }
+
+  bool _isShown = true;
+
+  void _deleteVote(BuildContext context, String topic_id) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this topic?'),
+            actions: [
+              // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () async {
+                  String? vote_id = topic_id;
+                  String deleteVote =
+                      '${MyConstant.domain}/famfam/deleteVoteWhereVoteID.php?isAdd=true&vote_id=$vote_id';
+
+                  await Dio().get(deleteVote).then((value) async {
+                    Navigator.pop(context);
+                    await Navigator.pushReplacementNamed(
+                        context, ('/voterandom'));
+                  });
+                },
+                child: const Text('Confirm'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              )
+            ],
+          );
+        });
+  }
+
+  void _deleteRandom(BuildContext context, String topic_id) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this topic?'),
+            actions: [
+              // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () async {
+                  // _isShown = false;
+                  // deletedTopicByID(topic_id: topic_id);
+
+                  String? random_id = topic_id;
+                  String deleteRandom =
+                      '${MyConstant.domain}/famfam/deleteRandomWhereRandomID.php?isAdd=true&random_id=$random_id';
+
+                  await Dio().get(deleteRandom).then((value) async {
+                    Navigator.pop(context);
+                    await Navigator.pushReplacementNamed(
+                        context, ('/voterandom'));
+                  });
+                },
+                child: const Text('Confirm'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              )
+            ],
+          );
+        });
   }
 
   // String polltopic;
@@ -2636,6 +2991,7 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                               height: 640,
                               child: TabBarView(
                                 children: [
+// Vote TabBarView
                                   Container(
                                     height: MediaQuery.of(context).size.height,
                                     padding: const EdgeInsets.only(top: 12.0),
@@ -2647,12 +3003,10 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                   .size
                                                   .width *
                                               0.864,
-                                          decoration: BoxDecoration(
-                                              // color: Colors.pink.shade200,
-                                              //borderRadius: BorderRadius.circular(30),
-                                              ),
+                                          decoration: BoxDecoration(),
                                           child: Builder(builder: (context) {
-                                            return topicPoll.isEmpty
+                                            // Vote is Empty
+                                            return voteModels.isEmpty
                                                 ? Column(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -2680,18 +3034,313 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                       ),
                                                     ],
                                                   )
+                                                // Vote Topic ListViewBuilder
                                                 : ListView.builder(
                                                     scrollDirection:
                                                         Axis.vertical,
                                                     shrinkWrap: true,
-                                                    itemCount: topicPoll.length,
+                                                    itemCount:
+                                                        voteModels.length,
                                                     itemBuilder:
                                                         (context, index) {
-                                                      return Text('bruh');
+                                                      return Container(
+                                                        child: Column(
+                                                          children: [
+                                                            Container(
+                                                              height: 180,
+                                                              margin: EdgeInsets
+                                                                  .only(
+                                                                      bottom:
+                                                                          10),
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          249,
+                                                                          234,
+                                                                          184),
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                        color: Color.fromARGB(
+                                                                            138,
+                                                                            209,
+                                                                            209,
+                                                                            209),
+                                                                        offset: Offset(
+                                                                            1,
+                                                                            -1),
+                                                                        blurRadius:
+                                                                            10),
+                                                                    BoxShadow(
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            255,
+                                                                            255),
+                                                                        offset: Offset(
+                                                                            -5,
+                                                                            -5),
+                                                                        blurRadius:
+                                                                            5),
+                                                                  ]),
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .fromLTRB(
+                                                                        10,
+                                                                        0,
+                                                                        10,
+                                                                        10),
+                                                                child: Row(
+                                                                    children: <
+                                                                        Widget>[
+                                                                      Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.only(
+                                                                          left:
+                                                                              6,
+                                                                          right:
+                                                                              2,
+                                                                        ),
+                                                                      ),
+                                                                      Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Container(
+                                                                            width:
+                                                                                341,
+                                                                            child:
+                                                                                Row(
+                                                                              children: [
+                                                                                Align(
+                                                                                  alignment: Alignment.topRight,
+                                                                                  child: Padding(
+                                                                                    padding: const EdgeInsets.fromLTRB(0, 18, 5, 5),
+                                                                                    child: CircleAvatar(
+                                                                                      radius: 28,
+                                                                                      backgroundImage: NetworkImage(voteModels[index].host_profile),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(left: 5, top: 10),
+                                                                                  child: Container(
+                                                                                    width: 230,
+                                                                                    child: Text(
+                                                                                      voteModels[index].vote_topic,
+                                                                                      maxLines: 2,
+                                                                                      overflow: TextOverflow.ellipsis,
+
+                                                                                      // "ข้าวเย็นกินไรดีนะ",
+                                                                                      style: TextStyle(
+                                                                                        fontWeight: FontWeight.w500,
+                                                                                        fontSize: 17,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                Expanded(
+                                                                                  child: Align(
+                                                                                    alignment: Alignment.topRight,
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.only(bottom: 30),
+                                                                                      child: Builder(
+                                                                                        builder: (context) {
+                                                                                          if (userModels[0].id == voteModels[index].host_id) {
+                                                                                            return
+                                                                                                // PopUpMen(
+                                                                                                //   menuList: [
+                                                                                                //     PopupMenuItem(
+                                                                                                //       child: ListTile(
+                                                                                                //         leading: Icon(
+                                                                                                //           Icons.delete_rounded,
+                                                                                                //         ),
+                                                                                                //         title: Text("Delete"),
+                                                                                                //         onTap: () {
+                                                                                                //           print('## You Click Delete form index = $index');
+                                                                                                //           // confirmDialogDelete(context, topicRandom[index]);
+                                                                                                //         },
+                                                                                                //       ),
+                                                                                                //     ),
+                                                                                                //   ],
+                                                                                                //   icon: SvgPicture.asset(
+                                                                                                //     "assets/icons/menu-dots.svg",
+                                                                                                //     height: 20,
+                                                                                                //   ),
+                                                                                                // );
+                                                                                                GestureDetector(
+                                                                                              onTap: () {
+                                                                                                print('click on delete ticktik ${voteModels[index].vote_topic}');
+                                                                                                _isShown == true ? _deleteVote(context, voteModels[index].vote_id) : null;
+                                                                                              },
+                                                                                              child: Image(
+                                                                                                image: AssetImage('assets/images/trash.png'),
+                                                                                                fit: BoxFit.cover,
+                                                                                                height: 22,
+                                                                                              ),
+                                                                                            );
+                                                                                          } else {
+                                                                                            return Container();
+                                                                                          }
+                                                                                        },
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height:
+                                                                                15,
+                                                                          ),
+                                                                          Row(
+                                                                            children: [
+                                                                              Text(
+                                                                                "Poll is",
+                                                                                style: TextStyle(
+                                                                                  fontWeight: FontWeight.w500,
+                                                                                  fontSize: 16,
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(
+                                                                                width: 5,
+                                                                              ),
+                                                                              Builder(builder: (context) {
+                                                                                return voteModels[index].vote_final.isEmpty
+                                                                                    ? Text(
+                                                                                        "Active",
+                                                                                        style: TextStyle(
+                                                                                          color: Colors.red,
+                                                                                          fontWeight: FontWeight.w600,
+                                                                                          fontSize: 16,
+                                                                                        ),
+                                                                                      )
+                                                                                    : Text(
+                                                                                        "Finished",
+                                                                                        style: TextStyle(
+                                                                                          color: Colors.green,
+                                                                                          fontWeight: FontWeight.w600,
+                                                                                          fontSize: 16,
+                                                                                        ),
+                                                                                      );
+                                                                              }),
+                                                                            ],
+                                                                          ),
+                                                                          Builder(builder:
+                                                                              (context) {
+                                                                            return voteModels[index].vote_final.isEmpty
+                                                                                ? Container(
+                                                                                    height: 40,
+                                                                                    width: size.width / 1.3,
+                                                                                    margin: EdgeInsets.only(top: 7),
+                                                                                    decoration: BoxDecoration(
+                                                                                      borderRadius: BorderRadius.circular(20),
+                                                                                      color: Color.fromARGB(255, 197, 150, 63),
+                                                                                    ),
+                                                                                    child: FlatButton(
+                                                                                      onPressed: () async {
+                                                                                        List<VoteOptionModel> voteOptionModels = [];
+                                                                                        List<VoteParticipantModel> voteParticipantModels = [];
+                                                                                        List<UserModel> circleUserCheck = [];
+                                                                                        String? vote_id = voteModels[index].vote_id;
+                                                                                        String pullVoteOptions = '${MyConstant.domain}/famfam/getVoteOptions.php?isAdd=true&vote_id=$vote_id';
+                                                                                        await Dio().get(pullVoteOptions).then((value) async {
+                                                                                          for (var item in json.decode(value.data)) {
+                                                                                            VoteOptionModel model = VoteOptionModel.fromMap(item);
+                                                                                            setState(() {
+                                                                                              voteOptionModels.add(model);
+                                                                                            });
+                                                                                          }
+                                                                                        });
+                                                                                        String pullVoteParticipants = '${MyConstant.domain}/famfam/getVoteParticipant.php?isAdd=true&vote_id=$vote_id';
+                                                                                        try {
+                                                                                          await Dio().get(pullVoteParticipants).then(
+                                                                                            (value) async {
+                                                                                              for (var item in json.decode(value.data)) {
+                                                                                                VoteParticipantModel model = VoteParticipantModel.fromMap(item);
+                                                                                                setState(() {
+                                                                                                  voteParticipantModels.add(model);
+                                                                                                });
+                                                                                              }
+                                                                                            },
+                                                                                          );
+                                                                                        } catch (e) {}
+
+                                                                                        SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                                                        String? circle_id = preferences.getString('circle_id');
+
+                                                                                        String pullUserWhereCircleID = '${MyConstant.domain}/famfam/getUserWhereCircleID.php?isAdd=true&circle_id=$circle_id';
+                                                                                        await Dio().get(pullUserWhereCircleID).then((value) async {
+                                                                                          for (var item in json.decode(value.data)) {
+                                                                                            UserModel model = UserModel.fromMap(item);
+                                                                                            setState(() {
+                                                                                              circleUserCheck.add(model);
+                                                                                            });
+                                                                                          }
+                                                                                        });
+
+                                                                                        openPollForVote(context, voteModels[index], voteParticipantModels, voteOptionModels, userModels[0].id, circleUserCheck.length);
+                                                                                      },
+                                                                                      child: Center(
+                                                                                        child: Padding(
+                                                                                          padding: const EdgeInsets.only(bottom: 5),
+                                                                                          child: Text(
+                                                                                            'Click here to Vote',
+
+                                                                                            // "กระเพาหมูกรอบ",
+                                                                                            style: TextStyle(
+                                                                                              color: Colors.white,
+                                                                                              fontWeight: FontWeight.w500,
+                                                                                              fontSize: 18,
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  )
+                                                                                : Container(
+                                                                                    height: 40,
+                                                                                    width: size.width / 1.3,
+                                                                                    margin: EdgeInsets.only(top: 7),
+                                                                                    decoration: BoxDecoration(
+                                                                                      borderRadius: BorderRadius.circular(20),
+                                                                                      color: Color.fromARGB(255, 255, 255, 255),
+                                                                                    ),
+                                                                                    child: Center(
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.only(bottom: 5),
+                                                                                        child: Text(
+                                                                                          voteModels[index].vote_final,
+
+                                                                                          // "กระเพาหมูกรอบ",
+                                                                                          style: TextStyle(
+                                                                                            fontWeight: FontWeight.w500,
+                                                                                            fontSize: 18,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  );
+                                                                          }),
+                                                                        ],
+                                                                      ),
+                                                                    ]),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
                                                     },
                                                   );
                                           }),
                                         ),
+                                        // Create Vote Button
                                         Expanded(
                                           child: Align(
                                             alignment: Alignment.bottomCenter,
@@ -2720,7 +3369,7 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  'Create poll',
+                                                  'Create Vote',
                                                   style: TextStyle(
                                                       fontSize: 24,
                                                       fontWeight:
@@ -2737,6 +3386,7 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                       ],
                                     ),
                                   ),
+// Random TabBarView
                                   Container(
                                     height: MediaQuery.of(context).size.height,
                                     padding: const EdgeInsets.only(top: 12.0),
@@ -2901,25 +3551,24 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                       alignment: Alignment.topRight,
                                                                                       child: Padding(
                                                                                         padding: const EdgeInsets.only(bottom: 30),
-                                                                                        child: PopUpMen(
-                                                                                          menuList: [
-                                                                                            PopupMenuItem(
-                                                                                              child: ListTile(
-                                                                                                leading: Icon(
-                                                                                                  Icons.delete_rounded,
-                                                                                                ),
-                                                                                                title: Text("Delete"),
+                                                                                        child: Builder(
+                                                                                          builder: (context) {
+                                                                                            if (userModels[0].id == topicRandom[index].user_id) {
+                                                                                              return GestureDetector(
                                                                                                 onTap: () {
-                                                                                                  print('## You Click Delete form index = $index');
-                                                                                                  confirmDialogDelete(context, topicRandom[index]);
+                                                                                                  print('click on delete ticktik ${topicRandom[index].random_topic}');
+                                                                                                  _isShown == true ? _deleteRandom(context, topicRandom[index].random_id!) : null;
                                                                                                 },
-                                                                                              ),
-                                                                                            ),
-                                                                                          ],
-                                                                                          icon: SvgPicture.asset(
-                                                                                            "assets/icons/menu-dots.svg",
-                                                                                            height: 20,
-                                                                                          ),
+                                                                                                child: Image(
+                                                                                                  image: AssetImage('assets/images/trash.png'),
+                                                                                                  fit: BoxFit.cover,
+                                                                                                  height: 22,
+                                                                                                ),
+                                                                                              );
+                                                                                            } else {
+                                                                                              return Container();
+                                                                                            }
+                                                                                          },
                                                                                         ),
                                                                                       ),
                                                                                     ),
@@ -3034,55 +3683,6 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
   }
 }
 
-Future<Null> confirmDialogDelete(
-    BuildContext context, randomModel topicRandom) async {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text('Are you sure you want to delete this random?'),
-      titleTextStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 18,
-        fontWeight: FontWeight.w400,
-      ),
-      content: Row(
-        children: [
-          Expanded(
-            child: FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 18),
-              ),
-            ),
-          ),
-          Expanded(
-            child: FlatButton(
-              onPressed: () async {
-                String? random_id = topicRandom.random_id;
-                String deleteRandom =
-                    '${MyConstant.domain}/famfam/deleteRandomWhereRandomID.php?isAdd=true&random_id=$random_id';
-
-                await Dio().get(deleteRandom).then((value) async {
-                  Navigator.pop(context);
-                  await Navigator.pushReplacementNamed(
-                      context, ('/voterandom'));
-                });
-              },
-              child: Text(
-                'Delete',
-                style: TextStyle(color: Color(0xFFFFC34A), fontSize: 18),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
 class PopUpMen extends StatefulWidget {
   final List<PopupMenuEntry> menuList;
   final Widget? icon;
@@ -3104,6 +3704,599 @@ class _PopUpMenState extends State<PopUpMen> {
     );
   }
 }
+
+Future openPollForVote(
+        BuildContext context,
+        VoteModel voteModels,
+        List<VoteParticipantModel> voteParticipantModels,
+        List<VoteOptionModel> voteOptionModels,
+        String? user_id,
+        int circleMember) =>
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Center(
+              child: Material(
+                type: MaterialType.transparency,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Stack(
+                        children: [
+                          Center(
+                            child: Text(
+                              'Vote Poll',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: -6,
+                            child: InkResponse(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: CircleAvatar(
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.black,
+                                  size: 30,
+                                ),
+                                backgroundColor: Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        'Topic',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
+                      // Start -- Topic
+                      Text(
+                        voteModels.vote_topic,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      // End -- Topic
+
+                      SizedBox(height: 10),
+
+                      Divider(),
+
+                      Container(
+                        height: MediaQuery.of(context).size.height - 450,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              SizedBox(height: 10),
+
+                              // Start Poll Here
+                              Builder(builder: (context) {
+                                int? participantNumber;
+                                bool votedAlready = false;
+                                for (int i = 0;
+                                    i < voteParticipantModels.length;
+                                    i++) {
+                                  if (voteParticipantModels[i].participant_id ==
+                                      user_id) {
+                                    votedAlready = true;
+                                    participantNumber = i;
+                                  }
+                                }
+                                // Vote is Empty
+                                return Container(
+                                  height:
+                                      MediaQuery.of(context).size.height - 450,
+                                  child: votedAlready == true
+                                      ? ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          shrinkWrap: true,
+                                          itemCount: voteOptionModels.length,
+                                          itemBuilder: (context, index) {
+                                            if (voteParticipantModels[
+                                                        participantNumber!]
+                                                    .vote_option_id ==
+                                                voteOptionModels[index]
+                                                    .vote_option_id) {
+                                              return Column(
+                                                children: [
+                                                  Container(
+                                                    height: 60,
+                                                    margin: EdgeInsets.only(
+                                                        bottom: 10),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      color: Color.fromARGB(
+                                                              255, 255, 208, 54)
+                                                          .withOpacity(0.6),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    138,
+                                                                    209,
+                                                                    209,
+                                                                    209),
+                                                            offset:
+                                                                Offset(1, -1),
+                                                            blurRadius: 10),
+                                                        BoxShadow(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    255,
+                                                                    255,
+                                                                    255),
+                                                            offset:
+                                                                Offset(-5, -5),
+                                                            blurRadius: 5),
+                                                      ],
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          10, 0, 10, 0),
+                                                      child: Stack(
+                                                        children: [
+                                                          Positioned(
+                                                            top: 20,
+                                                            left: 10,
+                                                            child: Text(
+                                                              voteOptionModels[
+                                                                      index]
+                                                                  .vote_option_name,
+                                                              style: TextStyle(
+                                                                  fontSize: 18),
+                                                            ),
+                                                          ),
+                                                          Positioned(
+                                                            top: 10,
+                                                            right: 10,
+                                                            child: CircleAvatar(
+                                                              radius: 20,
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              child: Text(
+                                                                voteOptionModels[
+                                                                        index]
+                                                                    .vote_option_point,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        18,
+                                                                    color: Colors
+                                                                        .black),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                ],
+                                              );
+                                            } else {
+                                              return Column(
+                                                children: [
+                                                  Container(
+                                                    height: 60,
+                                                    margin: EdgeInsets.only(
+                                                        bottom: 10),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      color: Color.fromARGB(255,
+                                                              249, 234, 184)
+                                                          .withOpacity(0.6),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    138,
+                                                                    209,
+                                                                    209,
+                                                                    209),
+                                                            offset:
+                                                                Offset(1, -1),
+                                                            blurRadius: 10),
+                                                        BoxShadow(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    255,
+                                                                    255,
+                                                                    255),
+                                                            offset:
+                                                                Offset(-5, -5),
+                                                            blurRadius: 5),
+                                                      ],
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          10, 0, 10, 0),
+                                                      child: Stack(
+                                                        children: [
+                                                          Positioned(
+                                                            top: 20,
+                                                            left: 10,
+                                                            child: Text(
+                                                              voteOptionModels[
+                                                                      index]
+                                                                  .vote_option_name,
+                                                              style: TextStyle(
+                                                                  fontSize: 18),
+                                                            ),
+                                                          ),
+                                                          Positioned(
+                                                            top: 10,
+                                                            right: 10,
+                                                            child: CircleAvatar(
+                                                              radius: 20,
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              child: Text(
+                                                                voteOptionModels[
+                                                                        index]
+                                                                    .vote_option_point,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        18,
+                                                                    color: Colors
+                                                                        .black),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                ],
+                                              );
+                                            }
+                                          },
+                                        )
+                                      // Vote Topic ListViewBuilder
+                                      : ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          shrinkWrap: true,
+                                          itemCount: voteOptionModels.length,
+                                          itemBuilder: (context, index) {
+                                            return Column(
+                                              children: [
+                                                Container(
+                                                  height: 60,
+                                                  margin: EdgeInsets.only(
+                                                      bottom: 10),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: Color.fromARGB(
+                                                        255, 249, 234, 184),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color.fromARGB(
+                                                              138,
+                                                              209,
+                                                              209,
+                                                              209),
+                                                          offset: Offset(1, -1),
+                                                          blurRadius: 10),
+                                                      BoxShadow(
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              255,
+                                                              255,
+                                                              255),
+                                                          offset:
+                                                              Offset(-5, -5),
+                                                          blurRadius: 5),
+                                                    ],
+                                                  ),
+                                                  child: FlatButton(
+                                                    onPressed: () async {
+                                                      var vote_option_point_toInt =
+                                                          int.parse(
+                                                              voteOptionModels[
+                                                                      index]
+                                                                  .vote_option_point);
+                                                      assert(
+                                                          vote_option_point_toInt
+                                                              is int);
+                                                      vote_option_point_toInt =
+                                                          vote_option_point_toInt +
+                                                              1;
+
+                                                      String vote_option_id =
+                                                          voteOptionModels[
+                                                                  index]
+                                                              .vote_option_id;
+                                                      String vote_option_point =
+                                                          vote_option_point_toInt
+                                                              .toString();
+
+                                                      String updateVoteOption =
+                                                          '${MyConstant.domain}/famfam/updateVoteOption.php?isAdd=true&vote_option_id=$vote_option_id&vote_option_point=$vote_option_point';
+                                                      await Dio()
+                                                          .get(updateVoteOption)
+                                                          .then((value) async {
+                                                        String vote_id =
+                                                            voteModels.vote_id;
+                                                        String? participant_id =
+                                                            user_id;
+
+                                                        String
+                                                            insertVoteParticipant =
+                                                            '${MyConstant.domain}/famfam/insertVoteParticipant.php?isAdd=true&vote_id=$vote_id&participant_id=$participant_id&vote_option_id=$vote_option_id';
+                                                        await Dio()
+                                                            .get(
+                                                                insertVoteParticipant)
+                                                            .then(
+                                                                (value) async {
+                                                          if (voteParticipantModels
+                                                                  .length ==
+                                                              circleMember) {
+                                                            int highestPoint =
+                                                                0;
+                                                            int count = 0;
+                                                            List<int>
+                                                                highestStack =
+                                                                [];
+
+                                                            for (int i = 0;
+                                                                i <
+                                                                    voteOptionModels
+                                                                        .length;
+                                                                i++) {
+                                                              var vote_option_point_toInt =
+                                                                  int.parse(
+                                                                      voteOptionModels[
+                                                                              i]
+                                                                          .vote_option_point);
+                                                              assert(
+                                                                  vote_option_point_toInt
+                                                                      is int);
+                                                              if (vote_option_point_toInt >
+                                                                  highestPoint) {
+                                                                highestPoint =
+                                                                    i;
+                                                                highestStack =
+                                                                    [];
+                                                                highestStack
+                                                                    .add(i);
+                                                                count = 1;
+                                                              } else if (vote_option_point_toInt ==
+                                                                  highestPoint) {
+                                                                highestStack
+                                                                    .add(i);
+                                                                count = count++;
+                                                              }
+                                                            }
+                                                            if (count == 1) {
+                                                              String
+                                                                  vote_final =
+                                                                  voteOptionModels[
+                                                                          highestPoint]
+                                                                      .vote_option_name;
+                                                              String vote_id =
+                                                                  voteModels
+                                                                      .vote_id;
+                                                              String
+                                                                  updateVoteFinal =
+                                                                  '${MyConstant.domain}/famfam/updateVoteSetFinal.php?isAdd=true&vote_final=$vote_final&vote_id=$vote_id';
+                                                              await Dio()
+                                                                  .get(
+                                                                      updateVoteFinal)
+                                                                  .then((value) =>
+                                                                      Navigator.popAndPushNamed(
+                                                                          context,
+                                                                          '/voterandom'));
+                                                            } else if (count >
+                                                                1) {
+                                                              var randomItem =
+                                                                  (highestStack
+                                                                          .toList()
+                                                                        ..shuffle())
+                                                                      .first;
+                                                              String
+                                                                  vote_final =
+                                                                  voteOptionModels[
+                                                                          randomItem]
+                                                                      .vote_option_name;
+                                                              String vote_id =
+                                                                  voteModels
+                                                                      .vote_id;
+                                                              String
+                                                                  updateVoteFinal =
+                                                                  '${MyConstant.domain}/famfam/updateVoteSetFinal.php?isAdd=true&vote_final=$vote_final&vote_id=$vote_id';
+                                                              await Dio()
+                                                                  .get(
+                                                                      updateVoteFinal)
+                                                                  .then((value) =>
+                                                                      Navigator.popAndPushNamed(
+                                                                          context,
+                                                                          '/voterandom'));
+                                                            }
+                                                          } else {
+                                                            Navigator
+                                                                .popAndPushNamed(
+                                                                    context,
+                                                                    '/voterandom');
+                                                          }
+                                                        });
+                                                      });
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          10, 0, 10, 0),
+                                                      child: Stack(
+                                                        children: [
+                                                          Positioned(
+                                                            top: 20,
+                                                            left: 0,
+                                                            child: Text(
+                                                              voteOptionModels[
+                                                                      index]
+                                                                  .vote_option_name,
+                                                              style: TextStyle(
+                                                                  fontSize: 18),
+                                                            ),
+                                                          ),
+                                                          Positioned(
+                                                            top: 10,
+                                                            right: 0,
+                                                            child: CircleAvatar(
+                                                              radius: 20,
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              child: Text(
+                                                                voteOptionModels[
+                                                                        index]
+                                                                    .vote_option_point,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        18,
+                                                                    color: Colors
+                                                                        .black),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(),
+
+                      Builder(builder: (context) {
+                        print('${voteModels.host_id}' + '& $user_id');
+                        if (voteModels.host_id == user_id) {
+                          return Expanded(
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.066,
+                                width:
+                                    MediaQuery.of(context).size.width * 0.864,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Color(0xFFF9EE6D)),
+                                    shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(90.0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'End this Poll',
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black),
+                                  ),
+                                  onPressed: () async {
+                                    int highestPoint = 0;
+                                    int count = 0;
+                                    List<int> highestStack = [];
+
+                                    for (int i = 0;
+                                        i < voteOptionModels.length;
+                                        i++) {
+                                      var vote_option_point_toInt = int.parse(
+                                          voteOptionModels[i]
+                                              .vote_option_point);
+                                      assert(vote_option_point_toInt is int);
+                                      if (vote_option_point_toInt >
+                                          highestPoint) {
+                                        highestPoint = i;
+                                        highestStack = [];
+                                        highestStack.add(i);
+                                        count = 1;
+                                      } else if (vote_option_point_toInt ==
+                                          highestPoint) {
+                                        highestStack.add(i);
+                                        count = count++;
+                                      }
+                                    }
+                                    if (count == 1) {
+                                      String vote_final =
+                                          voteOptionModels[highestPoint]
+                                              .vote_option_name;
+                                      String vote_id = voteModels.vote_id;
+                                      String updateVoteFinal =
+                                          '${MyConstant.domain}/famfam/updateVoteSetFinal.php?isAdd=true&vote_final=$vote_final&vote_id=$vote_id';
+                                      await Dio().get(updateVoteFinal).then(
+                                          (value) => Navigator.popAndPushNamed(
+                                              context, '/voterandom'));
+                                    } else if (count > 1) {
+                                      var randomItem = (highestStack.toList()
+                                            ..shuffle())
+                                          .first;
+                                      String vote_final =
+                                          voteOptionModels[randomItem]
+                                              .vote_option_name;
+                                      String vote_id = voteModels.vote_id;
+                                      String updateVoteFinal =
+                                          '${MyConstant.domain}/famfam/updateVoteSetFinal.php?isAdd=true&vote_final=$vote_final&vote_id=$vote_id';
+                                      await Dio().get(updateVoteFinal).then(
+                                          (value) => Navigator.popAndPushNamed(
+                                              context, '/voterandom'));
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });
 
 Future openDialogPoll(BuildContext context) => showDialog(
     context: context,
@@ -3202,256 +4395,261 @@ Future openDialogPoll(BuildContext context) => showDialog(
                   ),
                   // End -- TextField Topic
 
-                  SizedBox(height: 20),
-                  // Text(
-                  //   'Options',
-                  //   style: TextStyle(
-                  //     fontSize: 20,
-                  //     fontWeight: FontWeight.w600,
-                  //     color: Colors.black,
-                  //   ),
-                  // ),
-                  // SizedBox(height: 10),
+                  SizedBox(height: 10),
 
-                  // Start -- TextField Option 1
-                  TextFormField(
-                    onChanged: (value) {
-                      if (value.isNotEmpty &&
-                          option2Controller.text.isNotEmpty &&
-                          option3Controller.text.isNotEmpty) {
-                        setState(
-                          () {
-                            check123 = true;
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            check123 = false;
-                          },
-                        );
-                      }
-                    },
-                    controller: option1Controller,
-                    minLines: 1,
-                    maxLines: 1,
-                    keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 20, height: 1.5),
-                    decoration: InputDecoration(
-                      hintText: 'Option 1',
-                      hintStyle: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 190, 190, 186),
-                            width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                      ),
-                    ),
-                  ),
-                  // End -- TextField Option 1
+                  Divider(),
 
-                  SizedBox(height: 15),
+                  Container(
+                    height: 200,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
 
-                  // Start -- TextField Option 2
-                  TextFormField(
-                    onChanged: (value) {
-                      if (option1Controller.text.isNotEmpty &&
-                          value.isNotEmpty &&
-                          option3Controller.text.isNotEmpty) {
-                        setState(
-                          () {
-                            check123 = true;
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            check123 = false;
-                          },
-                        );
-                      }
-                    },
-                    controller: option2Controller,
-                    minLines: 1,
-                    maxLines: 1,
-                    keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 20, height: 1.5),
-                    decoration: InputDecoration(
-                      hintText: 'Option 2',
-                      hintStyle: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 190, 190, 186),
-                            width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                      ),
-                    ),
-                  ),
-                  // End -- TextField Option 2
-
-                  SizedBox(height: 15),
-
-                  // Start -- TextField Option 3
-                  TextFormField(
-                    onChanged: (value) {
-                      if (option1Controller.text.isNotEmpty &&
-                          option2Controller.text.isNotEmpty &&
-                          value.isNotEmpty) {
-                        setState(
-                          () {
-                            check123 = true;
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            check123 = false;
-                          },
-                        );
-                      }
-                    },
-                    controller: option3Controller,
-                    minLines: 1,
-                    maxLines: 1,
-                    keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 20, height: 1.5),
-                    decoration: InputDecoration(
-                      hintText: 'Option 3',
-                      hintStyle: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 190, 190, 186),
-                            width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                      ),
-                    ),
-                  ),
-                  // End -- TextField Option 3
-
-                  SizedBox(height: 15),
-
-                  // Start -- TextField Option 4
-                  Visibility(
-                    visible: check123,
-                    child: TextFormField(
-                      onChanged: (value) {
-                        if (check123 == true && value != null) {
-                          setState(
-                            () {
-                              check1234 = true;
+                          // Start -- TextField Option 1
+                          TextFormField(
+                            onChanged: (value) {
+                              if (value.isNotEmpty &&
+                                  option2Controller.text.isNotEmpty &&
+                                  option3Controller.text.isNotEmpty) {
+                                setState(
+                                  () {
+                                    check123 = true;
+                                  },
+                                );
+                              } else {
+                                setState(
+                                  () {
+                                    check123 = false;
+                                  },
+                                );
+                              }
                             },
-                          );
-                        } else {
-                          setState(
-                            () {
-                              check1234 = false;
+                            controller: option1Controller,
+                            minLines: 1,
+                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            style: TextStyle(fontSize: 20, height: 1.5),
+                            decoration: InputDecoration(
+                              hintText: 'Option 1',
+                              hintStyle: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              //border: InputBorder.none,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 190, 190, 186),
+                                    width: 2.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF9EE6D), width: 2.0),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 1
+
+                          SizedBox(height: 15),
+
+                          // Start -- TextField Option 2
+                          TextFormField(
+                            onChanged: (value) {
+                              if (option1Controller.text.isNotEmpty &&
+                                  value.isNotEmpty &&
+                                  option3Controller.text.isNotEmpty) {
+                                setState(
+                                  () {
+                                    check123 = true;
+                                  },
+                                );
+                              } else {
+                                setState(
+                                  () {
+                                    check123 = false;
+                                  },
+                                );
+                              }
                             },
-                          );
-                        }
-                      },
-                      controller: option4Controller,
-                      minLines: 1,
-                      maxLines: 1,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 20, height: 1.5),
-                      decoration: InputDecoration(
-                        hintText: 'Option 4',
-                        hintStyle: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        //border: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 190, 190, 186),
-                              width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                        ),
+                            controller: option2Controller,
+                            minLines: 1,
+                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            style: TextStyle(fontSize: 20, height: 1.5),
+                            decoration: InputDecoration(
+                              hintText: 'Option 2',
+                              hintStyle: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              //border: InputBorder.none,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 190, 190, 186),
+                                    width: 2.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF9EE6D), width: 2.0),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 2
+
+                          SizedBox(height: 15),
+
+                          // Start -- TextField Option 3
+                          TextFormField(
+                            onChanged: (value) {
+                              if (option1Controller.text.isNotEmpty &&
+                                  option2Controller.text.isNotEmpty &&
+                                  value.isNotEmpty) {
+                                setState(
+                                  () {
+                                    check123 = true;
+                                  },
+                                );
+                              } else {
+                                setState(
+                                  () {
+                                    check123 = false;
+                                  },
+                                );
+                              }
+                            },
+                            controller: option3Controller,
+                            minLines: 1,
+                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            style: TextStyle(fontSize: 20, height: 1.5),
+                            decoration: InputDecoration(
+                              hintText: 'Option 3',
+                              hintStyle: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              //border: InputBorder.none,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 190, 190, 186),
+                                    width: 2.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF9EE6D), width: 2.0),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 3
+
+                          SizedBox(height: 15),
+
+                          // Start -- TextField Option 4
+                          Visibility(
+                            visible: check123,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                if (check123 == true && value != null) {
+                                  setState(
+                                    () {
+                                      check1234 = true;
+                                    },
+                                  );
+                                } else {
+                                  setState(
+                                    () {
+                                      check1234 = false;
+                                    },
+                                  );
+                                }
+                              },
+                              controller: option4Controller,
+                              minLines: 1,
+                              maxLines: 1,
+                              keyboardType: TextInputType.multiline,
+                              style: TextStyle(fontSize: 20, height: 1.5),
+                              decoration: InputDecoration(
+                                hintText: 'Option 4',
+                                hintStyle: TextStyle(
+                                  fontSize: 20.0,
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                //border: InputBorder.none,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 190, 190, 186),
+                                      width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFF9EE6D), width: 2.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 4
+
+                          SizedBox(height: 15),
+
+                          // Start -- TextField Option 5
+                          Visibility(
+                            visible: check1234,
+                            child: TextFormField(
+                              controller: option5Controller,
+                              minLines: 1,
+                              maxLines: 1,
+                              keyboardType: TextInputType.multiline,
+                              style: TextStyle(fontSize: 20, height: 1.5),
+                              decoration: InputDecoration(
+                                hintText: 'Option 5',
+                                hintStyle: TextStyle(
+                                  fontSize: 20.0,
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                //border: InputBorder.none,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 190, 190, 186),
+                                      width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFF9EE6D), width: 2.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 5
+                        ],
                       ),
                     ),
                   ),
-                  // End -- TextField Option 4
-
-                  SizedBox(height: 15),
-
-                  // Start -- TextField Option 5
-                  Visibility(
-                    visible: check1234,
-                    child: TextFormField(
-                      controller: option5Controller,
-                      minLines: 1,
-                      maxLines: 1,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 20, height: 1.5),
-                      decoration: InputDecoration(
-                        hintText: 'Option 5',
-                        hintStyle: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        //border: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 190, 190, 186),
-                              width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // End -- TextField Option 5
+                  Divider(),
 
                   Expanded(
                     child: Align(
@@ -3476,13 +4674,301 @@ Future openDialogPoll(BuildContext context) => showDialog(
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black),
                           ),
-                          onPressed: () {
-                            if (option1Controller.text != null) {
-                              if (option2Controller != null) {
-                                if (option3Controller != null) {}
+                          onPressed: () async {
+                            List<VoteModel> voteModels = [];
+                            final String getUID = FirebaseAuth
+                                .instance.currentUser!.uid
+                                .toString();
+                            String uid = getUID;
+                            String pullUser =
+                                '${MyConstant.domain}/famfam/getUserWhereUID.php?isAdd=true&uid=$uid';
+                            await Dio().get(pullUser).then((value) async {
+                              if (value.toString() == null ||
+                                  value.toString() == 'null' ||
+                                  value.toString() == '') {
+                                FirebaseAuth.instance.signOut();
+                                SharedPreferences preferences =
+                                    await SharedPreferences.getInstance();
+                                preferences.clear();
+                              } else {
+                                for (var item in json.decode(value.data)) {
+                                  UserModel model = UserModel.fromMap(item);
+                                  setState(() {
+                                    userModels.add(model);
+                                  });
+                                }
+                              }
+                            });
+
+                            SharedPreferences preferences =
+                                await SharedPreferences.getInstance();
+                            var uuid = Uuid();
+
+                            String vote_uid = uuid.v1();
+                            String host_id = userModels[0].id!;
+                            String host_profile =
+                                Uri.encodeComponent(userModels[0].profileImage);
+                            String circle_id =
+                                preferences.getString('circle_id')!;
+                            String vote_topic = topicController.text;
+                            String insertVote =
+                                '${MyConstant.domain}/famfam/insertVote.php?isAdd=true&host_id=$host_id&host_profile=$host_profile&circle_id=$circle_id&vote_uid=$vote_uid&vote_topic=$vote_topic';
+                            await Dio().get(insertVote).then((value) async {
+                              String getVote =
+                                  '${MyConstant.domain}/famfam/getVoteWhereUID.php?isAdd=true&vote_uid=$vote_uid';
+                              await Dio().get(getVote).then((value) {
+                                for (var item in json.decode(value.data)) {
+                                  VoteModel model = VoteModel.fromMap(item);
+                                  setState(() {
+                                    voteModels.add(model);
+                                  });
+                                }
+                              });
+                            });
+
+                            String vote_id = voteModels[0].vote_id;
+                            String vote_option_name = '';
+
+                            String insertVoteOption =
+                                '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+
+                            if (option1Controller.text != '') {
+                              if (option2Controller.text != '') {
+                                if (option3Controller.text != '') {
+                                  if (check123 == true) {
+                                    if (option4Controller.text != '') {
+                                      if (check1234 == true) {
+                                        if (option5Controller.text != '') {
+                                          vote_option_name =
+                                              option1Controller.text;
+                                          String insertVoteOption =
+                                              '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                          await Dio()
+                                              .get(insertVoteOption)
+                                              .then((value) {
+                                            print('Option 1 Inserted');
+                                          }).then((value) async {
+                                            vote_option_name =
+                                                option2Controller.text;
+                                            String insertVoteOption =
+                                                '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                            await Dio()
+                                                .get(insertVoteOption)
+                                                .then((value) {
+                                              print('Option 2 Inserted');
+                                            }).then((value) async {
+                                              vote_option_name =
+                                                  option3Controller.text;
+                                              String insertVoteOption =
+                                                  '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                              await Dio()
+                                                  .get(insertVoteOption)
+                                                  .then((value) {
+                                                print('Option 3 Inserted');
+                                              }).then((value) async {
+                                                vote_option_name =
+                                                    option4Controller.text;
+                                                String insertVoteOption =
+                                                    '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                                await Dio()
+                                                    .get(insertVoteOption)
+                                                    .then((value) {
+                                                  print('Option 4 Inserted');
+                                                }).then((value) async {
+                                                  vote_option_name =
+                                                      option5Controller.text;
+                                                  String insertVoteOption =
+                                                      '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                                  await Dio()
+                                                      .get(insertVoteOption)
+                                                      .then((value) {
+                                                    print('Option 5 Inserted');
+                                                  }).then((value) {
+                                                    Navigator.popAndPushNamed(
+                                                        context, '/voterandom');
+                                                  });
+                                                });
+                                              });
+                                            });
+                                          });
+                                        } else if (option5Controller.text ==
+                                            '') {
+                                          vote_option_name =
+                                              option1Controller.text;
+                                          String insertVoteOption =
+                                              '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                          await Dio()
+                                              .get(insertVoteOption)
+                                              .then((value) {
+                                            print('Option 1 Inserted');
+                                          }).then((value) async {
+                                            vote_option_name =
+                                                option2Controller.text;
+                                            String insertVoteOption =
+                                                '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                            await Dio()
+                                                .get(insertVoteOption)
+                                                .then((value) {
+                                              print('Option 2 Inserted');
+                                            }).then((value) async {
+                                              vote_option_name =
+                                                  option3Controller.text;
+                                              String insertVoteOption =
+                                                  '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                              await Dio()
+                                                  .get(insertVoteOption)
+                                                  .then((value) {
+                                                print('Option 3 Inserted');
+                                              }).then((value) async {
+                                                vote_option_name =
+                                                    option4Controller.text;
+                                                String insertVoteOption =
+                                                    '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                                await Dio()
+                                                    .get(insertVoteOption)
+                                                    .then((value) {
+                                                  print('Option 4 Inserted');
+                                                }).then((value) {
+                                                  Navigator.popAndPushNamed(
+                                                      context, '/voterandom');
+                                                });
+                                              });
+                                            });
+                                          });
+                                        }
+                                      }
+                                    } else if (option4Controller.text == '') {
+                                      vote_option_name = option1Controller.text;
+                                      String insertVoteOption =
+                                          '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                      await Dio()
+                                          .get(insertVoteOption)
+                                          .then((value) {
+                                        print('Option 1 Inserted');
+                                      }).then((value) async {
+                                        vote_option_name =
+                                            option2Controller.text;
+                                        String insertVoteOption =
+                                            '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                        await Dio()
+                                            .get(insertVoteOption)
+                                            .then((value) {
+                                          print('Option 2 Inserted');
+                                        }).then((value) async {
+                                          vote_option_name =
+                                              option3Controller.text;
+                                          String insertVoteOption =
+                                              '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                          await Dio()
+                                              .get(insertVoteOption)
+                                              .then((value) {
+                                            print('Option 3 Inserted');
+                                          }).then((value) async {
+                                            Navigator.popAndPushNamed(
+                                                context, '/voterandom');
+                                          });
+                                        });
+                                      });
+                                    }
+                                  }
+                                } else if (option3Controller.text == '') {
+                                  vote_option_name = option1Controller.text;
+                                  String insertVoteOption =
+                                      '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                  await Dio()
+                                      .get(insertVoteOption)
+                                      .then((value) {
+                                    print('Option 1 Inserted');
+                                  }).then((value) async {
+                                    vote_option_name = option2Controller.text;
+                                    String insertVoteOption =
+                                        '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                    await Dio()
+                                        .get(insertVoteOption)
+                                        .then((value) {
+                                      print('Option 2 Inserted');
+                                    }).then((value) async {
+                                      Navigator.popAndPushNamed(
+                                          context, '/voterandom');
+                                    });
+                                  });
+                                }
+                              } else if (option2Controller.text == '') {
+                                if (option3Controller.text != '') {
+                                  vote_option_name = option1Controller.text;
+                                  String insertVoteOption =
+                                      '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                  await Dio()
+                                      .get(insertVoteOption)
+                                      .then((value) {
+                                    print('Option 1 Inserted');
+                                  }).then((value) async {
+                                    vote_option_name = option3Controller.text;
+                                    String insertVoteOption =
+                                        '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                    await Dio()
+                                        .get(insertVoteOption)
+                                        .then((value) {
+                                      print('Option 3 Inserted');
+                                    }).then((value) async {
+                                      Navigator.popAndPushNamed(
+                                          context, '/voterandom');
+                                    });
+                                  });
+                                } else if (option3Controller.text == '') {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Please insert at least 2 Options to Create Vote",
+                                      gravity: ToastGravity.BOTTOM);
+                                  print("Insert Just 1 Options");
+                                }
+                              }
+                            } else if (option1Controller.text == '') {
+                              if (option2Controller.text != '') {
+                                if (option3Controller.text != '') {
+                                  vote_option_name = option2Controller.text;
+                                  String insertVoteOption =
+                                      '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                  await Dio()
+                                      .get(insertVoteOption)
+                                      .then((value) {
+                                    print('Option 2 Inserted');
+                                  }).then((value) async {
+                                    vote_option_name = option3Controller.text;
+                                    String insertVoteOption =
+                                        '${MyConstant.domain}/famfam/insertVoteOption.php?isAdd=true&vote_id=$vote_id&vote_option_name=$vote_option_name';
+                                    await Dio()
+                                        .get(insertVoteOption)
+                                        .then((value) {
+                                      print('Option 3 Inserted');
+                                    }).then((value) async {
+                                      Navigator.popAndPushNamed(
+                                          context, '/voterandom');
+                                    });
+                                  });
+                                } else if (option3Controller.text == '') {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Please insert at least 2 Options to Create Vote",
+                                      gravity: ToastGravity.BOTTOM);
+                                  print("Insert Just 1 Options");
+                                }
+                              } else if (option2Controller.text == '') {
+                                if (option3Controller.text != '') {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Please insert at least 2 Options to Create Vote",
+                                      gravity: ToastGravity.BOTTOM);
+                                  print("Insert Just 1 Options");
+                                } else if (option3Controller.text == '') {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Please insert at least 2 Options to Create Vote",
+                                      gravity: ToastGravity.BOTTOM);
+                                  print("Insert Just 1 Options");
+                                }
                               }
                             }
-                            Navigator.pop(context);
                           },
                         ),
                       ),
@@ -3595,257 +5081,260 @@ Future openDialogRandom(BuildContext context) => showDialog(
                   ),
                   // End -- TextField Topic
 
-                  SizedBox(height: 40),
-                  // Text(
-                  //   'Options',
-                  //   style: TextStyle(
-                  //     fontSize: 20,
-                  //     fontWeight: FontWeight.w600,
-                  //     color: Colors.black,
-                  //   ),
-                  // ),
-                  // SizedBox(height: 10),
-
-                  // Start -- TextField Option 1
-                  TextFormField(
-                    onChanged: (value) {
-                      if (value.isNotEmpty &&
-                          option2Controller.text.isNotEmpty &&
-                          option3Controller.text.isNotEmpty) {
-                        setState(
-                          () {
-                            check123 = true;
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            check123 = false;
-                          },
-                        );
-                      }
-                    },
-                    controller: option1Controller,
-                    minLines: 1,
-                    maxLines: 1,
-                    keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 20, height: 1.5),
-                    decoration: InputDecoration(
-                      hintText: 'Option 1',
-                      hintStyle: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 190, 190, 186),
-                            width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                      ),
-                    ),
-                  ),
                   SizedBox(height: 10),
 
-                  // Start -- TextField Option 2
-                  TextFormField(
-                    onChanged: (value) {
-                      if (option1Controller.text.isNotEmpty &&
-                          value.isNotEmpty &&
-                          option3Controller.text.isNotEmpty) {
-                        setState(
-                          () {
-                            check123 = true;
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            check123 = false;
-                          },
-                        );
-                      }
-                    },
-                    controller: option2Controller,
-                    minLines: 1,
-                    maxLines: 1,
-                    keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 20, height: 1.5),
-                    decoration: InputDecoration(
-                      hintText: 'Option 2',
-                      hintStyle: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 190, 190, 186),
-                            width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                      ),
-                    ),
-                  ),
-                  // End -- TextField Option 2
+                  Divider(),
 
-                  SizedBox(height: 10),
+                  Container(
+                    height: 200,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
 
-                  // Start -- TextField Option 3
-                  TextFormField(
-                    onChanged: (value) {
-                      if (option1Controller.text.isNotEmpty &&
-                          option2Controller.text.isNotEmpty &&
-                          value.isNotEmpty) {
-                        setState(
-                          () {
-                            check123 = true;
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            check123 = false;
-                          },
-                        );
-                      }
-                    },
-                    controller: option3Controller,
-                    minLines: 1,
-                    maxLines: 1,
-                    keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 20, height: 1.5),
-                    decoration: InputDecoration(
-                      hintText: 'Option 3',
-                      hintStyle: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 190, 190, 186),
-                            width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                      ),
-                    ),
-                  ),
-                  // End -- TextField Option 3
-
-                  SizedBox(height: 10),
-
-                  // Start -- TextField Option 4
-                  Visibility(
-                    visible: check123,
-                    child: TextFormField(
-                      onChanged: (value) {
-                        if (check123 == true && value != null) {
-                          setState(
-                            () {
-                              check1234 = true;
+                          // Start -- TextField Option 1
+                          TextFormField(
+                            onChanged: (value) {
+                              if (value.isNotEmpty &&
+                                  option2Controller.text.isNotEmpty &&
+                                  option3Controller.text.isNotEmpty) {
+                                setState(
+                                  () {
+                                    check123 = true;
+                                  },
+                                );
+                              } else {
+                                setState(
+                                  () {
+                                    check123 = false;
+                                  },
+                                );
+                              }
                             },
-                          );
-                        } else {
-                          setState(
-                            () {
-                              check1234 = false;
+                            controller: option1Controller,
+                            minLines: 1,
+                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            style: TextStyle(fontSize: 20, height: 1.5),
+                            decoration: InputDecoration(
+                              hintText: 'Option 1',
+                              hintStyle: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              //border: InputBorder.none,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 190, 190, 186),
+                                    width: 2.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF9EE6D), width: 2.0),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 10),
+
+                          // Start -- TextField Option 2
+                          TextFormField(
+                            onChanged: (value) {
+                              if (option1Controller.text.isNotEmpty &&
+                                  value.isNotEmpty &&
+                                  option3Controller.text.isNotEmpty) {
+                                setState(
+                                  () {
+                                    check123 = true;
+                                  },
+                                );
+                              } else {
+                                setState(
+                                  () {
+                                    check123 = false;
+                                  },
+                                );
+                              }
                             },
-                          );
-                        }
-                      },
-                      controller: option4Controller,
-                      minLines: 1,
-                      maxLines: 1,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 20, height: 1.5),
-                      decoration: InputDecoration(
-                        hintText: 'Option 4',
-                        hintStyle: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        //border: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 190, 190, 186),
-                              width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                        ),
+                            controller: option2Controller,
+                            minLines: 1,
+                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            style: TextStyle(fontSize: 20, height: 1.5),
+                            decoration: InputDecoration(
+                              hintText: 'Option 2',
+                              hintStyle: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              //border: InputBorder.none,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 190, 190, 186),
+                                    width: 2.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF9EE6D), width: 2.0),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 2
+
+                          SizedBox(height: 10),
+
+                          // Start -- TextField Option 3
+                          TextFormField(
+                            onChanged: (value) {
+                              if (option1Controller.text.isNotEmpty &&
+                                  option2Controller.text.isNotEmpty &&
+                                  value.isNotEmpty) {
+                                setState(
+                                  () {
+                                    check123 = true;
+                                  },
+                                );
+                              } else {
+                                setState(
+                                  () {
+                                    check123 = false;
+                                  },
+                                );
+                              }
+                            },
+                            controller: option3Controller,
+                            minLines: 1,
+                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            style: TextStyle(fontSize: 20, height: 1.5),
+                            decoration: InputDecoration(
+                              hintText: 'Option 3',
+                              hintStyle: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              //border: InputBorder.none,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 190, 190, 186),
+                                    width: 2.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF9EE6D), width: 2.0),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 3
+
+                          SizedBox(height: 10),
+
+                          // Start -- TextField Option 4
+                          Visibility(
+                            visible: check123,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                if (check123 == true && value != null) {
+                                  setState(
+                                    () {
+                                      check1234 = true;
+                                    },
+                                  );
+                                } else {
+                                  setState(
+                                    () {
+                                      check1234 = false;
+                                    },
+                                  );
+                                }
+                              },
+                              controller: option4Controller,
+                              minLines: 1,
+                              maxLines: 1,
+                              keyboardType: TextInputType.multiline,
+                              style: TextStyle(fontSize: 20, height: 1.5),
+                              decoration: InputDecoration(
+                                hintText: 'Option 4',
+                                hintStyle: TextStyle(
+                                  fontSize: 20.0,
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                //border: InputBorder.none,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 190, 190, 186),
+                                      width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFF9EE6D), width: 2.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 4
+
+                          SizedBox(height: 10),
+
+                          // Start -- TextField Option 5
+                          Visibility(
+                            visible: check1234,
+                            child: TextFormField(
+                              controller: option5Controller,
+                              minLines: 1,
+                              maxLines: 1,
+                              keyboardType: TextInputType.multiline,
+                              style: TextStyle(fontSize: 20, height: 1.5),
+                              decoration: InputDecoration(
+                                hintText: 'Option 5',
+                                hintStyle: TextStyle(
+                                  fontSize: 20.0,
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                //border: InputBorder.none,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 190, 190, 186),
+                                      width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFF9EE6D), width: 2.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 5
+                        ],
                       ),
                     ),
                   ),
-                  // End -- TextField Option 4
-
-                  SizedBox(height: 10),
-
-                  // Start -- TextField Option 5
-                  Visibility(
-                    visible: check1234,
-                    child: TextFormField(
-                      controller: option5Controller,
-                      minLines: 1,
-                      maxLines: 1,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 20, height: 1.5),
-                      decoration: InputDecoration(
-                        hintText: 'Option 5',
-                        hintStyle: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        //border: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 190, 190, 186),
-                              width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // End -- TextField Option 5
-
-                  SizedBox(height: 10),
-                  // End -- TextField Option 1
+                  Divider(),
 
                   Expanded(
                     child: Align(
@@ -4014,7 +5503,7 @@ Future openDialogRandom(BuildContext context) => showDialog(
       });
     });
 
-Future descDialog(BuildContext context, String title, String desc) =>
+Future descDialog(BuildContext context, String id, String title, String desc) =>
     showDialog(
         context: context,
         builder: (context) {
@@ -4029,39 +5518,51 @@ Future descDialog(BuildContext context, String title, String desc) =>
                   ),
                   padding: EdgeInsets.all(20),
                   width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.35,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Stack(
-                        children: [
-                          Center(
-                            child: Text(
-                              title,
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: [
+                            Text(
+                              'Topic :',
                               style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black),
                             ),
-                          ),
-                          // Positioned(
-                          //   right: 0,
-                          //   top: -6,
-                          //   child: InkResponse(
-                          //     onTap: () {
-                          //       Navigator.of(context).pop();
-                          //     },
-                          //     child: CircleAvatar(
-                          //       child: Icon(
-                          //         Icons.close,
-                          //         color: Colors.black,
-                          //         size: 30,
-                          //       ),
-                          //       backgroundColor: Colors.transparent,
-                          //     ),
-                          //   ),
-                          // ),
-                        ],
+                            Positioned(
+                              right: 0,
+                              top: -6,
+                              child: InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: CircleAvatar(
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 30,
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black),
+                        ),
                       ),
                       SizedBox(height: 15),
                       Text(
@@ -4098,6 +5599,306 @@ Future descDialog(BuildContext context, String title, String desc) =>
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.066,
+                            width: MediaQuery.of(context).size.width * 0.864,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });
+
+Future descDialogMyOrder(BuildContext context, String id, String title,
+        String desc, TabController tabController) =>
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Center(
+              child: Material(
+                type: MaterialType.transparency,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: [
+                            Text(
+                              'Topic :',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                            Positioned(
+                              right: 0,
+                              top: -6,
+                              child: InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: CircleAvatar(
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 30,
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black),
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        'Description:',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        width: MediaQuery.of(context).size.height * 0.5,
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(49, 204, 204, 204),
+                          border: Border.all(
+                            color: Color(0xFFF9EE6D),
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20.0),
+                            topRight: const Radius.circular(20.0),
+                            bottomLeft: const Radius.circular(20.0),
+                            bottomRight: const Radius.circular(20.0),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 15, left: 15, right: 15, bottom: 15),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              desc,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.066,
+                            width: MediaQuery.of(context).size.width * 0.864,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        height: 50,
+                        width: MediaQuery.of(context).size.width * 0.864,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(255, 235, 113, 104),
+                            ),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(90.0),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Force Delete',
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black),
+                          ),
+                          onPressed: () {
+                            showCupertinoDialog(
+                                context: context,
+                                builder: (BuildContext ctx) {
+                                  return CupertinoAlertDialog(
+                                    title: const Text('Please Confirm'),
+                                    content: const Text(
+                                        'Are you sure to remove this list?'),
+                                    actions: [
+                                      // The "Yes" button
+                                      CupertinoDialogAction(
+                                        onPressed: () {
+                                          setState(() {
+                                            Navigator.of(context).pop();
+                                          });
+                                        },
+                                        child: const Text('Cancel'),
+                                        isDefaultAction: false,
+                                        isDestructiveAction: false,
+                                      ),
+                                      // The "No" button
+                                      CupertinoDialogAction(
+                                        onPressed: () async {
+                                          String? my_order_id = id;
+                                          String deleteVote =
+                                              '${MyConstant.domain}/famfam/deleteMyOrderWhereID.php?isAdd=true&my_order_id=$my_order_id';
+
+                                          await Dio()
+                                              .get(deleteVote)
+                                              .then((value) async {
+                                            Navigator.pop(context);
+                                            await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => TodoBody(
+                                                    tabSelected:
+                                                        tabController.index),
+                                              ),
+                                            );
+                                          });
+                                        },
+                                        child: const Text('Confirm'),
+                                        isDefaultAction: true,
+                                        isDestructiveAction: true,
+                                      )
+                                    ],
+                                  );
+                                });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });
+
+Future infoDialog(
+        BuildContext context, String title, String desc, double size) =>
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Center(
+              child: Material(
+                type: MaterialType.transparency,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Color(0xfffF5EC83),
+                  ),
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * size,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Text(
+                                title,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 0,
+                              top: -6,
+                              child: InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: CircleAvatar(
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 30,
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height:
+                            MediaQuery.of(context).size.height * (size - 0.1),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20.0),
+                            topRight: const Radius.circular(20.0),
+                            bottomLeft: const Radius.circular(20.0),
+                            bottomRight: const Radius.circular(20.0),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 15, left: 15, right: 15, bottom: 15),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Center(
+                              child: Text(
+                                desc,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.normal,
+                                ),
                               ),
                             ),
                           ),

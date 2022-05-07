@@ -5,6 +5,7 @@ import 'package:famfam/Homepage/menuHome.dart';
 import 'package:famfam/Homepage/tabbar.dart';
 import 'package:famfam/check-in/Checkin.dart';
 import 'package:famfam/models/circle_model.dart';
+import 'package:famfam/models/history_for_user_model.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:famfam/services/auth.dart';
 import 'package:famfam/services/my_constant.dart';
@@ -13,8 +14,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:famfam/services/auth.dart';
 import 'package:flutter/material.dart';
 // import 'package:famfam/Homepage/eachMenu.dart';
-
-import 'package:flutter/cupertino.dart';
 
 import 'package:famfam/Homepage/date.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   bool load = true;
   List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
+  List<HistoryForUserModel> historyForUserModel = [];
   String family = 'loading..';
   String name = 'loading..';
   String profileImage =
@@ -123,6 +123,7 @@ class _HomePageState extends State<HomePage> {
                               child: SingleChildScrollView(
                                 child: Column(children: [
                                   Container(
+                                    constraints: const BoxConstraints(minHeight: 100),
                                     width: MediaQuery.of(context).size.width,
                                     child: Stack(
                                       children: [

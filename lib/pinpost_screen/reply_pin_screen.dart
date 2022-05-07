@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/models/circle_model.dart';
+import 'package:famfam/models/history_pinpost_model.dart';
 import 'package:famfam/pinpost_screen/pin_screen.dart';
 import 'package:famfam/widgets/circle_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +18,7 @@ import 'package:famfam/models/pinreply_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class ReplyPinScreen extends StatefulWidget {
   String pin_id;
@@ -171,12 +173,45 @@ class _BodyState extends State<ReplyPinScreen> {
     String InsertPinReply =
         '${MyConstant.domain}/famfam/insertPinReply.php?isAdd=true&author_id=$author_id&pin_id=$pin_id&pin_reply_text=$pin_reply_text';
 
-    await Dio().get(InsertPinReply).then((value) {
+    await Dio().get(InsertPinReply).then((value) async {
       if (value.toString() == 'true') {
         setState(() {
           load = true;
         });
         print('PinReply Inserted');
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        String? circle_id = preferences.getString('circle_id');
+        List<HistoryPinPostModel> historyPinPostModel = [];
+        var uuid = Uuid();
+        String? user_id = userModels[0].id;
+        String history_pinpost_uid = uuid.v1();
+        String author_name = userModels[0].fname;
+        String history_isreply = pinpostModels[0].fname;
+        String InsertHistoryPinpost =
+            '${MyConstant.domain}/famfam/insertHistoryPinPost.php?isAdd=true&history_pinpost_uid=$history_pinpost_uid&author_name=$author_name&history_isreply=$history_isreply';
+        await Dio().get(InsertHistoryPinpost).then((value) async {
+          String pullHistoryPinpost =
+              '${MyConstant.domain}/famfam/getHistoryPinPost.php?isAdd=true&history_pinpost_uid=$history_pinpost_uid';
+          print(history_pinpost_uid);
+          await Dio().get(pullHistoryPinpost).then((value) async {
+            for (var item in json.decode(value.data)) {
+              HistoryPinPostModel model = HistoryPinPostModel.fromMap(item);
+              setState(() {
+                historyPinPostModel.add(model);
+              });
+            }
+            String history_pinpost_id =
+                historyPinPostModel[0].history_pinpost_id;
+            String InsertHistoryPinPostRelation =
+                '${MyConstant.domain}/famfam/insertHistoryPinPostRelation.php?isAdd=true&history_pinpost_id=$history_pinpost_id&circle_id=$circle_id';
+            await Dio().get(InsertHistoryPinPostRelation).then((value) async {
+              int history_statuss = 1;
+              String updateHistoryForUserStatus =
+                  '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
+              await Dio().get(updateHistoryForUserStatus);
+            });
+          });
+        });
       } else {
         print('Reply Error');
       }

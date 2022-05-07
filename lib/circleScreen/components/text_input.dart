@@ -211,12 +211,19 @@ class _EnterCircleIDState extends State<EnterCircleID> {
                                       await SharedPreferences.getInstance();
                                   preferences.setString(
                                       'circle_id', circle_id!);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => HomePage(user),
-                                    ),
-                                  );
+                                  String? user_id = userModels[0].id;
+                                  String insertHistoryTemplate =
+                                      "${MyConstant.domain}/famfam/insertHistory_for_User.php?isAdd=true&user_id=$user_id&circle_id=$circle_id";
+                                  await Dio()
+                                      .get(insertHistoryTemplate)
+                                      .then((value) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => HomePage(user),
+                                      ),
+                                    );
+                                  });
                                 });
                               }
                             }
