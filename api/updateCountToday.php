@@ -1,6 +1,7 @@
 <?php
 	include 'connected.php';
 	header("Access-Control-Allow-Origin: *");
+	error_reporting(E_ERROR | E_PARSE);
 
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
@@ -8,22 +9,19 @@ if (!$link) {
     echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
     
     exit;
-}
+}else {
 
-if (!$link->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $link->error);
-    exit();
-	}
-
-if (isset($_GET)) {
+	if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
-				
-	$user_id = $_GET['user_id'];
-	$list_to_do = $_GET['list_to_do'];
-	$icon = $_GET['icon'];	
-		
-		
-		$sql = "INSERT INTO `today_i_do`(`id`, `user_id`, `list_to_do`, `icon`) VALUES (NULL,'$user_id','$list_to_do','$icon')";
+			
+		$user_id = $_GET['user_id'];
+        $today_i_do_text = $_GET['today_i_do_text'];
+        $count = $_GET['count'];			
+									
+		$sql = " UPDATE count_today_i_do
+                SET count = $count 
+                where user_id = '$user_id' AND
+                today_i_do_text = '$today_i_do_text' ";
 
 		$result = mysqli_query($link, $sql);
 
@@ -35,6 +33,8 @@ if (isset($_GET)) {
 
 	} else echo "Welcome Master UNG";
    
+}
+	
 }
 	mysqli_close($link);
 ?>

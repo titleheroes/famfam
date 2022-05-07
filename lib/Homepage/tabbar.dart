@@ -22,6 +22,8 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/ticktick_model.dart';
+import 'package:famfam/models/count_today_model.dart';
+import 'package:famfam/models/count_byUser_model.dart';
 
 class tabbar extends StatefulWidget {
   const tabbar({Key? key}) : super(key: key);
@@ -48,11 +50,26 @@ class _tabbarState extends State<tabbar> {
   final List<String> icon = <String>[];
 
   TextEditingController nameController = TextEditingController();
-  String numicon = '';
+  String numicon = '0';
   int num = 0;
   List<UserModel> userModels = [];
+  List<count_today_Model> count_today_Models = [];
+  List<count_byUser_Model> count_byUser_Models = [];
   List<list_today_Model> list_to_do_Models = [];
+  bool have_recommend = false;
   bool load = true;
+
+
+  List<String> fire_type = ['urgent', 'fast'];
+  List<String> dumbbell_type = ['exercise', 'workout', 'running', 'jogging'];
+  List<String> money_type = ['money', 'bank', 'pay', 'paid'];
+  List<String> beer_type = ['party', 'drink', 'drunk'];
+  List<String> clock_type = ['alarm', 'wake'];
+  List<String> paper_type = ['meeting', 'appoint', 'doctor'];
+  List<String> star_type = ['star'];
+  List<String> shop_type = ['shop', 'shopping', 'buy'];
+
+
 
   void addItemToList(String text, String iconnum) {
     setState(() {
@@ -114,6 +131,7 @@ class _tabbarState extends State<tabbar> {
     addItemfromStart();
     pullCircle();
     pullMyOrderUnfinished();
+    getCountToday_byUser();
     setState(() {
       load = false;
     });
@@ -128,27 +146,155 @@ class _tabbarState extends State<tabbar> {
       await Dio().get(pullData).then((value) async {
         for (var item in json.decode(value.data)) {
           list_today_Model list_model = list_today_Model.fromMap(item);
-          print(item);
+          print('List =====> ${list_model.list_to_do} icon ====> ${list_model.icon}');
+
           setState(() {
+            
             list_to_do_Models.add(list_model);
           });
         }
+
       });
     } catch (e) {}
   }
 
+  
+
   Future<Null> InsertDatatoday({String? list_to_do, String? icon}) async {
+
+    setState(() {
+      count_today_Models.clear;
+    });
     String? member_id = userModels[0].id;
 
+    String? today_i_do_text = list_to_do;
+    int count = 1;
+
+
+    String APIinsertData =
+        '${MyConstant.domain}/famfam/insertDataToday_IDO.php?isAdd=true&user_id=$member_id&list_to_do=$list_to_do&icon=$icon';
     print('###UID ==> ' + '$member_id');
     print('##icon $icon');
-    String APIinsertData =
-        '${MyConstant.domain}/famfam/insertDataToday_IDO.php?user_id=$member_id &list_to_do=$list_to_do&isAdd=true&icon=$icon';
+
+    
+
+    String insert_count_data =
+        '${MyConstant.domain}/famfam/insertCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text&count=$count';
+    
+    String get_count_today =
+        '${MyConstant.domain}/famfam/getCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text ';
+
+    
+    
+    
+
+    
+    
     await Dio().get(APIinsertData).then((value) {
       if (value.toString() == 'true') {
         print('Insert Today I Do Successed');
+
+        
+        Dio().get(get_count_today).then((get_value) {
+
+          if (get_value.toString() == 'null') {
+            //new data
+            print('result ====> $get_value');
+
+            Dio().get(insert_count_data).then((value) {
+              print('inserted count');
+              getCountToday_byUser();
+            });
+
+
+          } else  {
+            //have the same data
+            
+
+            
+            print('result2 ====> $get_value');
+            for (var item in json.decode(get_value.data)) {
+              count_today_Model model = count_today_Model.fromMap(item);
+              
+              setState(() {
+                
+                count_today_Models.clear();
+                count_today_Models.add(model);
+                
+                
+              });
+
+            }
+            
+            print('ssssss '+ count_today_Models[0].toString());
+            int new_count = int.parse(count_today_Models[0].count)+1 ;
+            String update_count_today =
+              '${MyConstant.domain}/famfam/updateCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text&count=$new_count ';
+
+            Dio().get(update_count_today).then((value) async{
+              getCountToday_byUser();
+            });
+            
+
+            
+
+
+          }
+
+        });
+
+
+        
+
+
+      }
+
+    });
+
+
+
+  }
+
+  Future<Null> getCountToday_byUser() async{
+    setState(() {
+      have_recommend = false;
+    });
+    String? member_id = userModels[0].id;
+    String get_count_byUser =
+        '${MyConstant.domain}/famfam/getCountTodaybyUser.php?isAdd=true&user_id=$member_id ';
+
+    if (count_byUser_Models.length != 0) {
+      count_byUser_Models.clear();
+    } else {}
+
+    await Dio().get(get_count_byUser).then((value) {
+      //print(value);
+
+      if (value.toString() == 'null') {
+        //No Data
+        setState(() {
+          have_recommend = false;
+        });
+      } else {
+
+        //Have Data
+        for (var item in json.decode(value.data)) {
+          count_byUser_Model model = count_byUser_Model.fromMap(item);
+          print('text ==>> ${model.today_i_do_text} by user_id = ${model.user_id} count = ${model.count}');
+
+          setState(() {
+            if(int.parse(model.count) >= 5){
+              have_recommend = true;
+            }           
+            count_byUser_Models.add(model);
+            
+          });
+
+        }
+
       }
     });
+
   }
 
   Future<Null> DeleteDatatoday({String? list_to_do}) async {
@@ -187,6 +333,8 @@ class _tabbarState extends State<tabbar> {
             title: const Text('Please Confirm'),
             content: const Text('Are you sure to remove this topic?'),
             actions: [
+
+              
               // The "Yes" button
               CupertinoDialogAction(
                 onPressed: () {
@@ -218,193 +366,375 @@ class _tabbarState extends State<tabbar> {
     return showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          // shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.all(Radius.circular(32.0))),
-          backgroundColor: Colors.white,
-          title: Text('Today, I should do'),
-          content: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  hintText: "Add what you want to do",
-                  fillColor: Colors.white,
-                  filled: true,
-                ),
-              )),
-
-          actions: <Widget>[
-            Column(
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 35,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          numicon = '1';
-                          print(numicon);
-                        },
-                        child: Image(
-                          image: AssetImage('assets/images/fire.png'),
-                          fit: BoxFit.cover,
-                          height: 46,
-                        )),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          numicon = '2';
-                          print(numicon);
-                        },
-                        child: Image(
-                          image: AssetImage('assets/images/dumbbell.png'),
-                          fit: BoxFit.cover,
-                          height: 46,
-                        )),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          numicon = '3';
-                          print(numicon);
-                        },
-                        child: Image(
-                          image: AssetImage('assets/images/money.png'),
-                          fit: BoxFit.cover,
-                          height: 46,
-                        )),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          numicon = '4';
-                          print(numicon);
-                        },
-                        child: Image(
-                          image: AssetImage('assets/images/beer.png'),
-                          fit: BoxFit.cover,
-                          height: 46,
-                        )),
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 35,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          numicon = '5';
-                          print(numicon);
-                        },
-                        child: Image(
-                          image: AssetImage('assets/images/stopwatch.png'),
-                          fit: BoxFit.cover,
-                          height: 46,
-                        )),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          numicon = '6';
-                          print(numicon);
-                        },
-                        child: Image(
-                          image: AssetImage('assets/images/medical-report.png'),
-                          fit: BoxFit.cover,
-                          height: 46,
-                        )),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          numicon = '7';
-                          print(numicon);
-                        },
-                        child: Image(
-                          image: AssetImage('assets/images/star.png'),
-                          fit: BoxFit.cover,
-                          height: 46,
-                        )),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          numicon = '8';
-                          print(numicon);
-                        },
-                        child: Image(
-                          image: AssetImage('assets/images/shopping-bags.png'),
-                          fit: BoxFit.cover,
-                          height: 46,
-                        )),
-                  ],
-                )
-              ],
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Center(
-                child: Row(
-              children: [
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: 2,
-                    ),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        minimumSize: Size(150, 40),
-                        backgroundColor: Color.fromARGB(255, 139, 139, 139),
-                        alignment: Alignment.center,
+        return Stack(
+          children:[ 
+            
+            
+            AlertDialog(
+            // shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            backgroundColor: Colors.white,
+            title: Text('Today, I should do'),
+            content: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    hintText: "Add what you want to do",
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
+                )),
+        
+            actions: <Widget>[
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 35,
                       ),
-                      child:
-                          Text('Cancel', style: TextStyle(color: Colors.white)),
+                      
+        
+                      GestureDetector(
+                          onTap: () {
+                            numicon = '1';
+                            print(numicon);
+                          },
+                          child: Image(
+                            image: AssetImage('assets/images/fire.png'),
+                            fit: BoxFit.cover,
+                            height: 46,
+                          )),
+        
+        
+                      SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            numicon = '2';
+                            print(numicon);
+                          },
+                          child: Image(
+                            image: AssetImage('assets/images/dumbbell.png'),
+                            fit: BoxFit.cover,
+                            height: 46,
+                          )),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            numicon = '3';
+                            print(numicon);
+                          },
+                          child: Image(
+                            image: AssetImage('assets/images/money.png'),
+                            fit: BoxFit.cover,
+                            height: 46,
+                          )),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            numicon = '4';
+                            print(numicon);
+                          },
+                          child: Image(
+                            image: AssetImage('assets/images/beer.png'),
+                            fit: BoxFit.cover,
+                            height: 46,
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 35,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            numicon = '5';
+                            print(numicon);
+                          },
+                          child: Image(
+                            image: AssetImage('assets/images/stopwatch.png'),
+                            fit: BoxFit.cover,
+                            height: 46,
+                          )),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            numicon = '6';
+                            print(numicon);
+                          },
+                          child: Image(
+                            image: AssetImage('assets/images/medical-report.png'),
+                            fit: BoxFit.cover,
+                            height: 46,
+                          )),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            numicon = '7';
+                            print(numicon);
+                          },
+                          child: Image(
+                            image: AssetImage('assets/images/star.png'),
+                            fit: BoxFit.cover,
+                            height: 46,
+                          )),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            numicon = '8';
+                            print(numicon);
+                          },
+                          child: Image(
+                            image: AssetImage('assets/images/shopping-bags.png'),
+                            fit: BoxFit.cover,
+                            height: 46,
+                          )),
+                    ],
+                  ),
+                   
+                ],
+              ),
+              SizedBox(
+                height: 20,
+                
+              ),
+        
+              Container(
+                  //color: Colors.green,
+                  child: (have_recommend)? Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18),
+                        child: Text('You\'ve done frequently',style: TextStyle(fontSize: 18),),
+                      ),
+                    ],
+                  ):null,
+              ),
+        
+        
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: (have_recommend)? Container(
+                  width: 500,
+                  height: 50,
+                  child: Expanded(child: Container(
+                    //color: Colors.red,
+        
+                    /*
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text('You\'ve done...', style: TextStyle(fontSize: 18,),),
+                      ),
+                   
+        
+                    ],),
+                    */
+        
+                    /*
+                    child: GridView.builder(
+                      itemCount: count_byUser_Models.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisExtent: 60),           
+                      //physics: BouncingScrollPhysics(),
+        
+                      itemBuilder: (BuildContext context,int index){
+        
+                        return
+                        
+                        Container(
+                          width: 50,
+                          margin: EdgeInsets.only(left: 10,right: 10,bottom: 10), 
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                               backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 255, 205, 67)),
+                            ),
+                            onPressed: (){
+                              print('${count_byUser_Models[index].today_i_do_text}');
+                              nameController.text = '${count_byUser_Models[index].today_i_do_text}';
+                            }, 
+                            child: Text('${count_byUser_Models[index].today_i_do_text}' ,style: TextStyle(fontSize: 16),)),
+                        ) ;
+                      },  
+                     ),
+                     */
+        
+                    
+                    child: (count_byUser_Models.length != 0 && have_recommend)? ListView.builder(
+                      itemCount: count_byUser_Models.length,
+                      scrollDirection: Axis.horizontal,
+                      physics: BouncingScrollPhysics(),
+                      itemBuilder: (BuildContext context,int index){
+                        return 
+                        
+                        (int.parse(count_byUser_Models[index].count) >= 5) ?
+                        Container(
+                          //width: 100,
+                          margin: EdgeInsets.only( left: index == 0 ? 10:6,bottom: 10), 
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                              ),
+                              backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 255, 205, 67)),
+                            ),
+                            onPressed: (){
+                              print('${count_byUser_Models[index].today_i_do_text}');
+                              nameController.text = '${count_byUser_Models[index].today_i_do_text}';
+                            }, 
+                            child: Text('${count_byUser_Models[index].today_i_do_text}' ,
+                            overflow: TextOverflow.ellipsis,style: 
+                            TextStyle(fontSize: 16,color: Colors.black),)),
+                        ):Container() ;
+                      },
+                    ) :null
+                    
+        
+        
+        
+                  )),
+                ):null,
+              ),
+              
+              SizedBox(height: 5,),
+        
+              Center(
+                  
+                 
+                  
+                 child: Container(
+                   padding: EdgeInsets.only(left: 20,right: 20),
+                   width: double.infinity,
+                   height: 45,
+                   child: TextButton(
+                      style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<Color>(
+                                                    Color.fromARGB(
+                                                        255, 243, 230, 90)),
+                                            shape: MaterialStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                            ),
+                                          ),
+                      child: Text('Add', style: TextStyle(color: Colors.black,fontSize: 18)),
                       onPressed: () {
+                        print('Selected icon ======> ${numicon}');
+                        print('Input Text =====> ${nameController.text}');
+                        
+        
+                        String text_input = nameController.text.toLowerCase();
+                        bool detected = false;
+        
+                        //if no icon selected
+                        if (numicon == '0'){
+        
+                          
+                          for(int i=0; i < fire_type.length;i++){
+                            if(text_input.contains(fire_type[i])) {
+                              detected = true;
+                              numicon = '1';
+                            }
+                          }
+        
+                          for(int i=0; i < dumbbell_type.length;i++){
+                            if(text_input.contains(dumbbell_type[i])) {
+                              detected = true;
+                              numicon = '2';
+                            }
+                          }
+        
+                          for(int i=0; i < money_type.length;i++){
+                            if(text_input.contains(money_type[i])) {
+                              detected = true;
+                              numicon = '3';
+                            }
+                          }
+        
+                          for(int i=0; i < beer_type.length;i++){
+                            if(text_input.contains(beer_type[i])) {
+                              detected = true;
+                              numicon = '4';
+                            }
+                          }
+        
+                          for(int i=0; i < clock_type.length;i++){
+                            if(text_input.contains(clock_type[i])) {
+                              detected = true;
+                              numicon = '5';
+                            }
+                          }
+        
+                          for(int i=0; i < paper_type.length;i++){
+                            if(text_input.contains(paper_type[i])) {
+                              detected = true;
+                              numicon = '6';
+                            }
+                          }
+        
+                          for(int i=0; i < star_type.length;i++){
+                            if(text_input.contains(star_type[i])) {
+                              detected = true;
+                              numicon = '7';
+                            }
+                          }
+        
+                          for(int i=0; i < shop_type.length;i++){
+                            if(text_input.contains(shop_type[i])) {
+                              detected = true;
+                              numicon = '8';
+                            }
+                          }
+        
+                          
+        
+                        }
+                        
+                        if(numicon == '0'){
+                          //Default icon                       
+                          numicon = '7';
+                        }
+                        
+                        
+                        addItemToList(nameController.text, numicon);
+                        InsertDatatoday(list_to_do: nameController.text, icon: numicon);
+                        nameController.text = '';
+                        numicon = '0';
                         Navigator.pop(context);
                       },
                     ),
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 2),
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      minimumSize: Size(150, 40),
-                      backgroundColor: Color.fromARGB(255, 224, 222, 72),
-                      alignment: Alignment.center,
-                    ),
-                    child: Text('Add', style: TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      print(numicon);
-                      addItemToList(nameController.text, numicon);
-                      InsertDatatoday(
-                          list_to_do: nameController.text, icon: numicon);
-                      nameController.text = '';
-                      numicon = '';
-                      Navigator.pop(context);
-                    },
-                  ),
-                )
-              ],
-            ))
-          ],
+                 )
+               
+              
+            ),
+            SizedBox(height: 10,),
+            ],
+          ),]
         );
       },
     );
@@ -695,7 +1025,11 @@ class _tabbarState extends State<tabbar> {
                                                             ),
                                                           ),
                                                         ),
+                                                        
                                                         onPressed: () {
+                                                          numicon = '0';
+                                                          
+
                                                           _displayTextInputDialog(
                                                               context);
                                                         },
@@ -853,9 +1187,14 @@ class _tabbarState extends State<tabbar> {
                                                                                                                 height: 30,
                                                                                                               ))),
                                                                             Padding(padding: EdgeInsets.only(right: 20)),
-                                                                            Text(
-                                                                              '${list_todo[index]}',
-                                                                              style: TextStyle(fontSize: 18),
+                                                                            Container(
+                                                                              width: 245,
+                                                                              //color: Colors.blue,
+                                                                              child: Text(
+                                                                                '${list_todo[index]}',
+                                                                                style: TextStyle(fontSize: 18),
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
                                                                             ),
                                                                           ],
                                                                         )),
