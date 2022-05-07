@@ -350,17 +350,17 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
                                                                                 FontWeight.bold,
                                                                           ),
                                                                         ),
+                                                                        Text(
+                                                                          ' to you.',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                18,
+                                                                            fontWeight:
+                                                                                FontWeight.normal,
+                                                                          ),
+                                                                        ),
                                                                       ],
-                                                                    ),
-                                                                    Text(
-                                                                      ' to you.',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            18,
-                                                                        fontWeight:
-                                                                            FontWeight.normal,
-                                                                      ),
                                                                     ),
                                                                   ],
                                                                 );

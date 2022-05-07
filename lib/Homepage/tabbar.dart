@@ -51,7 +51,7 @@ class _tabbarState extends State<tabbar> {
   final List<String> list_todo = <String>[];
   final List<String> icon = <String>[];
 
-  TextEditingController nameController = TextEditingController();micon = '';
+  TextEditingController nameController = TextEditingController();
   String numicon = '0';
   int num = 0;
   List<UserModel> userModels = [];
@@ -1622,6 +1622,9 @@ class _tabbarState extends State<tabbar> {
                                               ),
                                             ],
                                           ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
                                         ),
                                         ElevatedButton(
                                           style: ButtonStyle(
