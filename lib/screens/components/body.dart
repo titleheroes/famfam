@@ -454,7 +454,10 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                     child: Column(
                                                       children: [
                                                         Container(
-                                                          height: 80,
+                                                          constraints:
+                                                              const BoxConstraints(
+                                                                  minHeight:
+                                                                      80),
                                                           margin:
                                                               EdgeInsets.only(
                                                                   bottom: 6),
@@ -713,7 +716,10 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                     child: Column(
                                                       children: [
                                                         Container(
-                                                          height: 80,
+                                                          constraints:
+                                                              const BoxConstraints(
+                                                                  minHeight:
+                                                                      80),
                                                           margin:
                                                               EdgeInsets.only(
                                                                   bottom: 6),
@@ -893,6 +899,8 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                           ),
                                   ),
                                   Container(
+                                    constraints:
+                                        const BoxConstraints(minHeight: 80),
                                     child: myOrderModels.isEmpty
                                         ? Padding(
                                             padding: const EdgeInsets.only(
@@ -943,7 +951,10 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                     child: Column(
                                                       children: [
                                                         Container(
-                                                          height: 80,
+                                                          constraints:
+                                                              const BoxConstraints(
+                                                                  minHeight:
+                                                                      80),
                                                           margin:
                                                               EdgeInsets.only(
                                                                   bottom: 6),
@@ -3518,7 +3529,7 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                         padding: const EdgeInsets.only(bottom: 30),
                                                                                         child: Builder(
                                                                                           builder: (context) {
-                                                                                            if (userModels[0].id == voteModels[index].host_id) {
+                                                                                            if (userModels[0].id == topicRandom[index].user_id) {
                                                                                               return GestureDetector(
                                                                                                 onTap: () {
                                                                                                   print('click on delete ticktik ${topicRandom[index].random_topic}');
@@ -5046,257 +5057,260 @@ Future openDialogRandom(BuildContext context) => showDialog(
                   ),
                   // End -- TextField Topic
 
-                  SizedBox(height: 40),
-                  // Text(
-                  //   'Options',
-                  //   style: TextStyle(
-                  //     fontSize: 20,
-                  //     fontWeight: FontWeight.w600,
-                  //     color: Colors.black,
-                  //   ),
-                  // ),
-                  // SizedBox(height: 10),
-
-                  // Start -- TextField Option 1
-                  TextFormField(
-                    onChanged: (value) {
-                      if (value.isNotEmpty &&
-                          option2Controller.text.isNotEmpty &&
-                          option3Controller.text.isNotEmpty) {
-                        setState(
-                          () {
-                            check123 = true;
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            check123 = false;
-                          },
-                        );
-                      }
-                    },
-                    controller: option1Controller,
-                    minLines: 1,
-                    maxLines: 1,
-                    keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 20, height: 1.5),
-                    decoration: InputDecoration(
-                      hintText: 'Option 1',
-                      hintStyle: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 190, 190, 186),
-                            width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                      ),
-                    ),
-                  ),
                   SizedBox(height: 10),
 
-                  // Start -- TextField Option 2
-                  TextFormField(
-                    onChanged: (value) {
-                      if (option1Controller.text.isNotEmpty &&
-                          value.isNotEmpty &&
-                          option3Controller.text.isNotEmpty) {
-                        setState(
-                          () {
-                            check123 = true;
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            check123 = false;
-                          },
-                        );
-                      }
-                    },
-                    controller: option2Controller,
-                    minLines: 1,
-                    maxLines: 1,
-                    keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 20, height: 1.5),
-                    decoration: InputDecoration(
-                      hintText: 'Option 2',
-                      hintStyle: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 190, 190, 186),
-                            width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                      ),
-                    ),
-                  ),
-                  // End -- TextField Option 2
+                  Divider(),
 
-                  SizedBox(height: 10),
+                  Container(
+                    height: 200,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
 
-                  // Start -- TextField Option 3
-                  TextFormField(
-                    onChanged: (value) {
-                      if (option1Controller.text.isNotEmpty &&
-                          option2Controller.text.isNotEmpty &&
-                          value.isNotEmpty) {
-                        setState(
-                          () {
-                            check123 = true;
-                          },
-                        );
-                      } else {
-                        setState(
-                          () {
-                            check123 = false;
-                          },
-                        );
-                      }
-                    },
-                    controller: option3Controller,
-                    minLines: 1,
-                    maxLines: 1,
-                    keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 20, height: 1.5),
-                    decoration: InputDecoration(
-                      hintText: 'Option 3',
-                      hintStyle: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 190, 190, 186),
-                            width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                      ),
-                    ),
-                  ),
-                  // End -- TextField Option 3
-
-                  SizedBox(height: 10),
-
-                  // Start -- TextField Option 4
-                  Visibility(
-                    visible: check123,
-                    child: TextFormField(
-                      onChanged: (value) {
-                        if (check123 == true && value != null) {
-                          setState(
-                            () {
-                              check1234 = true;
+                          // Start -- TextField Option 1
+                          TextFormField(
+                            onChanged: (value) {
+                              if (value.isNotEmpty &&
+                                  option2Controller.text.isNotEmpty &&
+                                  option3Controller.text.isNotEmpty) {
+                                setState(
+                                  () {
+                                    check123 = true;
+                                  },
+                                );
+                              } else {
+                                setState(
+                                  () {
+                                    check123 = false;
+                                  },
+                                );
+                              }
                             },
-                          );
-                        } else {
-                          setState(
-                            () {
-                              check1234 = false;
+                            controller: option1Controller,
+                            minLines: 1,
+                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            style: TextStyle(fontSize: 20, height: 1.5),
+                            decoration: InputDecoration(
+                              hintText: 'Option 1',
+                              hintStyle: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              //border: InputBorder.none,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 190, 190, 186),
+                                    width: 2.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF9EE6D), width: 2.0),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 10),
+
+                          // Start -- TextField Option 2
+                          TextFormField(
+                            onChanged: (value) {
+                              if (option1Controller.text.isNotEmpty &&
+                                  value.isNotEmpty &&
+                                  option3Controller.text.isNotEmpty) {
+                                setState(
+                                  () {
+                                    check123 = true;
+                                  },
+                                );
+                              } else {
+                                setState(
+                                  () {
+                                    check123 = false;
+                                  },
+                                );
+                              }
                             },
-                          );
-                        }
-                      },
-                      controller: option4Controller,
-                      minLines: 1,
-                      maxLines: 1,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 20, height: 1.5),
-                      decoration: InputDecoration(
-                        hintText: 'Option 4',
-                        hintStyle: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        //border: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 190, 190, 186),
-                              width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                        ),
+                            controller: option2Controller,
+                            minLines: 1,
+                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            style: TextStyle(fontSize: 20, height: 1.5),
+                            decoration: InputDecoration(
+                              hintText: 'Option 2',
+                              hintStyle: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              //border: InputBorder.none,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 190, 190, 186),
+                                    width: 2.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF9EE6D), width: 2.0),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 2
+
+                          SizedBox(height: 10),
+
+                          // Start -- TextField Option 3
+                          TextFormField(
+                            onChanged: (value) {
+                              if (option1Controller.text.isNotEmpty &&
+                                  option2Controller.text.isNotEmpty &&
+                                  value.isNotEmpty) {
+                                setState(
+                                  () {
+                                    check123 = true;
+                                  },
+                                );
+                              } else {
+                                setState(
+                                  () {
+                                    check123 = false;
+                                  },
+                                );
+                              }
+                            },
+                            controller: option3Controller,
+                            minLines: 1,
+                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            style: TextStyle(fontSize: 20, height: 1.5),
+                            decoration: InputDecoration(
+                              hintText: 'Option 3',
+                              hintStyle: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              //border: InputBorder.none,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 190, 190, 186),
+                                    width: 2.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                                borderSide: BorderSide(
+                                    color: Color(0xFFF9EE6D), width: 2.0),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 3
+
+                          SizedBox(height: 10),
+
+                          // Start -- TextField Option 4
+                          Visibility(
+                            visible: check123,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                if (check123 == true && value != null) {
+                                  setState(
+                                    () {
+                                      check1234 = true;
+                                    },
+                                  );
+                                } else {
+                                  setState(
+                                    () {
+                                      check1234 = false;
+                                    },
+                                  );
+                                }
+                              },
+                              controller: option4Controller,
+                              minLines: 1,
+                              maxLines: 1,
+                              keyboardType: TextInputType.multiline,
+                              style: TextStyle(fontSize: 20, height: 1.5),
+                              decoration: InputDecoration(
+                                hintText: 'Option 4',
+                                hintStyle: TextStyle(
+                                  fontSize: 20.0,
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                //border: InputBorder.none,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 190, 190, 186),
+                                      width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFF9EE6D), width: 2.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 4
+
+                          SizedBox(height: 10),
+
+                          // Start -- TextField Option 5
+                          Visibility(
+                            visible: check1234,
+                            child: TextFormField(
+                              controller: option5Controller,
+                              minLines: 1,
+                              maxLines: 1,
+                              keyboardType: TextInputType.multiline,
+                              style: TextStyle(fontSize: 20, height: 1.5),
+                              decoration: InputDecoration(
+                                hintText: 'Option 5',
+                                hintStyle: TextStyle(
+                                  fontSize: 20.0,
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                //border: InputBorder.none,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 190, 190, 186),
+                                      width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(23.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFF9EE6D), width: 2.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // End -- TextField Option 5
+                        ],
                       ),
                     ),
                   ),
-                  // End -- TextField Option 4
-
-                  SizedBox(height: 10),
-
-                  // Start -- TextField Option 5
-                  Visibility(
-                    visible: check1234,
-                    child: TextFormField(
-                      controller: option5Controller,
-                      minLines: 1,
-                      maxLines: 1,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 20, height: 1.5),
-                      decoration: InputDecoration(
-                        hintText: 'Option 5',
-                        hintStyle: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        //border: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 190, 190, 186),
-                              width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: Color(0xFFF9EE6D), width: 2.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // End -- TextField Option 5
-
-                  SizedBox(height: 10),
-                  // End -- TextField Option 1
+                  Divider(),
 
                   Expanded(
                     child: Align(

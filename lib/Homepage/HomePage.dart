@@ -14,8 +14,6 @@ import 'package:famfam/services/auth.dart';
 import 'package:flutter/material.dart';
 // import 'package:famfam/Homepage/eachMenu.dart';
 
-import 'package:flutter/cupertino.dart';
-
 import 'package:famfam/Homepage/date.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -120,6 +118,7 @@ class _HomePageState extends State<HomePage> {
                     child: SingleChildScrollView(
                       child: Column(children: [
                         Container(
+                          constraints: const BoxConstraints(minHeight: 100),
                           width: MediaQuery.of(context).size.width,
                           child: Stack(
                             children: [
