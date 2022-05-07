@@ -2075,7 +2075,13 @@ class _TickBodyState extends State<TickBody> {
                               "assets/icons/information-_1_.svg",
                               height: 30,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              infoDialog(
+                                  context,
+                                  'TickTick ?',
+                                  'List of thing\nthat you can make and tick\nwhatever you want.',
+                                  0.24);
+                            },
                           ),
                         ],
                       ),

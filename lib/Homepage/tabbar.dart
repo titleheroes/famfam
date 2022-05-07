@@ -61,7 +61,6 @@ class _tabbarState extends State<tabbar> {
   bool have_recommend = false;
   bool load = true;
 
-
   List<String> fire_type = ['urgent', 'fast'];
   List<String> dumbbell_type = ['exercise', 'workout', 'running', 'jogging'];
   List<String> money_type = ['money', 'bank', 'pay', 'paid'];
@@ -70,8 +69,6 @@ class _tabbarState extends State<tabbar> {
   List<String> paper_type = ['meeting', 'appoint', 'doctor'];
   List<String> star_type = ['star'];
   List<String> shop_type = ['shop', 'shopping', 'buy'];
-
-
 
   void addItemToList(String text, String iconnum) {
     setState(() {
@@ -148,22 +145,18 @@ class _tabbarState extends State<tabbar> {
       await Dio().get(pullData).then((value) async {
         for (var item in json.decode(value.data)) {
           list_today_Model list_model = list_today_Model.fromMap(item);
-          print('List =====> ${list_model.list_to_do} icon ====> ${list_model.icon}');
+          print(
+              'List =====> ${list_model.list_to_do} icon ====> ${list_model.icon}');
 
           setState(() {
-            
             list_to_do_Models.add(list_model);
           });
         }
-
       });
     } catch (e) {}
   }
 
-  
-
   Future<Null> InsertDatatoday({String? list_to_do, String? icon}) async {
-
     setState(() {
       count_today_Models.clear;
     });
@@ -172,33 +165,22 @@ class _tabbarState extends State<tabbar> {
     String? today_i_do_text = list_to_do;
     int count = 1;
 
-
     String APIinsertData =
         '${MyConstant.domain}/famfam/insertDataToday_IDO.php?isAdd=true&user_id=$member_id&list_to_do=$list_to_do&icon=$icon';
     print('###UID ==> ' + '$member_id');
     print('##icon $icon');
 
-    
-
     String insert_count_data =
         '${MyConstant.domain}/famfam/insertCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text&count=$count';
-    
+
     String get_count_today =
         '${MyConstant.domain}/famfam/getCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text ';
 
-    
-    
-    
-
-    
-    
     await Dio().get(APIinsertData).then((value) {
       if (value.toString() == 'true') {
         print('Insert Today I Do Successed');
 
-        
         Dio().get(get_count_today).then((get_value) {
-
           if (get_value.toString() == 'null') {
             //new data
             print('result ====> $get_value');
@@ -207,57 +189,34 @@ class _tabbarState extends State<tabbar> {
               print('inserted count');
               getCountToday_byUser();
             });
-
-
-          } else  {
+          } else {
             //have the same data
-            
 
-            
             print('result2 ====> $get_value');
             for (var item in json.decode(get_value.data)) {
               count_today_Model model = count_today_Model.fromMap(item);
-              
+
               setState(() {
-                
                 count_today_Models.clear();
                 count_today_Models.add(model);
-                
-                
               });
-
             }
-            
-            print('ssssss '+ count_today_Models[0].toString());
-            int new_count = int.parse(count_today_Models[0].count)+1 ;
-            String update_count_today =
-              '${MyConstant.domain}/famfam/updateCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text&count=$new_count ';
 
-            Dio().get(update_count_today).then((value) async{
+            print('ssssss ' + count_today_Models[0].toString());
+            int new_count = int.parse(count_today_Models[0].count) + 1;
+            String update_count_today =
+                '${MyConstant.domain}/famfam/updateCountToday.php?isAdd=true&user_id=$member_id&today_i_do_text=$today_i_do_text&count=$new_count ';
+
+            Dio().get(update_count_today).then((value) async {
               getCountToday_byUser();
             });
-            
-
-            
-
-
           }
-
         });
-
-
-        
-
-
       }
-
     });
-
-
-
   }
 
-  Future<Null> getCountToday_byUser() async{
+  Future<Null> getCountToday_byUser() async {
     setState(() {
       have_recommend = false;
     });
@@ -278,25 +237,21 @@ class _tabbarState extends State<tabbar> {
           have_recommend = false;
         });
       } else {
-
         //Have Data
         for (var item in json.decode(value.data)) {
           count_byUser_Model model = count_byUser_Model.fromMap(item);
-          print('text ==>> ${model.today_i_do_text} by user_id = ${model.user_id} count = ${model.count}');
+          print(
+              'text ==>> ${model.today_i_do_text} by user_id = ${model.user_id} count = ${model.count}');
 
           setState(() {
-            if(int.parse(model.count) >= 5){
+            if (int.parse(model.count) >= 5) {
               have_recommend = true;
-            }           
+            }
             count_byUser_Models.add(model);
-            
           });
-
         }
-
       }
     });
-
   }
 
   Future<Null> DeleteDatatoday({String? list_to_do}) async {
@@ -335,8 +290,6 @@ class _tabbarState extends State<tabbar> {
             title: const Text('Please Confirm'),
             content: const Text('Are you sure to remove this topic?'),
             actions: [
-
-              
               // The "Yes" button
               CupertinoDialogAction(
                 onPressed: () {
@@ -368,11 +321,8 @@ class _tabbarState extends State<tabbar> {
     return showDialog(
       context: context,
       builder: (context) {
-        return Stack(
-          children:[ 
-            
-            
-            AlertDialog(
+        return Stack(children: [
+          AlertDialog(
             // shape: RoundedRectangleBorder(
             //     borderRadius: BorderRadius.all(Radius.circular(32.0))),
             backgroundColor: Colors.white,
@@ -387,7 +337,7 @@ class _tabbarState extends State<tabbar> {
                     filled: true,
                   ),
                 )),
-        
+
             actions: <Widget>[
               Column(
                 children: [
@@ -396,8 +346,6 @@ class _tabbarState extends State<tabbar> {
                       SizedBox(
                         width: 35,
                       ),
-                      
-        
                       GestureDetector(
                           onTap: () {
                             numicon = '1';
@@ -408,8 +356,6 @@ class _tabbarState extends State<tabbar> {
                             fit: BoxFit.cover,
                             height: 46,
                           )),
-        
-        
                       SizedBox(
                         width: 20,
                       ),
@@ -478,7 +424,8 @@ class _tabbarState extends State<tabbar> {
                             print(numicon);
                           },
                           child: Image(
-                            image: AssetImage('assets/images/medical-report.png'),
+                            image:
+                                AssetImage('assets/images/medical-report.png'),
                             fit: BoxFit.cover,
                             height: 46,
                           )),
@@ -504,42 +451,45 @@ class _tabbarState extends State<tabbar> {
                             print(numicon);
                           },
                           child: Image(
-                            image: AssetImage('assets/images/shopping-bags.png'),
+                            image:
+                                AssetImage('assets/images/shopping-bags.png'),
                             fit: BoxFit.cover,
                             height: 46,
                           )),
                     ],
                   ),
-                   
                 ],
               ),
               SizedBox(
                 height: 20,
-                
               ),
-        
               Container(
-                  //color: Colors.green,
-                  child: (have_recommend)? Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 18),
-                        child: Text('You\'ve done frequently',style: TextStyle(fontSize: 18),),
-                      ),
-                    ],
-                  ):null,
+                //color: Colors.green,
+                child: (have_recommend)
+                    ? Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 18),
+                            child: Text(
+                              'You\'ve done frequently',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ],
+                      )
+                    : null,
               ),
-        
-        
               Padding(
                 padding: const EdgeInsets.only(top: 10),
-                child: (have_recommend)? Container(
-                  width: 500,
-                  height: 50,
-                  child: Expanded(child: Container(
-                    //color: Colors.red,
-        
-                    /*
+                child: (have_recommend)
+                    ? Container(
+                        width: 500,
+                        height: 50,
+                        child: Expanded(
+                            child: Container(
+                                //color: Colors.red,
+
+                                /*
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -551,8 +501,8 @@ class _tabbarState extends State<tabbar> {
         
                     ],),
                     */
-        
-                    /*
+
+                                /*
                     child: GridView.builder(
                       itemCount: count_byUser_Models.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -580,164 +530,174 @@ class _tabbarState extends State<tabbar> {
                       },  
                      ),
                      */
-        
-                    
-                    child: (count_byUser_Models.length != 0 && have_recommend)? ListView.builder(
-                      itemCount: count_byUser_Models.length,
-                      scrollDirection: Axis.horizontal,
-                      physics: BouncingScrollPhysics(),
-                      itemBuilder: (BuildContext context,int index){
-                        return 
-                        
-                        (int.parse(count_byUser_Models[index].count) >= 5) ?
-                        Container(
-                          //width: 100,
-                          margin: EdgeInsets.only( left: index == 0 ? 10:6,bottom: 10), 
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                              ),
-                              ),
-                              backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 255, 205, 67)),
-                            ),
-                            onPressed: (){
-                              print('${count_byUser_Models[index].today_i_do_text}');
-                              nameController.text = '${count_byUser_Models[index].today_i_do_text}';
-                            }, 
-                            child: Text('${count_byUser_Models[index].today_i_do_text}' ,
-                            overflow: TextOverflow.ellipsis,style: 
-                            TextStyle(fontSize: 16,color: Colors.black),)),
-                        ):Container() ;
-                      },
-                    ) :null
-                    
-        
-        
-        
-                  )),
-                ):null,
+
+                                child: (count_byUser_Models.length != 0 &&
+                                        have_recommend)
+                                    ? ListView.builder(
+                                        itemCount: count_byUser_Models.length,
+                                        scrollDirection: Axis.horizontal,
+                                        physics: BouncingScrollPhysics(),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return (int.parse(
+                                                      count_byUser_Models[index]
+                                                          .count) >=
+                                                  5)
+                                              ? Container(
+                                                  //width: 100,
+                                                  margin: EdgeInsets.only(
+                                                      left: index == 0 ? 10 : 6,
+                                                      bottom: 10),
+                                                  child: ElevatedButton(
+                                                      style: ButtonStyle(
+                                                        shape:
+                                                            MaterialStateProperty
+                                                                .all(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20.0),
+                                                          ),
+                                                        ),
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all<Color>(Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        255,
+                                                                        205,
+                                                                        67)),
+                                                      ),
+                                                      onPressed: () {
+                                                        print(
+                                                            '${count_byUser_Models[index].today_i_do_text}');
+                                                        nameController.text =
+                                                            '${count_byUser_Models[index].today_i_do_text}';
+                                                      },
+                                                      child: Text(
+                                                        '${count_byUser_Models[index].today_i_do_text}',
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color:
+                                                                Colors.black),
+                                                      )),
+                                                )
+                                              : Container();
+                                        },
+                                      )
+                                    : null)),
+                      )
+                    : null,
               ),
-              
-              SizedBox(height: 5,),
-        
+              SizedBox(
+                height: 5,
+              ),
               Center(
-                  
-                 
-                  
-                 child: Container(
-                   padding: EdgeInsets.only(left: 20,right: 20),
-                   width: double.infinity,
-                   height: 45,
-                   child: TextButton(
-                      style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<Color>(
-                                                    Color.fromARGB(
-                                                        255, 243, 230, 90)),
-                                            shape: MaterialStateProperty.all(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                              ),
-                                            ),
-                                          ),
-                      child: Text('Add', style: TextStyle(color: Colors.black,fontSize: 18)),
-                      onPressed: () {
-                        print('Selected icon ======> ${numicon}');
-                        print('Input Text =====> ${nameController.text}');
-                        
-        
-                        String text_input = nameController.text.toLowerCase();
-                        bool detected = false;
-        
-                        //if no icon selected
-                        if (numicon == '0'){
-        
-                          
-                          for(int i=0; i < fire_type.length;i++){
-                            if(text_input.contains(fire_type[i])) {
-                              detected = true;
-                              numicon = '1';
-                            }
-                          }
-        
-                          for(int i=0; i < dumbbell_type.length;i++){
-                            if(text_input.contains(dumbbell_type[i])) {
-                              detected = true;
-                              numicon = '2';
-                            }
-                          }
-        
-                          for(int i=0; i < money_type.length;i++){
-                            if(text_input.contains(money_type[i])) {
-                              detected = true;
-                              numicon = '3';
-                            }
-                          }
-        
-                          for(int i=0; i < beer_type.length;i++){
-                            if(text_input.contains(beer_type[i])) {
-                              detected = true;
-                              numicon = '4';
-                            }
-                          }
-        
-                          for(int i=0; i < clock_type.length;i++){
-                            if(text_input.contains(clock_type[i])) {
-                              detected = true;
-                              numicon = '5';
-                            }
-                          }
-        
-                          for(int i=0; i < paper_type.length;i++){
-                            if(text_input.contains(paper_type[i])) {
-                              detected = true;
-                              numicon = '6';
-                            }
-                          }
-        
-                          for(int i=0; i < star_type.length;i++){
-                            if(text_input.contains(star_type[i])) {
-                              detected = true;
-                              numicon = '7';
-                            }
-                          }
-        
-                          for(int i=0; i < shop_type.length;i++){
-                            if(text_input.contains(shop_type[i])) {
-                              detected = true;
-                              numicon = '8';
-                            }
-                          }
-        
-                          
-        
+                  child: Container(
+                padding: EdgeInsets.only(left: 20, right: 20),
+                width: double.infinity,
+                height: 45,
+                child: TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Color.fromARGB(255, 243, 230, 90)),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                  ),
+                  child: Text('Add',
+                      style: TextStyle(color: Colors.black, fontSize: 18)),
+                  onPressed: () {
+                    print('Selected icon ======> ${numicon}');
+                    print('Input Text =====> ${nameController.text}');
+
+                    String text_input = nameController.text.toLowerCase();
+                    bool detected = false;
+
+                    //if no icon selected
+                    if (numicon == '0') {
+                      for (int i = 0; i < fire_type.length; i++) {
+                        if (text_input.contains(fire_type[i])) {
+                          detected = true;
+                          numicon = '1';
                         }
-                        
-                        if(numicon == '0'){
-                          //Default icon                       
+                      }
+
+                      for (int i = 0; i < dumbbell_type.length; i++) {
+                        if (text_input.contains(dumbbell_type[i])) {
+                          detected = true;
+                          numicon = '2';
+                        }
+                      }
+
+                      for (int i = 0; i < money_type.length; i++) {
+                        if (text_input.contains(money_type[i])) {
+                          detected = true;
+                          numicon = '3';
+                        }
+                      }
+
+                      for (int i = 0; i < beer_type.length; i++) {
+                        if (text_input.contains(beer_type[i])) {
+                          detected = true;
+                          numicon = '4';
+                        }
+                      }
+
+                      for (int i = 0; i < clock_type.length; i++) {
+                        if (text_input.contains(clock_type[i])) {
+                          detected = true;
+                          numicon = '5';
+                        }
+                      }
+
+                      for (int i = 0; i < paper_type.length; i++) {
+                        if (text_input.contains(paper_type[i])) {
+                          detected = true;
+                          numicon = '6';
+                        }
+                      }
+
+                      for (int i = 0; i < star_type.length; i++) {
+                        if (text_input.contains(star_type[i])) {
+                          detected = true;
                           numicon = '7';
                         }
-                        
-                        
-                        addItemToList(nameController.text, numicon);
-                        InsertDatatoday(list_to_do: nameController.text, icon: numicon);
-                        nameController.text = '';
-                        numicon = '0';
-                        Navigator.pop(context);
-                      },
-                    ),
-                 )
-               
-              
-            ),
-            SizedBox(height: 10,),
+                      }
+
+                      for (int i = 0; i < shop_type.length; i++) {
+                        if (text_input.contains(shop_type[i])) {
+                          detected = true;
+                          numicon = '8';
+                        }
+                      }
+                    }
+
+                    if (numicon == '0') {
+                      //Default icon
+                      numicon = '7';
+                    }
+
+                    addItemToList(nameController.text, numicon);
+                    InsertDatatoday(
+                        list_to_do: nameController.text, icon: numicon);
+                    nameController.text = '';
+                    numicon = '0';
+                    Navigator.pop(context);
+                  },
+                ),
+              )),
+              SizedBox(
+                height: 10,
+              ),
             ],
-          ),]
-        );
+          ),
+        ]);
       },
     );
   }
@@ -1000,10 +960,35 @@ class _tabbarState extends State<tabbar> {
                                                               BorderRadius
                                                                   .circular(
                                                                       100)),
-                                                      child: Icon(
-                                                        Icons
-                                                            .info_outline_rounded,
-                                                        size: 30,
+                                                      child: ClipOval(
+                                                        child: Material(
+                                                          color: Color(
+                                                              0xfffF9EE6D), // Button color
+                                                          child: InkWell(
+                                                            splashColor: Colors
+                                                                .white
+                                                                .withOpacity(
+                                                                    0.1), // Splash color
+                                                            onTap: () {
+                                                              infoDialog(
+                                                                  context,
+                                                                  'Today, I do ?',
+                                                                  'Assign your Daily Jobs !\nand dissapear day by day.',
+                                                                  0.2);
+                                                            },
+                                                            child: SizedBox(
+                                                              width: 56,
+                                                              height: 56,
+                                                              child: Icon(
+                                                                Icons
+                                                                    .info_outline_rounded,
+                                                                color: Colors
+                                                                    .black,
+                                                                size: 30,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                     SizedBox(
@@ -1027,10 +1012,8 @@ class _tabbarState extends State<tabbar> {
                                                             ),
                                                           ),
                                                         ),
-                                                        
                                                         onPressed: () {
                                                           numicon = '0';
-                                                          
 
                                                           _displayTextInputDialog(
                                                               context);
@@ -1580,73 +1563,6 @@ class _tabbarState extends State<tabbar> {
                                             }),
                                       ),
                               ),
-                              // Padding(
-                              //   padding:
-                              //       const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                              //   child: Container(
-                              //     height: 80,
-                              //     width: 400,
-                              //     decoration: BoxDecoration(
-                              //         borderRadius: BorderRadius.circular(10),
-                              //         color: Color(0xfffFFC34A)),
-                              //     child: Row(
-                              //       children: [
-                              //         Padding(
-                              //           padding: const EdgeInsets.fromLTRB(
-                              //               5, 10, 5, 5),
-                              //           child: Image.asset(
-                              //             "assets/images/Profile.png",
-                              //             width: 60,
-                              //             height: 60,
-                              //           ),
-                              //         ),
-                              //         const VerticalDivider(
-                              //           width: 20,
-                              //           thickness: 1.5,
-                              //           indent: 15,
-                              //           endIndent: 15,
-                              //           color: Colors.white,
-                              //         ),
-                              //         Column(
-                              //           children: [
-                              //             SizedBox(
-                              //               height: 10,
-                              //             ),
-                              //             Container(
-                              //               width: 230,
-                              //               child: Text(
-                              //                 "Martin",
-                              //                 style: TextStyle(
-                              //                     fontWeight:
-                              //                         FontWeight.normal,
-                              //                     fontSize: 15),
-                              //               ),
-                              //             ),
-                              //             Container(
-                              //               width: 230,
-                              //               child: Text(
-                              //                 "รดน้ำต้นไม้ให้พ่อด้วยฮะมุง",
-                              //                 style: TextStyle(
-                              //                     fontWeight:
-                              //                         FontWeight.normal,
-                              //                     fontSize: 18),
-                              //               ),
-                              //             ),
-                              //           ],
-                              //         ),
-                              //         Padding(
-                              //           padding:
-                              //               const EdgeInsets.only(left: 0),
-                              //           child: RoundCheckBox(
-                              //             uncheckedColor: Colors.white,
-                              //             checkedColor: Colors.grey,
-                              //             onTap: (selected) {},
-                              //           ),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
                             ],
                           )),
 
@@ -1765,7 +1681,6 @@ class _tabbarState extends State<tabbar> {
                                                           .size
                                                           .height /
                                                       8)),
-
                                           Container(
                                             child: SvgPicture.asset(
                                               "assets/icons/leaf-fall.svg",
@@ -1781,68 +1696,38 @@ class _tabbarState extends State<tabbar> {
                                                 fontWeight: FontWeight.w500),
                                           )
                                         ])
+                                      : Expanded(
+                                          child: ListView.builder(
+                                              padding: const EdgeInsets.all(8),
+                                              itemCount: list_topic.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return Container(
+                                                    // height: 150,
+                                                    constraints: BoxConstraints(
+                                                      maxHeight:
+                                                          double.infinity,
+                                                    ),
+                                                    margin: EdgeInsets.fromLTRB(
+                                                        5, 10, 5, 0),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30),
+                                                      color: Color(0xfffFFC34A),
 
-                                  Container(
-                                      child: (list_topic.isEmpty)
-                                          ? Column(children: [
-                                              Padding(
-                                                  padding: EdgeInsets.only(
-                                                      top:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height /
-                                                              8)),
-                                              Container(
-                                                child: SvgPicture.asset(
-                                                  "assets/icons/leaf-fall.svg",
-                                                  height: 85,
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                ),
-                                              ),
-                                              Text(
-                                                "You don't have any list right now",
-                                                style: TextStyle(
-                                                    color: Colors.grey[500],
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              )
-                                            ])
-                                          : Expanded(
-                                              child: ListView.builder(
-                                                  padding:
-                                                      const EdgeInsets.all(8),
-                                                  itemCount: list_topic.length,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return Container(
-                                                        // height: 150,
-                                                        constraints:
-                                                            BoxConstraints(
-                                                          maxHeight:
-                                                              double.infinity,
-                                                        ),
-                                                        margin:
-                                                            EdgeInsets.fromLTRB(
-                                                                5, 10, 5, 0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(30),
-                                                          color: Color(
-                                                              0xfffFFC34A),
-
-                                                          // color: Colors.white,
-                                                        ),
-                                                        child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
+                                                      // color: Colors.white,
+                                                    ),
+                                                    child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Row(
                                                             children: [
                                                               Container(
                                                                 margin: EdgeInsets
@@ -1903,73 +1788,78 @@ class _tabbarState extends State<tabbar> {
                                                                           });
                                                                           // setState(() {});
                                                                         }),
-                                                                  ),
-                                                                  GestureDetector(
-                                                                      onTap:
-                                                                          () async {
-                                                                        print(
-                                                                            'click on delete ticktik ${list_topic[index].topic_id}');
-
-                                                                        _isShown ==
-                                                                                true
-                                                                            ? _delete(context,
-                                                                                list_topic[index].topic_id)
-                                                                            : null;
-                                                                      },
-                                                                      child:
-                                                                          Image(
-                                                                        image: AssetImage(
-                                                                            'assets/images/trash.png'),
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                        height:
-                                                                            22,
-                                                                      )),
-                                                                  SizedBox(
-                                                                    width: 20,
-                                                                  )
-                                                                ],
                                                               ),
-                                                              Expanded(
-                                                                  child: Wrap(
-                                                                      direction:
-                                                                          Axis
-                                                                              .horizontal,
-                                                                      children:
-                                                                          list_product
-                                                                              .map((item) {
-                                                                        if (item.product_id ==
-                                                                            list_topic[index].topic_id) {
-                                                                          return Container(
-                                                                              margin: EdgeInsets.only(left: 15, top: 20),
-                                                                              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                                                                Container(
-                                                                                  child: RoundCheckBox(
-                                                                                    size: 22,
-                                                                                    uncheckedColor: Colors.white,
-                                                                                    checkedColor: Colors.green,
-                                                                                    onTap: (selected) {
-                                                                                      print('selected ' + item.product_id);
-                                                                                      print('selected ' + item.product_name);
+                                                              GestureDetector(
+                                                                  onTap:
+                                                                      () async {
+                                                                    print(
+                                                                        'click on delete ticktik ${list_topic[index].topic_id}');
 
-                                                                                      onDismissedTickTick(item.product_name, item.product_id);
-                                                                                    },
-                                                                                  ),
-                                                                                ),
-                                                                                Padding(
-                                                                                  padding: const EdgeInsets.only(right: 10, left: 10),
-                                                                                  child: Expanded(
-                                                                                    child: Text('${item.product_name}'),
-                                                                                  ),
-                                                                                )
-                                                                              ]));
-                                                                        }
-                                                                        return Container();
-                                                                      }).toList())),
-                                                            ]));
-                                                  })))
-                                ],
-                              )),
+                                                                    _isShown ==
+                                                                            true
+                                                                        ? _delete(
+                                                                            context,
+                                                                            list_topic[index].topic_id)
+                                                                        : null;
+                                                                  },
+                                                                  child: Image(
+                                                                    image: AssetImage(
+                                                                        'assets/images/trash.png'),
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    height: 22,
+                                                                  )),
+                                                              SizedBox(
+                                                                width: 20,
+                                                              )
+                                                            ],
+                                                          ),
+                                                          Expanded(
+                                                              child: Wrap(
+                                                                  direction: Axis
+                                                                      .horizontal,
+                                                                  children:
+                                                                      list_product
+                                                                          .map(
+                                                                              (item) {
+                                                                    if (item.product_id ==
+                                                                        list_topic[index]
+                                                                            .topic_id) {
+                                                                      return Container(
+                                                                          margin: EdgeInsets.only(
+                                                                              left:
+                                                                                  15,
+                                                                              top:
+                                                                                  20),
+                                                                          child:
+                                                                              Row(mainAxisSize: MainAxisSize.min, children: [
+                                                                            Container(
+                                                                              child: RoundCheckBox(
+                                                                                size: 22,
+                                                                                uncheckedColor: Colors.white,
+                                                                                checkedColor: Colors.green,
+                                                                                onTap: (selected) {
+                                                                                  print('selected ' + item.product_id);
+                                                                                  print('selected ' + item.product_name);
+
+                                                                                  onDismissedTickTick(item.product_name, item.product_id);
+                                                                                },
+                                                                              ),
+                                                                            ),
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.only(right: 10, left: 10),
+                                                                              child: Expanded(
+                                                                                child: Text('${item.product_name}'),
+                                                                              ),
+                                                                            )
+                                                                          ]));
+                                                                    }
+                                                                    return Container();
+                                                                  }).toList())),
+                                                        ]));
+                                              })))
+                            ],
+                          )),
                         ],
                       ),
                     )
