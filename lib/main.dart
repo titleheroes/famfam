@@ -15,6 +15,7 @@ import 'package:famfam/loading.dart';
 import 'package:famfam/login.dart';
 import 'package:famfam/register_info.dart';
 import 'package:famfam/welcome.dart';
+import 'package:famfam/widgets/circle_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:famfam/services/service_locator.dart';
 import 'package:famfam/settingPage/ezmode/ezmode.dart';
@@ -78,6 +79,7 @@ void main() async {
         '/checkin': (context) => CheckIn(),
         '/pinpost': (context) => PinScreen(),
         '/calendar': (context) => Calendar(),
+        '/ciecleLoading': (context) => CircleLoader()
       },
     ),
   );

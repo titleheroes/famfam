@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/models/history_for_user_model.dart';
@@ -15,6 +15,8 @@ import 'package:famfam/models/vote_participant_model.dart';
 import 'package:famfam/models/voteoption_model.dart';
 import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/screens/ticktik_screen.dart';
+import 'package:famfam/widgets/circle_loader.dart';
+
 import 'package:favorite_button/favorite_button.dart';
 import 'package:famfam/models/ticktick_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,7 +29,6 @@ import 'package:famfam/components/tickbottomsheet.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:famfam/services/my_constant.dart';
-import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'header_circle.dart';
@@ -35,6 +36,8 @@ import 'package:famfam/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:famfam/models/circle_model.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class Body extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -1786,6 +1789,9 @@ class _TickBodyState extends State<TickBody> {
   List<Product> list_product = [];
   int count_ticktickUid = 0;
   List<ticktick_Model> ticktick_Models = [];
+  bool load = true;
+  bool updateFavbool = true;
+  // bool insertList = true;
 
   @override
   void initState() {
@@ -1836,6 +1842,9 @@ class _TickBodyState extends State<TickBody> {
     await pullDataTicktick(circle_id: circle_id, member_id: member_id);
     try {
       addDatafromstart();
+      setState(() {
+        load = false;
+      });
     } catch (e) {}
   }
 
@@ -1938,6 +1947,21 @@ class _TickBodyState extends State<TickBody> {
     });
   }
 
+  Future<Null> deletedTopicByID({String? topic_id}) async {
+    String updateDataFav =
+        '${MyConstant.domain}/famfam/deleteTickTickListByID.php?isAdd=true&tick_id=$topic_id';
+    await Dio().get(updateDataFav).then((value) {
+      print('delete topic By ID Successed');
+
+      setState(() {
+        list_topic.removeWhere((item) => item.topic_id == topic_id);
+        list_product.removeWhere((item) => item.product_id == topic_id);
+
+        print('deleted topic successed');
+      });
+    });
+  }
+
   void onDismissed(String product_name, String product_id) {
     int checkEmpty = 0;
     setState(() {
@@ -1965,387 +1989,365 @@ class _TickBodyState extends State<TickBody> {
     }
   }
 
-  Future<Null> updateFav({String? fav_topic, String? tick_id}) async {
-    print('fav_topic $fav_topic');
-    print('id $tick_id');
-    String updateDataFav =
-        '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
-    await Dio().get(updateDataFav).then((value) {
-      // if (value.toString() == 'true') {
-      print('Updated Fav By ID Successed');
-      // }
-    });
+  bool _isShown = true;
+
+  void _delete(BuildContext context, String topic_id) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this topic?'),
+            actions: [
+              // The "Yes" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel'),
+                isDefaultAction: false,
+                isDestructiveAction: false,
+              ),
+              // The "No" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  // _isShown = false;
+                  deletedTopicByID(topic_id: topic_id);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Confirm'),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              )
+            ],
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return SafeArea(
-      child: Stack(
-        children: [
-          Text(""),
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(55.0),
-              child: AppBar(
-                title: Text(
-                  'All TickTic',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                centerTitle: true,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                leading: IconButton(
-                  onPressed: () {
-                    var user = FirebaseAuth.instance.currentUser;
-                    Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomePage(user),
-                      ),
-                    );
-                    // (Route<dynamic> route) => false);
-                  },
-                  icon: SvgPicture.asset(
-                    "assets/icons/chevron-back-outline.svg",
-                    height: 35,
-                  ),
-                ),
-                actions: [
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      "assets/icons/information-_1_.svg",
-                      height: 30,
-                    ),
-                    onPressed: () {
-                      infoDialog(
-                          context,
-                          'TickTick ?',
-                          'List of thing\nthat you can make and tick\nwhatever you want.',
-                          0.24);
-                    },
-                  ),
-                ],
-              ),
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                //crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Center(
-                    child: Container(
-                      width: 368,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 5.0,
-                            offset: Offset(0, 3),
+    return load
+        ? CircleLoader()
+        : LoaderOverlay(
+            child: SafeArea(
+              child: Stack(
+                children: [
+                  Text(""),
+                  Scaffold(
+                    backgroundColor: Colors.transparent,
+                    appBar: PreferredSize(
+                      preferredSize: Size.fromHeight(55.0),
+                      child: AppBar(
+                        title: Text(
+                          'All TickTic',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
                           ),
-                          BoxShadow(
-                            color: Colors.white,
-                            offset: Offset(-5, 0),
+                        ),
+                        centerTitle: true,
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        leading: IconButton(
+                          onPressed: () {
+                            var user = FirebaseAuth.instance.currentUser;
+                            Navigator.pop(context);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomePage(user),
+                              ),
+                            );
+                            // (Route<dynamic> route) => false);
+                          },
+                          icon: SvgPicture.asset(
+                            "assets/icons/chevron-back-outline.svg",
+                            height: 35,
                           ),
-                          BoxShadow(
-                            color: Colors.white,
-                            offset: Offset(5, 0),
+                        ),
+                        actions: [
+                          IconButton(
+                            icon: SvgPicture.asset(
+                              "assets/icons/information-_1_.svg",
+                              height: 30,
+                            ),
+                            onPressed: () {},
                           ),
                         ],
                       ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.search_sharp,
-                            color: Color(0xFFFFC34A),
-                          ),
-                          hintText: "Search TickTic",
-                          border: InputBorder.none,
-                          // hintStyle: TextStyle(
-                          //   color: Colors.black,
-                          // ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 15,
-                          ),
-                        ),
-                      ),
                     ),
-                  ),
-                  SingleChildScrollView(
-                    child: SizedBox(
-                      height: 640,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: Container(
-                            //height: 100,
-                            //width: 100,
-                            decoration: BoxDecoration(
-                                //color: Colors.pink.shade700,
-                                //borderRadius: BorderRadius.circular(30),
-                                ),
+                    body: SingleChildScrollView(
+                      child: Column(
+                        //crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Center(
                             child: Container(
-                                child: (list_topic.isEmpty)
-                                    ? Column(children: [
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                top: MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    8)),
-                                        Container(
-                                          child: SvgPicture.asset(
-                                            "assets/icons/leaf-fall.svg",
-                                            height: 85,
-                                            color:
-                                                Colors.black.withOpacity(0.4),
-                                          ),
+                              width: 368,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(25),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    blurRadius: 5.0,
+                                    offset: Offset(0, 3),
+                                  ),
+                                  BoxShadow(
+                                    color: Colors.white,
+                                    offset: Offset(-5, 0),
+                                  ),
+                                  BoxShadow(
+                                    color: Colors.white,
+                                    offset: Offset(5, 0),
+                                  ),
+                                ],
+                              ),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  suffixIcon: Icon(
+                                    Icons.search_sharp,
+                                    color: Color(0xFFFFC34A),
+                                  ),
+                                  hintText: "Search TickTic",
+                                  border: InputBorder.none,
+                                  // hintStyle: TextStyle(
+                                  //   color: Colors.black,
+                                  // ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SingleChildScrollView(
+                            child: SizedBox(
+                              height: 640,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 12.0),
+                                child: Container(
+                                    //height: 100,
+                                    //width: 100,
+                                    decoration: BoxDecoration(
+                                        //color: Colors.pink.shade700,
+                                        //borderRadius: BorderRadius.circular(30),
                                         ),
-                                        Text(
-                                          "You don't have any list right now",
-                                          style: TextStyle(
-                                              color: Colors.grey[500],
-                                              fontWeight: FontWeight.w500),
-                                        )
-                                      ])
-                                    : Expanded(
-                                        child: ListView.builder(
-                                            padding: const EdgeInsets.all(8),
-                                            itemCount: list_topic.length,
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              // return buildTickTick(
-                                              //     list_topic[index].topic,
-                                              //     list_topic[index].fav,
-                                              //     list_topic[index].topic_id);
-
-                                              return Container(
-                                                  height: 150,
-                                                  margin: EdgeInsets.all(15),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    color: Color(0xfffFFC34A),
-                                                    // color: Colors.white,
+                                    child: Container(
+                                        child: (list_topic.isEmpty)
+                                            ? Column(children: [
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height /
+                                                            8)),
+                                                Container(
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/leaf-fall.svg",
+                                                    height: 85,
+                                                    color: Colors.black
+                                                        .withOpacity(0.4),
                                                   ),
-                                                  child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            // ListTile(
-                                                            //   title: Text('hi'),
-                                                            // ),
-                                                            Container(
-                                                              margin: EdgeInsets
-                                                                  .only(
-                                                                      left: 15,
-                                                                      top: 15),
-                                                              child: Text(
-                                                                  '${list_topic[index].topic}',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          22,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold)),
-                                                            ),
-                                                            // Text(
-                                                            //     '${list_topic[index].fav}'),
-                                                            Spacer(),
+                                                ),
+                                                Text(
+                                                  "You don't have any list right now",
+                                                  style: TextStyle(
+                                                      color: Colors.grey[500],
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                )
+                                              ])
+                                            : Expanded(
+                                                child: ListView.builder(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    itemCount:
+                                                        list_topic.length,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      // return buildTickTick(
+                                                      //     list_topic[index].topic,
+                                                      //     list_topic[index].fav,
+                                                      //     list_topic[index].topic_id);
 
-                                                            Container(
-                                                              child: IconButton(
-                                                                  iconSize: 22,
-                                                                  icon: Icon(
-                                                                    Icons
-                                                                        .favorite,
+                                                      return IntrinsicHeight(
+                                                        child: Container(
+                                                            // height: 150,
+
+                                                            constraints:
+                                                                BoxConstraints(
+                                                                    minHeight:
+                                                                        150),
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    15),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          30),
+                                                              color: Color(
+                                                                  0xfffFFC34A),
+                                                              // color: Colors.white,
+                                                            ),
+                                                            child: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      // ListTile(
+                                                                      //   title: Text('hi'),
+                                                                      // ),
+                                                                      Container(
+                                                                        margin: EdgeInsets.only(
+                                                                            left:
+                                                                                15,
+                                                                            top:
+                                                                                15),
+                                                                        child: Text(
+                                                                            '${list_topic[index].topic}',
+                                                                            style:
+                                                                                TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                                                                      ),
+                                                                      // Text(
+                                                                      //     '${list_topic[index].fav}'),
+                                                                      Spacer(),
+
+                                                                      Container(
+                                                                        child: IconButton(
+                                                                            iconSize: 22,
+                                                                            icon: Icon(
+                                                                              Icons.favorite,
+                                                                            ),
+                                                                            color: list_topic[index].fav ? Colors.red : Colors.white,
+                                                                            onPressed: () async {
+                                                                              if (list_topic[index].fav) {
+                                                                                String fav_topic = 'false';
+                                                                                String updateDataFav = '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
+
+                                                                                await Dio().get(updateDataFav).then((value) {
+                                                                                  if (value.toString() == 'true') {
+                                                                                    print('Updated Fav By ID Successed change true to false');
+
+                                                                                    // updateFavbool = false;
+                                                                                  }
+
+                                                                                  Navigator.pushReplacement(
+                                                                                    context,
+                                                                                    MaterialPageRoute(
+                                                                                      builder: (context) => TickTikScreen(),
+                                                                                    ),
+                                                                                  );
+                                                                                });
+                                                                              } else {
+                                                                                String fav_topic = 'true';
+
+                                                                                String updateDataFav = '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
+                                                                                await Dio().get(updateDataFav).then((value) {
+                                                                                  // if (value.toString() == 'true') {
+                                                                                  print('Updated Fav By ID Successed change false to true');
+                                                                                  // }
+
+                                                                                  Navigator.pushReplacement(
+                                                                                    context,
+                                                                                    MaterialPageRoute(
+                                                                                      builder: (context) => TickTikScreen(),
+                                                                                    ),
+                                                                                  );
+                                                                                });
+                                                                              }
+                                                                            }),
+                                                                      ),
+                                                                      GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            print('click on delete ticktik ${list_topic[index].topic_id}');
+                                                                            _isShown == true
+                                                                                ? _delete(context, list_topic[index].topic_id)
+                                                                                : null;
+                                                                          },
+                                                                          child:
+                                                                              Image(
+                                                                            image:
+                                                                                AssetImage('assets/images/trash.png'),
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                            height:
+                                                                                22,
+                                                                          )),
+                                                                      SizedBox(
+                                                                        width:
+                                                                            20,
+                                                                      )
+                                                                    ],
                                                                   ),
-                                                                  color: list_topic[
-                                                                              index]
-                                                                          .fav
-                                                                      ? Colors
-                                                                          .red
-                                                                      : Colors
-                                                                          .white,
-                                                                  onPressed:
-                                                                      () async {
-                                                                    // bool
-                                                                    //     isChecked =
-                                                                    //     false;
-                                                                    if (list_topic[
-                                                                            index]
-                                                                        .fav) {
-                                                                      String
-                                                                          fav_topic =
-                                                                          'false';
-                                                                      String
-                                                                          updateDataFav =
-                                                                          '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
-                                                                      await Dio()
-                                                                          .get(
-                                                                              updateDataFav)
-                                                                          .then(
-                                                                              (value) {
-                                                                        // if (value.toString() == 'true') {
-                                                                        print(
-                                                                            'Updated Fav By ID Successed change true to false');
-                                                                        // }
+                                                                  Expanded(
+                                                                      child: Wrap(
+                                                                          direction: Axis.horizontal,
+                                                                          children: list_product.map((item) {
+                                                                            if (item.product_id ==
+                                                                                list_topic[index].topic_id) {
+                                                                              return Container(
+                                                                                  margin: EdgeInsets.only(left: 15, top: 20),
+                                                                                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                                                                    Container(
+                                                                                      child: RoundCheckBox(
+                                                                                        size: 22,
+                                                                                        uncheckedColor: Colors.white,
+                                                                                        checkedColor: Colors.green,
+                                                                                        onTap: (selected) {
+                                                                                          print('selected ' + item.product_id);
+                                                                                          print('selected ' + item.product_name);
 
-                                                                        Navigator
-                                                                            .pushReplacement(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                            builder: (context) =>
-                                                                                TickTikScreen(),
-                                                                          ),
-                                                                        );
-                                                                      });
-                                                                    } else {
-                                                                      String
-                                                                          fav_topic =
-                                                                          'true';
-
-                                                                      String
-                                                                          updateDataFav =
-                                                                          '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
-                                                                      await Dio()
-                                                                          .get(
-                                                                              updateDataFav)
-                                                                          .then(
-                                                                              (value) {
-                                                                        // if (value.toString() == 'true') {
-                                                                        print(
-                                                                            'Updated Fav By ID Successed change false to true');
-                                                                        // }
-
-                                                                        Navigator
-                                                                            .pushReplacement(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                            builder: (context) =>
-                                                                                TickTikScreen(),
-                                                                          ),
-                                                                        );
-                                                                      });
-                                                                      // updateFav(
-                                                                      //     fav_topic:
-                                                                      //         fav_topic,
-                                                                      //     tick_id:
-                                                                      //         list_topic[index].topic_id);
-                                                                    }
-                                                                    // setState(
-                                                                    //     () {
-                                                                    //   // print(list_topic[
-                                                                    //   //         index]
-                                                                    //   //     .fav);
-                                                                    //   // print(list_topic[
-                                                                    //   //         index]
-                                                                    //   //     .topic);
-                                                                    // });
-                                                                  }),
-                                                            ),
-
-                                                            // Container(
-                                                            //   margin: EdgeInsets
-                                                            //       .only(
-                                                            //           top: 15,
-                                                            //           right:
-                                                            //               15),
-                                                            //   child:
-                                                            //       FavoriteButton(
-                                                            //     iconSize: 30,
-                                                            //     iconDisabledColor:
-                                                            //         Colors
-                                                            //             .white,
-                                                            //     valueChanged:
-                                                            //         (_isFavorite) {
-                                                            //       print(
-                                                            //           'Is Favorite $_isFavorite ${list_topic[index].topic_id}');
-                                                            //       // updateFav(
-                                                            //       //     fav_topic:
-                                                            //       //         fav_topic,
-                                                            //       //     tick_id:
-                                                            //       //         list_topic[index].topic_id);
-                                                            //     },
-                                                            //   ),
-                                                            // ),
-                                                          ],
-                                                        ),
-                                                        Expanded(
-                                                            child: ListView
-                                                                .builder(
-                                                                    scrollDirection:
-                                                                        Axis
-                                                                            .horizontal,
-                                                                    itemCount:
-                                                                        list_product
-                                                                            .length,
-                                                                    itemBuilder:
-                                                                        (BuildContext
-                                                                                context,
-                                                                            int index2) {
-                                                                      if (list_topic[index]
-                                                                              .topic_id ==
-                                                                          list_product[index2]
-                                                                              .product_id) {}
-                                                                      return Container(
-                                                                          child: (list_topic[index].topic_id == list_product[index2].product_id)
-                                                                              ? Wrap(children: <Widget>[
-                                                                                  Container(
-                                                                                      margin: EdgeInsets.only(left: 15, top: 20),
-                                                                                      child: Row(children: [
-                                                                                        Container(
-                                                                                          child: RoundCheckBox(
-                                                                                            size: 22,
-                                                                                            uncheckedColor: Colors.white,
-                                                                                            checkedColor: Colors.green,
-                                                                                            onTap: (selected) {
-                                                                                              print('selected ' + list_product[index2].product_id);
-                                                                                              print('selected ' + list_product[index2].product_name);
-
-                                                                                              onDismissed(list_product[index2].product_name, list_product[index2].product_id);
-                                                                                            },
-                                                                                          ),
-                                                                                        ),
-                                                                                        Padding(
-                                                                                          padding: const EdgeInsets.only(right: 10, left: 10),
-                                                                                          child: Text('${list_product[index2].product_name}'),
-                                                                                        )
-                                                                                      ]))
-                                                                                ])
-                                                                              : SizedBox.shrink());
-                                                                    }))
-                                                      ]));
-                                            })))),
+                                                                                          onDismissed(item.product_name, item.product_id);
+                                                                                        },
+                                                                                      ),
+                                                                                    ),
+                                                                                    Padding(
+                                                                                      padding: const EdgeInsets.only(right: 10, left: 10),
+                                                                                      child: Expanded(
+                                                                                        child: Text('${item.product_name}'),
+                                                                                      ),
+                                                                                    )
+                                                                                  ]));
+                                                                            }
+                                                                            return Container();
+                                                                          }).toList())),
+                                                                  SizedBox(
+                                                                    height: 20,
+                                                                  )
+                                                                ])),
+                                                      );
+                                                    })))),
+                              ),
+                            ),
+                          ),
+                          TicBotSheet(size: size),
+                        ],
                       ),
                     ),
                   ),
-                  TicBotSheet(size: size),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 }
 
@@ -2363,8 +2365,9 @@ class TicBotSheet extends StatefulWidget {
 
 class _TicBotSheetState extends State<TicBotSheet> {
   final _TickBodyState pulldata = new _TickBodyState();
+  bool load = true;
 
-  Future<Null> insertTickTick({String? topic, List<String>? arr}) async {
+  Future insertTickTick({String? topic, List<String>? arr}) async {
     var uuid = Uuid();
 
     String tick_uid = uuid.v1();
@@ -2374,6 +2377,8 @@ class _TicBotSheetState extends State<TicBotSheet> {
     String? tick_id;
 
     String ticklist = arr![0];
+    context.loaderOverlay.show();
+
     String insertTicklistData =
         '${MyConstant.domain}/famfam/insertTickTick.php?isAdd=true&tick_uid=$tick_uid&circle_id=$circle_id&user_id=$member_id&tick_topic=$topic&ticklist_list=$ticklist&fav_topic=false';
     await Dio().get(insertTicklistData).then((value) async {
@@ -2390,8 +2395,6 @@ class _TicBotSheetState extends State<TicBotSheet> {
             tick_id = model.tick_id;
           });
         }
-        // restartListshow.restartListShowTopic(topic!, tick_id!);
-        // restartListshow.restartListShowProduct(tick_id!, ticklist);
       }).then((value) async {
         int i = 1;
         print(tick_id);
@@ -2401,14 +2404,13 @@ class _TicBotSheetState extends State<TicBotSheet> {
           String insertTicklistData =
               '${MyConstant.domain}/famfam/insertTickTickWithID.php?isAdd=true&user_id=$member_id&tick_topic=$topic&ticklist_list=$ticklist&circle_id=$circle_id&tick_uid=$tick_uid&tick_id=$tick_id&fav_topic=false';
           await Dio().get(insertTicklistData);
-
-          // restartListshow.restartListShowProduct(tick_id!, ticklist);
         }
       });
       print('inserted ticklist successed');
-      // pulldata.pullDataTicktick();
-      // pulldata.addDatafromstart();
-      // restartListshow.restartListShow(topic!, tick_id!, ticklist, tick_id!);
+      context.loaderOverlay.hide();
+      setState(() {
+        load = false;
+      });
     });
   }
 
@@ -2417,285 +2419,307 @@ class _TicBotSheetState extends State<TicBotSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: widget.size.width * 0.864,
-          height: widget.size.height * 0.066,
+    return LoaderOverlay(
+      child: Stack(
+        children: [
+          Container(
+            width: widget.size.width * 0.864,
+            height: widget.size.height * 0.066,
 
-          //color: Colors.pink,
+            //color: Colors.pink,
 
-          child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(Color(0xFFF9EE6D)),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(90.0),
+            child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Color(0xFFF9EE6D)),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(90.0),
+                    ),
                   ),
                 ),
-              ),
-              child: Text(
-                '+ Add TickTic ',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black),
-              ),
-              onPressed: () {
-                showModalBottomSheet(
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(62.0))),
-                    backgroundColor: Color(0xFFFFFFFF),
-                    context: context,
-                    isScrollControlled: true,
-                    enableDrag: false,
-                    builder: (context) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 25.0),
-                                  child: Container(
-                                    height: widget.size.height * 0.595,
+                child: Text(
+                  '+ Add TickTic ',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black),
+                ),
+                onPressed: () {
+                  showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(62.0))),
+                      backgroundColor: Color(0xFFFFFFFF),
+                      context: context,
+                      isScrollControlled: true,
+                      enableDrag: false,
+                      builder: (context) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 18),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 25.0),
                                     child: Container(
-                                      width: widget.size.width * 0.84,
-                                      decoration: BoxDecoration(
-                                          //color: hexToColor("#F1E5BA"),
-                                          borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(66),
-                                        topRight: Radius.circular(66),
-                                      )),
-                                      child: Column(
-                                        // mainAxisAlignment:
-                                        //     MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          SizedBox(height: 45),
-                                          Center(
-                                            child: Text(
-                                              'Add TickTic to Circle',
-                                              style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.black),
-                                            ),
-                                          ),
-                                          SizedBox(height: 30),
-                                          Text(
-                                            'Topic',
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                              height:
-                                                  widget.size.height * 0.021),
-                                          Container(
-                                            //margin: EdgeInsets.only(top: 40),
-                                            //width: size.width * 0.831,
-
-                                            child: (Container(
-                                              decoration: BoxDecoration(
-                                                //color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(30),
-                                                // boxShadow: [
-                                                //   const BoxShadow(
-                                                //     color: Colors.black,
-                                                //   ),
-                                                // ]
-                                              ),
-                                              child: (TextField(
+                                      height: widget.size.height * 0.595,
+                                      child: Container(
+                                        width: widget.size.width * 0.84,
+                                        decoration: BoxDecoration(
+                                            //color: hexToColor("#F1E5BA"),
+                                            borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(66),
+                                          topRight: Radius.circular(66),
+                                        )),
+                                        child: Column(
+                                          // mainAxisAlignment:
+                                          //     MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            SizedBox(height: 45),
+                                            Center(
+                                              child: Text(
+                                                'Add TickTic to Circle',
                                                 style: TextStyle(
-                                                    fontSize: 20, height: 1.5),
-                                                decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Colors.white,
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          vertical: 10,
-                                                          horizontal: 20),
-                                                  //border: InputBorder.none,
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            23.0),
-                                                    borderSide: BorderSide(
-                                                        color:
-                                                            Color(0xFFF9EE6D),
-                                                        width: 2.0),
-                                                  ),
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            23.0),
-                                                    borderSide: BorderSide(
-                                                        color:
-                                                            Color(0xFFF9EE6D),
-                                                        width: 2.0),
-                                                  ),
-                                                  hintText: 'Ex. Shopping',
-                                                  hintStyle: TextStyle(
-                                                    fontSize: 20.0,
-                                                  ),
-                                                ),
-                                                controller: topicController,
-                                              )),
-                                            )),
-                                          ),
-                                          SizedBox(
-                                              height:
-                                                  widget.size.height * 0.021),
-                                          Container(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text("Listing",
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.w600)),
-                                                SizedBox(
-                                                    height: widget.size.height *
-                                                        0.021),
-                                                Container(
-                                                  child: (TextField(
-                                                    textAlignVertical:
-                                                        TextAlignVertical.top,
-                                                    keyboardType:
-                                                        TextInputType.multiline,
-                                                    maxLines: 3,
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        height: 1.5),
-                                                    decoration: InputDecoration(
-                                                      filled: true,
-                                                      fillColor: Colors.white,
-                                                      // contentPadding:
-                                                      //     EdgeInsets.symmetric(
-                                                      //         vertical: 10,
-                                                      //         horizontal: 20),
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black),
+                                              ),
+                                            ),
+                                            SizedBox(height: 30),
+                                            Text(
+                                              'Topic',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                                height:
+                                                    widget.size.height * 0.021),
+                                            Container(
+                                              //margin: EdgeInsets.only(top: 40),
+                                              //width: size.width * 0.831,
 
-                                                      //border: InputBorder.none,
-                                                      focusedBorder:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(30.0),
-                                                        borderSide: BorderSide(
-                                                            color: Color(
-                                                                0xFFF9EE6D),
-                                                            width: 2.0),
-                                                      ),
-                                                      enabledBorder:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(30.0),
-                                                        borderSide: BorderSide(
-                                                            color: Color(
-                                                                0xFFF9EE6D),
-                                                            width: 2.0),
-                                                      ),
-                                                      hintText:
-                                                          'Ex. มาม่า, สบู่, ไข่, นม',
-                                                      hintStyle: TextStyle(
-                                                        fontSize: 20.0,
-                                                      ),
-                                                    ),
-                                                    controller: listController,
-                                                  )),
+                                              child: (Container(
+                                                decoration: BoxDecoration(
+                                                  //color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                  // boxShadow: [
+                                                  //   const BoxShadow(
+                                                  //     color: Colors.black,
+                                                  //   ),
+                                                  // ]
                                                 ),
-                                                SizedBox(
-                                                    height: widget.size.height *
-                                                        0.04),
-                                                Center(
-                                                    child: Container(
-                                                  width: 208,
-                                                  height: 60,
-                                                  child: ElevatedButton(
-                                                    style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all<Color>(Color(
-                                                                  0xFFF9EE6D)),
-                                                      shape:
-                                                          MaterialStateProperty
-                                                              .all(
-                                                        RoundedRectangleBorder(
+                                                child: (TextField(
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      height: 1.5),
+                                                  decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor: Colors.white,
+                                                    contentPadding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 10,
+                                                            horizontal: 20),
+                                                    //border: InputBorder.none,
+                                                    focusedBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              23.0),
+                                                      borderSide: BorderSide(
+                                                          color:
+                                                              Color(0xFFF9EE6D),
+                                                          width: 2.0),
+                                                    ),
+                                                    enabledBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              23.0),
+                                                      borderSide: BorderSide(
+                                                          color:
+                                                              Color(0xFFF9EE6D),
+                                                          width: 2.0),
+                                                    ),
+                                                    hintText: 'Ex. Shopping',
+                                                    hintStyle: TextStyle(
+                                                      fontSize: 20.0,
+                                                    ),
+                                                  ),
+                                                  controller: topicController,
+                                                )),
+                                              )),
+                                            ),
+                                            SizedBox(
+                                                height:
+                                                    widget.size.height * 0.021),
+                                            Container(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text("Listing",
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w600)),
+                                                  SizedBox(
+                                                      height:
+                                                          widget.size.height *
+                                                              0.021),
+                                                  Container(
+                                                    child: (TextField(
+                                                      textAlignVertical:
+                                                          TextAlignVertical.top,
+                                                      keyboardType:
+                                                          TextInputType
+                                                              .multiline,
+                                                      maxLines: 3,
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          height: 1.5),
+                                                      decoration:
+                                                          InputDecoration(
+                                                        filled: true,
+                                                        fillColor: Colors.white,
+                                                        // contentPadding:
+                                                        //     EdgeInsets.symmetric(
+                                                        //         vertical: 10,
+                                                        //         horizontal: 20),
+
+                                                        //border: InputBorder.none,
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(
-                                                                      90.0),
+                                                                      30.0),
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xFFF9EE6D),
+                                                              width: 2.0),
+                                                        ),
+                                                        enabledBorder:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xFFF9EE6D),
+                                                              width: 2.0),
+                                                        ),
+                                                        hintText:
+                                                            'Ex. มาม่า, สบู่, ไข่, นม',
+                                                        hintStyle: TextStyle(
+                                                          fontSize: 20.0,
                                                         ),
                                                       ),
-                                                    ),
-                                                    onPressed: () async {
-                                                      print('##Topic : ' +
-                                                          topicController.text);
-                                                      print('##List : ' +
-                                                          listController.text);
-                                                      var list_text =
-                                                          listController.text;
-                                                      var arr =
-                                                          list_text.split(",");
-                                                      print(arr.length);
-                                                      await insertTickTick(
-                                                          topic: topicController
-                                                              .text,
-                                                          arr: arr);
-                                                      Navigator.pop(context);
-                                                      Navigator.pushReplacement(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              TickTikScreen(),
-                                                        ),
-                                                      );
-
-                                                      listController.text = '';
-                                                      topicController.text = '';
-                                                    },
-                                                    child: Text(
-                                                      "Confirm",
-                                                      style: TextStyle(
-                                                          fontSize: 21,
-                                                          color: Colors.black),
-                                                    ),
+                                                      controller:
+                                                          listController,
+                                                    )),
                                                   ),
-                                                ))
-                                              ],
+                                                  SizedBox(
+                                                      height:
+                                                          widget.size.height *
+                                                              0.04),
+                                                  Center(
+                                                      child: Container(
+                                                    width: 208,
+                                                    height: 60,
+                                                    child: ElevatedButton(
+                                                      style: ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all<Color>(Color(
+                                                                    0xFFF9EE6D)),
+                                                        shape:
+                                                            MaterialStateProperty
+                                                                .all(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        90.0),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      onPressed: () async {
+                                                        print('##Topic : ' +
+                                                            topicController
+                                                                .text);
+                                                        print('##List : ' +
+                                                            listController
+                                                                .text);
+                                                        var list_text =
+                                                            listController.text;
+                                                        var arr = list_text
+                                                            .split(",");
+                                                        print(arr.length);
+
+                                                        await insertTickTick(
+                                                            topic:
+                                                                topicController
+                                                                    .text,
+                                                            arr: arr);
+
+                                                        Navigator.pop(context);
+                                                        // if(load == true){
+                                                        //   CircleLoader();
+                                                        // }
+                                                        Navigator
+                                                            .pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                TickTikScreen(),
+                                                          ),
+                                                        );
+
+                                                        listController.text =
+                                                            '';
+                                                        topicController.text =
+                                                            '';
+                                                      },
+                                                      child: Text(
+                                                        "Confirm",
+                                                        style: TextStyle(
+                                                            fontSize: 21,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                    ),
+                                                  ))
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  )),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom),
-                              ),
-                              SizedBox(height: 10),
-                            ],
-                          ),
-                        ));
-              }),
-        )
-      ],
+                                    )),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom),
+                                ),
+                                SizedBox(height: 10),
+                              ],
+                            ),
+                          ));
+                }),
+          ),
+        ],
+      ),
     );
   }
 }

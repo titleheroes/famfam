@@ -13,7 +13,8 @@ import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/models/user_model.dart';
 import 'package:famfam/models/pinpost_model.dart';
 import 'package:famfam/models/replynumber.dart';
-import 'package:famfam/widgets/slide_dots.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:famfam/pinpost_screen/reply_pin_screen.dart';
 import 'package:uuid/uuid.dart';
@@ -27,7 +28,7 @@ class PinScreen extends StatefulWidget {
 
 class _BodyState extends State<PinScreen> {
   bool load = true;
-  bool? haveData;
+  bool haveData = false;
   List<UserModel> userModels = [];
   List<PinpostModel> pinpostModels = [];
   List<ReplyNumberModel> replynumberModels = [];
@@ -42,8 +43,8 @@ class _BodyState extends State<PinScreen> {
   @override
   void initState() {
     super.initState();
-    pullUserSQLID().then((value) {
-      getPinpostFromCircle().then((value) => getReplyNumberFromCircleID());
+    pullUserSQLID().then((value)  {
+      getPinpostFromCircle().then((value) => getReplyNumberFromCircleID().then((value) => load = false));
     });
   }
 
@@ -125,7 +126,9 @@ class _BodyState extends State<PinScreen> {
     String circle_id = preferences.getString('circle_id')!;
     String author_id = userModels[0].id!;
     String pin_text = input_pin_text;
-
+    setState(() {
+      load = true;
+    });
     print('## text = $pin_text');
 
     String InsertPinpost =
@@ -168,9 +171,13 @@ class _BodyState extends State<PinScreen> {
       } else {
         print('Insert Error');
       }
-    });
-    getReplyNumberFromCircleID();
-    getPinpostFromCircle();
+    }
+    
+  );
+  
+
+    getPinpostFromCircle().then((value) => getReplyNumberFromCircleID().then((value) => load = false));
+    
     //Navigator.pushNamed(context, '/pinpost');
   }
 
@@ -257,7 +264,108 @@ class _BodyState extends State<PinScreen> {
     );
   }
 
-  Future<void> _displayDeleteDialog(BuildContext context, String pin_id) async {
+  Future<void> CuppEditDialog(BuildContext context,String pin_id,String pin_text) async {
+    TextEditingController pinEditController = TextEditingController();
+    pinEditController.text = "${pin_text}";
+   showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            
+            title: const Text('Edit Pinpost'),
+            content: 
+            
+            Container(
+              //padding: EdgeInsets.symmetric(horizontal: 50),
+              margin: EdgeInsets.only(top: 15),
+              child: CupertinoTextField(
+                maxLines: 4,
+                controller: pinEditController,
+                //autofocus: true,
+              ),
+            ),
+            actions: [
+              // The "Cancel" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel',style: TextStyle(color: Colors.black),),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              ),
+              // The "Edit" button
+              CupertinoDialogAction(
+                onPressed: () async {
+
+                  print('Edited text = '+pinEditController.text);
+                  String EditPinpost = '${MyConstant.domain}/famfam/editPinfromPinID.php?isAdd=true&pin_id=$pin_id&pin_text=${pinEditController.text}' ;
+                  await Dio().get(EditPinpost).then((value) {
+                    if(value.toString()=='true'){
+                        print('Pinpost Edited');
+                    }else{
+                        print('Edit Error');
+                    }
+                  }   
+                  );
+                  setState(() {
+                    load = true;
+                  });
+                  getPinpostFromCircle().then((value) => load = false);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Confirm',style: TextStyle(color: Colors.blue),),
+                
+              )
+            ],
+          );
+        });
+
+
+
+  }
+
+  Future<void> CuppDelDialog(BuildContext context,String pin_id) async {
+
+
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to remove this Pinpost?'),
+            actions: [
+              // The "Cancel" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  setState(() {
+                    
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text('Cancel',style: TextStyle(color: Colors.black),),
+                isDefaultAction: true,
+                isDestructiveAction: true,
+              ),
+              // The "Delete" button
+              CupertinoDialogAction(
+                onPressed: () {
+                  DeletePinpost(pin_id);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Confirm',style: TextStyle(color: Colors.red),),
+                
+              )
+            ],
+          );
+        });
+  }
+
+
+  Future<void> _displayDeleteDialog(BuildContext context,String pin_id) async {
     return showDialog(
       context: context,
       builder: (context) {
@@ -316,10 +424,27 @@ class _BodyState extends State<PinScreen> {
 
   void DeletePinpost(String pin_id) async {
     String target_pin_id = pin_id;
-    String DeletePinpost =
-        '${MyConstant.domain}/famfam/deletePinFromPinID.php?isAdd=true&pin_id=$target_pin_id';
+    String DeletePinpost = '${MyConstant.domain}/famfam/deletePinFromPinID.php?isAdd=true&pin_id=$target_pin_id' ;
+    setState(() {
+    load = true;
+  });
+    print('## target = $target_pin_id');
+
+
+    String DeletePinReply =
+        '${MyConstant.domain}/famfam/deletePinreplyWherePinID.php?isAdd=true&pin_id=$target_pin_id';
 
     print('## target = $target_pin_id');
+
+    await Dio().get(DeletePinReply).then((value) {
+      if (value.toString() == 'True') {
+        print('PinReply Deleted');
+
+        
+      } else {
+        print('Delete Error');
+      }
+    });
 
     await Dio().get(DeletePinpost).then((value) {
       if (value.toString() == 'True') {
@@ -329,7 +454,9 @@ class _BodyState extends State<PinScreen> {
       }
     });
     //Navigator.pushNamed(context, '/pinpost');
-    getPinpostFromCircle();
+    
+
+    getPinpostFromCircle().then((value) => getReplyNumberFromCircleID().then((value) => load = false));
   }
 
   Future getReplyNumberFromCircleID() async {
@@ -349,7 +476,7 @@ class _BodyState extends State<PinScreen> {
       if (getvalue.toString() == 'null') {
         //No Data
         setState(() {
-          load = false;
+          //load = false;
           haveData = false;
         });
       } else {
@@ -360,7 +487,7 @@ class _BodyState extends State<PinScreen> {
               'Pin_ID ==>> ${model.pin_id} have ${model.number_of_reply} reply');
 
           setState(() {
-            load = false;
+            //load = false;
             haveData = true;
             replynumberModels.add(model);
           });
@@ -371,7 +498,8 @@ class _BodyState extends State<PinScreen> {
 
   Widget build(BuildContext context) {
     final User user = FirebaseAuth.instance.currentUser!;
-
+    Size size = MediaQuery.of(context).size;
+    double screen_height = MediaQuery.of(context).size.height;
     TextEditingController pinController = TextEditingController();
 
     void addItemToList() {
@@ -380,8 +508,6 @@ class _BodyState extends State<PinScreen> {
         print(names);
       });
     }
-
-    Size size = MediaQuery.of(context).size;
 
     return new WillPopScope(
       onWillPop: () {
@@ -434,193 +560,140 @@ class _BodyState extends State<PinScreen> {
               ),
             ),
           ),
-          body: load
-              ? CircleLoader()
-              : SafeArea(
-                  child: Container(
-                    //color: Colors.pink,
-                    width: double.infinity,
-
-                    padding: EdgeInsets.only(
-                        top: 10, left: 24, right: 24, bottom: 0),
-                    child: Center(
-                      child: Stack(
-                        children: [
-                          Column(
-                            children: [
-                              Expanded(
-                                  child: Container(
-                                height: 50,
-                                //color: Colors.cyan,
-                                child: ListView.builder(
-                                    physics: BouncingScrollPhysics(),
-                                    padding: const EdgeInsets.all(8),
-                                    itemCount: pinpostModels.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      DateTime tempDate =
-                                          new DateFormat("yyyy-MM-dd hh:mm")
-                                              .parse(pinpostModels[index].date);
-                                      String formattedDate =
-                                          DateFormat('dd/MM/yyyy - kk:mm')
-                                              .format(tempDate);
-                                      //print(tempDate);
-
-                                      return Stack(
-                                        children: [
-                                          Container(
-                                            width: size.width,
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 15,
-                                              horizontal: 24,
-                                            ),
-                                            margin: EdgeInsets.only(
-                                                bottom: index ==
-                                                        pinpostModels.length - 1
-                                                    ? 100
-                                                    : 20),
-                                            decoration: BoxDecoration(
-                                              color: Color(0xfffF5EC83),
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: Stack(
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                          child: CircleAvatar(
-                                                            radius: 20,
-                                                            backgroundColor:
-                                                                Colors.white,
-                                                            backgroundImage:
-                                                                NetworkImage(
-                                                                    pinpostModels[
-                                                                            index]
-                                                                        .profileImage),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                            left: 10,
-                                                          ),
-                                                          child: Text(
-                                                            '${pinpostModels[index].fname}',
-                                                            style: TextStyle(
-                                                                fontSize: 20,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    Text(
-                                                      formattedDate,
-                                                      style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(
-                                                                  0.5)),
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                        top: 10,
-                                                      ),
-                                                      child: Text(
-                                                        '${pinpostModels[index].pin_text}',
-                                                        style: TextStyle(
-                                                            fontSize: 18,
-                                                            height: 1.5),
-                                                      ),
-                                                    ),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.bottomRight,
-                                                      child: Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                top: 20),
-                                                        child: RichText(
-                                                            text: TextSpan(
-                                                                children: [
-                                                              TextSpan(
-                                                                  text:
-                                                                      '${pinpostModels[index].number_of_reply} Replied',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          18,
-                                                                      height:
-                                                                          1.5,
-                                                                      color: Colors
-                                                                          .black),
-                                                                  recognizer:
-                                                                      TapGestureRecognizer()
-                                                                        ..onTap =
-                                                                            () {
-                                                                          print('Tapped ==>> ' +
-                                                                              pinpostModels[index].pin_id);
-                                                                          Navigator.push(
-                                                                              context,
-                                                                              MaterialPageRoute(
-                                                                                builder: (context) => ReplyPinScreen(
-                                                                                  pinpostModels[index].pin_id,
-                                                                                ),
-                                                                              ));
-                                                                        }),
-                                                            ])),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          if (userModels[0].id ==
-                                              pinpostModels[index].author_id)
-                                            Positioned(
-                                              right: 0,
-                                              top: 0,
-                                              child: Row(
-                                                children: [
-                                                  IconButton(
-                                                    onPressed: () {
-                                                      _displayEditDialog(
-                                                          context,
-                                                          pinpostModels[index]
-                                                              .pin_id,
-                                                          pinpostModels[index]
-                                                              .pin_text);
-                                                    },
-                                                    icon: Icon(Icons.edit),
-                                                    iconSize: 30,
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                  ),
-                                                  IconButton(
-                                                    onPressed: () {
-                                                      _displayDeleteDialog(
-                                                          context,
-                                                          pinpostModels[index]
-                                                              .pin_id);
-                                                    },
-                                                    icon: Icon(Icons.close),
-                                                    iconSize: 30,
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                  ),
-                                                ],
+        ),
+    
+    
+    
+        body: load ? CircleLoader() : SafeArea(
+          child: Container(
+            //color: Colors.pink,
+            width: double.infinity,
+            
+            padding: EdgeInsets.only(
+              top: 10,
+              left: 24,
+              right: 24,
+              bottom: 0
+    
+              
+            ),
+            child: Center(
+              child: Stack(
+                children: [
+                  Column(
+                    
+                    children: [
+    
+    
+    
+     Expanded(
+    
+              
+              child: Container(
+                height: 50,
+                //color: Colors.cyan,
+                child: (haveData) ? ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(8),
+                  itemCount: pinpostModels.length,
+    
+    
+    
+                  itemBuilder: (BuildContext context, int index) {
+                    DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm").parse(pinpostModels[index].date);
+                    String formattedDate = DateFormat('dd/MM/yyyy - kk:mm').format(tempDate);
+                    //print(tempDate);
+    
+                    return
+                    
+                      Stack(
+    
+                      children: [
+                        
+                        
+                        Container(
+                        
+                        width: size.width ,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 24,
+                        ),
+    
+                      
+                    
+                        
+    
+                        margin: EdgeInsets.only(bottom: index==pinpostModels.length-1 ? 100 :20),
+                                  
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB( 255,249, 234,184),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Stack(
+                          children: [
+                            
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                              Row(children: [
+    
+                                Container(
+                                        
+                                        child: CircleAvatar(
+                                          radius: 20,
+                                          backgroundColor: Colors.white,
+                                          backgroundImage:
+                                              NetworkImage(pinpostModels[index].profileImage),
+                                        ),
+                                      ),
+    
+                                Padding(
+                                      padding: EdgeInsets.only(
+                                        left: 10,
+                                      ),
+                                      child: 
+                                      Container(
+                                        width: 190,
+                                        //color: Colors.blue,
+                                        child: Text('${pinpostModels[index].fname}',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+                                        overflow: TextOverflow.ellipsis,),
+                                      ),
+                                      
+                                      
+                                ),
+                                
+                                      
+                              ],),
+                              SizedBox(height: 5,),
+                              Text(formattedDate,style: TextStyle(color:Colors.black.withOpacity(0.5)), ),
+                                      
+                              Padding(
+                                padding: EdgeInsets.only(
+                                      top: 10,
+                                ),
+                                child: Text('${pinpostModels[index].pin_text}',
+                                style: TextStyle(fontSize: 18,height: 1.5),),
+                              ),
+    
+                              
+                              
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 20),
+                                          child: 
+                                          RichText(text: TextSpan(                                         
+                                            children: [
+                                              TextSpan(text: '${pinpostModels[index].number_of_reply} Replied',style: TextStyle(fontSize: 14,height: 1.5,color: Colors.black),
+                                                recognizer: TapGestureRecognizer()
+                                                ..onTap = (){
+                                                  print('Tapped ==>> '+pinpostModels[index].pin_id);
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => ReplyPinScreen(pinpostModels[index].pin_id,),
+                                                    ));
+                                                }
                                               ),
                                             ),
                                         ],
@@ -657,28 +730,183 @@ class _BodyState extends State<PinScreen> {
                                             ),
                                           ),
                                         ),
-                                        child: Text(
-                                          'Add Pin!',
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black),
-                                        ),
-                                        onPressed: () {
-                                          showModalBottomSheet(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.vertical(
-                                                        top: Radius.circular(
-                                                            62.0))),
-                                            backgroundColor: Colors.white,
-                                            context: context,
-                                            isScrollControlled: true,
-                                            enableDrag: false,
-                                            builder: (context) => Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 18),
+                                      )
+    
+                                      
+                                    
+    
+    
+    
+    
+                            ],),
+                          ],
+                        ),
+    
+                    
+    
+                      ),
+    
+                       
+    
+                      if (userModels[0].id == pinpostModels[index].author_id) 
+                      
+                      Positioned( 
+                        right: 0,
+                        top: 0,
+    
+                        child: Row(
+                          children: [
+    
+                            IconButton(onPressed: () {
+                              CuppEditDialog(context, pinpostModels[index].pin_id,pinpostModels[index].pin_text);
+                              //_displayEditDialog(context,pinpostModels[index].pin_id,pinpostModels[index].pin_text);
+                            }, 
+                            icon: SvgPicture.asset("assets/icons/pencil.svg"),
+                            iconSize: 30,
+                            splashColor: Colors.transparent, 
+                            highlightColor: Colors.transparent,  
+                            
+                            ),
+    
+                            IconButton(onPressed: () {
+                              CuppDelDialog(context,pinpostModels[index].pin_id);
+                              //_displayDeleteDialog(context,pinpostModels[index].pin_id);
+                            }, 
+                            icon: SvgPicture.asset("assets/icons/trash.svg"),
+                            iconSize: 30,
+                            splashColor: Colors.transparent, 
+                            highlightColor: Colors.transparent,  
+                            
+                            ),
+                          ],
+    
+    
+                        ),
+    
+    
+    
+                      ),
+    
+    
+    
+    
+                      ],
+                    
+    
+                    );
+                    
+                  }
+    
+
+                ) : 
+
+                // Have no Pin Post
+                Center(
+                  child: Container(
+                    width: 250,
+                    height: 250,
+                    //color: Colors.pink,
+                    child: Column(children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        //color: Colors.green,
+                        child: SvgPicture.asset("assets/icons/leaf-fall.svg",height: 85, color: Colors.black.withOpacity(0.4),),
+                      ),
+                      Container(
+                        //width: 80,
+                        //color: Colors.yellow,
+                        child: Text("You don't have any Pin Post right now",style: TextStyle(
+                               color: Colors.grey[500],
+                                fontWeight:FontWeight.w500)),
+                      ),
+                      SizedBox(height: 120,)
+                      ]
+                      
+                      ),
+
+                  ),
+                
+                )
+                // Have no Pin Post
+
+
+              )
+    
+            
+            ),
+    
+            //SizedBox(height: 50,),
+    
+            
+                  ],),
+
+
+
+                  Positioned(
+                    bottom: 20,
+                    right: 7,
+                    child:  //bottomsheet
+                  Stack(
+                    children: [
+                      Container(
+                        //width: size.width * 0.8,
+                        width: size.width * 0.85,
+                        height: size.height * 0.07,
+    
+                        //color: Colors.cyan,
+    
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromARGB(255, 243, 230, 90)
+                                  
+                                  ),
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              'Add Pin!',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                            onPressed: () {
+    
+    
+                              
+                              showModalBottomSheet(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(62.0))),
+                                backgroundColor: Colors.white,
+                                context: context,
+                                isScrollControlled: true,
+                                enableDrag: false,
+                                builder: (context) => Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 18),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 25.0),
+                                          child: Container(
+                                            height: size.height * 0.595,
+                                            child: Container(
+                                              width: size.width * 0.84,
+                                              decoration: BoxDecoration(
+                                                  //color: hexToColor("#F1E5BA"),
+                                                  borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(66),
+                                                topRight: Radius.circular(66),
+                                              )),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,

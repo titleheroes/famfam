@@ -1,6 +1,7 @@
 <?php
 	include 'connected.php';
 	header("Access-Control-Allow-Origin: *");
+	error_reporting(E_ERROR | E_PARSE);
 
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
@@ -8,33 +9,27 @@ if (!$link) {
     echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
     
     exit;
-}
+}else {
 
-if (!$link->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $link->error);
-    exit();
-	}
-
-if (isset($_GET)) {
+	if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
-				
-	$user_id = $_GET['user_id'];
-	$list_to_do = $_GET['list_to_do'];
-	$icon = $_GET['icon'];	
-		
-		
-		$sql = "INSERT INTO `today_i_do`(`id`, `user_id`, `list_to_do`, `icon`) VALUES (NULL,'$user_id','$list_to_do','$icon')";
+			
+		$pin_id = $_GET['pin_id'];		
+									
+		$sql = "DELETE FROM pin_reply WHERE pin_id = '$pin_id'";
 
 		$result = mysqli_query($link, $sql);
 
 		if ($result) {
-			echo "true";
+			echo "True";
 		} else {
-			echo "false";
+			echo "False";
 		}
 
 	} else echo "Welcome Master UNG";
    
+}
+	
 }
 	mysqli_close($link);
 ?>
