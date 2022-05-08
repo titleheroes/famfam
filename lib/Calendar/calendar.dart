@@ -29,7 +29,7 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   
-  bool load = true;
+  bool calendar_load= true;
   List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
   List<CalendarModel> calendarModels = [];
@@ -56,7 +56,7 @@ class _CalendarState extends State<Calendar> {
     pullUserSQLID().then((value){pullCircle().then((value){ 
       
       setState(() {
-        pullCalendar().then((value) => load = false);
+        pullCalendar().then((value) => calendar_load= false);
       });
       
       
@@ -134,7 +134,7 @@ Future<Null> pullCircle() async {
   Future<Null> pullCalendar() async {
 
     setState(() {
-      load = true;
+      calendar_load= true;
       selectedEvents.clear();
     });
     if(calendarModels.length != 0){
@@ -215,7 +215,7 @@ Future<Null> pullCircle() async {
     });
         }catch(e){
           setState(() {
-            load = false;
+            calendar_load= false;
           });
         }
     
@@ -234,7 +234,7 @@ Future<Null> pullCircle() async {
 
   Future<void> insert_act(String title, String note, String location) async{
     setState () {
-      load = true;
+      calendar_load= true;
     }
       SharedPreferences preferences =
           await SharedPreferences.getInstance();
@@ -277,7 +277,7 @@ Future<Null> pullCircle() async {
   Future<void> insert_repeat(String calendar_title,String calendar_location, String calendar_note) async{
         
         setState(() {
-          load = true;
+          calendar_load= true;
         });
         
         SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -351,7 +351,7 @@ Future<Null> pullCircle() async {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
-      body: load ? CircleLoader() : ListView(
+      body: calendar_load? CircleLoader() : ListView(
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -612,7 +612,7 @@ Future<Null> pullCircle() async {
         ],
       ),
       
-      floatingActionButton: load ? null : FloatingActionButton.extended(
+      floatingActionButton: calendar_load? null : FloatingActionButton.extended(
         backgroundColor: Color(0xfffA2A2A2),
         onPressed: () =>  showDialog(
             context: context,
@@ -1003,21 +1003,21 @@ Future<Null> pullCircle() async {
                           }
                           else if(repeat_selected.toString() == 'false') {
                             setState (() {
-                              load = true;
+                              calendar_load= true;
                             },);
                             String title = _eventControllertitle.text;
                             String note = _eventControllernote.text;
                             String location = _eventControllerlocation.text;
-                            insert_act(title,note,location).then((value) => pullCalendar().then((value) => load = false));
+                            insert_act(title,note,location).then((value) => pullCalendar().then((value) => calendar_load= false));
                             
 
                           }else if(repeat_selected.toString() == 'true'){
                             
                             setState (() {
-                              load = true;
+                              calendar_load= true;
                             },);
                             insert_repeat(_eventControllertitle.text, _eventControllerlocation.text, _eventControllernote.text)
-                            .then((value) => pullCalendar().then((value) => load = false).then((value) => repeat_selected = false).then((value) => _dateTime = 'Select Date'));
+                            .then((value) => pullCalendar().then((value) => calendar_load= false).then((value) => repeat_selected = false).then((value) => _dateTime = 'Select Date'));
                             
 
 
@@ -1032,7 +1032,7 @@ Future<Null> pullCircle() async {
                 
                           
                           // setState(() {
-                          //   load = true;
+                          //   calendar_load= true;
                           // });
                           
 
