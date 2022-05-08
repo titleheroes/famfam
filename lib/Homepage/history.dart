@@ -17,6 +17,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:famfam/widgets/circle_loader.dart';
 
 class History extends StatefulWidget {
   const History({Key? key}) : super(key: key);
@@ -29,6 +30,7 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
   List<CircleModel> circleModels = [];
   List<HistoryMyOrderModel> historyMyOrderModels = [];
   List<HistoryPinPostModel> historyPinPostModels = [];
+  bool historyload = true;
 
   @override
   void initState() {
@@ -37,7 +39,8 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
       pullCircle().then((value) {
         pullHistoryMyOrder().then((value) {
           historyMyOrderModels.reversed;
-        });
+        }).then((value) => historyload = false);
+        
         pullHistoryPinPost().then((value) {
           historyPinPostModels.reversed;
         });
@@ -180,7 +183,9 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-                body: Column(
+                body:  historyload
+              ? CircleLoader()
+              : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(
