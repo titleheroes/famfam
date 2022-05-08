@@ -48,7 +48,7 @@ class _BodyState extends State<ReplyPinScreen> {
   void initState() {
     super.initState();
     pullUserSQLID().then((value) {
-      getPinpostFromPinID().then((value) => getPinReplyFromPinID());
+      getPinpostFromPinID().then((value) => getPinReplyFromPinID()).then((value) => load = false);
     });
 
     print('Reply of ID ==>> ' + widget.pin_id);
@@ -678,7 +678,7 @@ class _BodyState extends State<ReplyPinScreen> {
   void DeletePinpost(String pin_id) async {
     String target_pin_id = pin_id;
     String DeletePinpost =
-        '${MyConstant.domain}/famfam/deletePinFromPinID.php?isAdd=true&pin_id=$target_pin_id';
+        '${MyConstant.domain}/famfam/deletePinfromPinID.php?isAdd=true&pin_id=$target_pin_id';
 
     print('## target = $target_pin_id');
 
