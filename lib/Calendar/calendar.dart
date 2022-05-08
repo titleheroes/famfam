@@ -225,7 +225,11 @@ Future<Null> pullCircle() async {
          
       }
     });
-        }catch(e){}
+        }catch(e){
+          setState(() {
+            load = false;
+          });
+        }
     
   }
 
