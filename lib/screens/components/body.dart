@@ -2815,7 +2815,11 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
           });
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      setState(() {
+        voteload = false;
+      });
+    }
   }
 
   Future<Null> pullAllRandom() async {
@@ -2832,7 +2836,11 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
           });
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      setState(() {
+        voteload = false;
+      });
+    }
   }
 
   bool _isShown = true;
