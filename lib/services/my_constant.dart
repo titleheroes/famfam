@@ -2,5 +2,5 @@ import 'package:flutter/material.dart';
 
 class MyConstant {
   static String domain =
-      'https://94f9-49-228-139-10.ngrok.io';
+      'https://05f2-49-228-136-124.ngrok.io';
 }

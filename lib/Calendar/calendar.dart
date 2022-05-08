@@ -213,7 +213,11 @@ Future<Null> pullCircle() async {
          
       }
     });
-        }catch(e){}
+        }catch(e){
+          setState(() {
+            load = false;
+          });
+        }
     
   }
 
@@ -985,7 +989,8 @@ Future<Null> pullCircle() async {
                         color: Colors.amber,
                         child: Text('ADD'),
                         onPressed: () async {
-                         
+                          
+                          
                           if (_eventControllertitle.text.isEmpty )  {
                             
                             Fluttertoast.showToast(msg: "Can't add activity because you did not input 'title' !", gravity: ToastGravity.BOTTOM);
@@ -1010,7 +1015,7 @@ Future<Null> pullCircle() async {
                               load = true;
                             },);
                             insert_repeat(_eventControllertitle.text, _eventControllerlocation.text, _eventControllernote.text)
-                            .then((value) => pullCalendar().then((value) => load = false));
+                            .then((value) => pullCalendar().then((value) => load = false).then((value) => repeat_selected = false).then((value) => _dateTime = 'Select Date'));
                             
 
 
