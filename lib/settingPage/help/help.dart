@@ -29,6 +29,87 @@ class HelpPage extends StatelessWidget {
           elevation: 0,
           backgroundColor: Colors.white,
         ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+              child: Text(
+                "Contact Us",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[500],
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              onPressed: () {},
+              child: Row(children: [
+                SizedBox(
+                  width: 10,
+                ),
+                Icon(
+                  Icons.call,
+                  color: Colors.black,
+                  size: 30,
+                ),
+                SizedBox(
+                  width: 35,
+                ),
+                Text(
+                  'Call',
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
+                Spacer(),
+                Text(
+                  '+66 98 897 9131',
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
+                Padding(padding: EdgeInsets.only(right: 20))
+              ]),
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                  padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
+                  elevation: 0),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              onPressed: () {},
+              child: Row(children: [
+                SizedBox(
+                  width: 10,
+                ),
+                Icon(
+                  Icons.email,
+                  color: Colors.black,
+                  size: 30,
+                ),
+                SizedBox(
+                  width: 35,
+                ),
+                Text(
+                  'E-mail',
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
+                Spacer(),
+                Text(
+                  'wutthipat.tortlew@gmail.com',
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
+                Padding(padding: EdgeInsets.only(right: 20))
+              ]),
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                  padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
+                  elevation: 0),
+            ),
+          ],
+        ),
       ),
     );
   }
