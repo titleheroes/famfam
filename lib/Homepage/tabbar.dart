@@ -894,9 +894,9 @@ class _tabbarState extends State<tabbar> {
                           Container(
                               child: load
                                   ? CircleLoader()
+                                  //page1
                                   : Container(
                                       child: Column(
-                                        //page1
                                         children: [
                                           SizedBox(
                                             height: 10,
@@ -1035,132 +1035,145 @@ class _tabbarState extends State<tabbar> {
                                                   )
                                                 : Expanded(
                                                     child: ListView.builder(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8),
-                                                        itemCount:
-                                                            list_todo.length,
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          return Container(
-                                                              height: 80,
-                                                              margin: EdgeInsets
-                                                                  .all(2),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                color: Color(
-                                                                    0xfffFFC34A),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8),
+                                                      itemCount:
+                                                          list_todo.length,
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int index) {
+                                                        return Container(
+                                                          height: 80,
+                                                          margin:
+                                                              EdgeInsets.all(2),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            color: Color(
+                                                                0xfffFFC34A),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: <Widget>[
+                                                              Container(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        left:
+                                                                            20),
+                                                                child: Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .centerLeft,
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Container(
+                                                                            child: icon[index] == '1'
+                                                                                ? Container(
+                                                                                    child: Image(
+                                                                                    image: AssetImage('assets/images/fire.png'),
+                                                                                    fit: BoxFit.cover,
+                                                                                    height: 30,
+                                                                                  ))
+                                                                                : icon[index] == '2'
+                                                                                    ? Container(
+                                                                                        child: Image(
+                                                                                        image: AssetImage('assets/images/dumbbell.png'),
+                                                                                        fit: BoxFit.cover,
+                                                                                        height: 30,
+                                                                                      ))
+                                                                                    : icon[index] == '3'
+                                                                                        ? Container(
+                                                                                            child: Image(
+                                                                                            image: AssetImage('assets/images/money.png'),
+                                                                                            fit: BoxFit.cover,
+                                                                                            height: 30,
+                                                                                          ))
+                                                                                        : icon[index] == '4'
+                                                                                            ? Container(
+                                                                                                child: Image(
+                                                                                                image: AssetImage('assets/images/beer.png'),
+                                                                                                fit: BoxFit.cover,
+                                                                                                height: 30,
+                                                                                              ))
+                                                                                            : icon[index] == '5'
+                                                                                                ? Container(
+                                                                                                    child: Image(
+                                                                                                    image: AssetImage('assets/images/stopwatch.png'),
+                                                                                                    fit: BoxFit.cover,
+                                                                                                    height: 30,
+                                                                                                  ))
+                                                                                                : icon[index] == '6'
+                                                                                                    ? Container(
+                                                                                                        child: Image(
+                                                                                                        image: AssetImage('assets/images/medical-report.png'),
+                                                                                                        fit: BoxFit.cover,
+                                                                                                        height: 30,
+                                                                                                      ))
+                                                                                                    : icon[index] == '7'
+                                                                                                        ? Container(
+                                                                                                            child: Image(
+                                                                                                            image: AssetImage('assets/images/star.png'),
+                                                                                                            fit: BoxFit.cover,
+                                                                                                            height: 30,
+                                                                                                          ))
+                                                                                                        : Container(
+                                                                                                            child: Image(
+                                                                                                            image: AssetImage('assets/images/shopping-bags.png'),
+                                                                                                            fit: BoxFit.cover,
+                                                                                                            height: 30,
+                                                                                                          ))),
+                                                                        Padding(
+                                                                            padding:
+                                                                                EdgeInsets.only(right: 20)),
+                                                                        Container(
+                                                                          width:
+                                                                              245,
+                                                                          //color: Colors.blue,
+                                                                          child:
+                                                                              Text(
+                                                                            '${list_todo[index]}',
+                                                                            style:
+                                                                                TextStyle(fontSize: 18),
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    )),
                                                               ),
-                                                              child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceBetween,
-                                                                  children: <
-                                                                      Widget>[
-                                                                    Container(
-                                                                      padding: EdgeInsets.only(
-                                                                          left:
-                                                                              20),
-                                                                      child: Align(
-                                                                          alignment: Alignment.centerLeft,
-                                                                          child: Row(
-                                                                            children: [
-                                                                              Container(
-                                                                                  child: icon[index] == '1'
-                                                                                      ? Container(
-                                                                                          child: Image(
-                                                                                          image: AssetImage('assets/images/fire.png'),
-                                                                                          fit: BoxFit.cover,
-                                                                                          height: 30,
-                                                                                        ))
-                                                                                      : icon[index] == '2'
-                                                                                          ? Container(
-                                                                                              child: Image(
-                                                                                              image: AssetImage('assets/images/dumbbell.png'),
-                                                                                              fit: BoxFit.cover,
-                                                                                              height: 30,
-                                                                                            ))
-                                                                                          : icon[index] == '3'
-                                                                                              ? Container(
-                                                                                                  child: Image(
-                                                                                                  image: AssetImage('assets/images/money.png'),
-                                                                                                  fit: BoxFit.cover,
-                                                                                                  height: 30,
-                                                                                                ))
-                                                                                              : icon[index] == '4'
-                                                                                                  ? Container(
-                                                                                                      child: Image(
-                                                                                                      image: AssetImage('assets/images/beer.png'),
-                                                                                                      fit: BoxFit.cover,
-                                                                                                      height: 30,
-                                                                                                    ))
-                                                                                                  : icon[index] == '5'
-                                                                                                      ? Container(
-                                                                                                          child: Image(
-                                                                                                          image: AssetImage('assets/images/stopwatch.png'),
-                                                                                                          fit: BoxFit.cover,
-                                                                                                          height: 30,
-                                                                                                        ))
-                                                                                                      : icon[index] == '6'
-                                                                                                          ? Container(
-                                                                                                              child: Image(
-                                                                                                              image: AssetImage('assets/images/medical-report.png'),
-                                                                                                              fit: BoxFit.cover,
-                                                                                                              height: 30,
-                                                                                                            ))
-                                                                                                          : icon[index] == '7'
-                                                                                                              ? Container(
-                                                                                                                  child: Image(
-                                                                                                                  image: AssetImage('assets/images/star.png'),
-                                                                                                                  fit: BoxFit.cover,
-                                                                                                                  height: 30,
-                                                                                                                ))
-                                                                                                              : Container(
-                                                                                                                  child: Image(
-                                                                                                                  image: AssetImage('assets/images/shopping-bags.png'),
-                                                                                                                  fit: BoxFit.cover,
-                                                                                                                  height: 30,
-                                                                                                                ))),
-                                                                              Padding(padding: EdgeInsets.only(right: 20)),
-                                                                              Container(
-                                                                                width: 245,
-                                                                                //color: Colors.blue,
-                                                                                child: Text(
-                                                                                  '${list_todo[index]}',
-                                                                                  style: TextStyle(fontSize: 18),
-                                                                                  overflow: TextOverflow.ellipsis,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          )),
-                                                                    ),
-                                                                    Container(
-                                                                      padding: EdgeInsets.only(
-                                                                          right:
-                                                                              20),
-                                                                      child:
-                                                                          RoundCheckBox(
-                                                                        size:
-                                                                            35,
-                                                                        uncheckedColor:
-                                                                            Colors.white,
-                                                                        checkedColor:
-                                                                            Colors.grey,
-                                                                        onTap:
-                                                                            (selected) {
-                                                                          onDismissed(
-                                                                              index);
-                                                                        },
-                                                                      ),
-                                                                    ),
-                                                                  ]));
-                                                        })),
+                                                              Container(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        right:
+                                                                            20),
+                                                                child:
+                                                                    RoundCheckBox(
+                                                                  size: 35,
+                                                                  uncheckedColor:
+                                                                      Colors
+                                                                          .white,
+                                                                  checkedColor:
+                                                                      Colors
+                                                                          .grey,
+                                                                  onTap:
+                                                                      (selected) {
+                                                                    onDismissed(
+                                                                        index);
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
                                           )
                                         ],
                                       ),
@@ -1179,50 +1192,47 @@ class _tabbarState extends State<tabbar> {
                                 child: Row(children: [
                                   Spacer(),
                                   Container(
+                                    width: 40,
                                     height: 40,
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 40,
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xfffF9EE6D),
-                                            borderRadius:
-                                                BorderRadius.circular(100),
-                                          ),
-                                          child: ClipOval(
-                                            child: Material(
-                                              color: Color(
-                                                  0xfffF9EE6D), // Button color
-                                              child: InkWell(
-                                                splashColor: Colors.white
-                                                    .withOpacity(
-                                                        0.1), // Splash color
-                                                onTap: () {
-                                                  infoDialog(
-                                                      context,
-                                                      'Circle List ?',
-                                                      'List of your jobs\nand assign job to others',
-                                                      0.2);
-                                                },
-                                                child: SizedBox(
-                                                  width: 56,
-                                                  height: 56,
-                                                  child: Icon(
-                                                    Icons.info_outline_rounded,
-                                                    color: Colors.black,
-                                                    size: 30,
-                                                  ),
-                                                ),
+                                    child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xfffF9EE6D),
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                      ),
+                                      child: ClipOval(
+                                        child: Material(
+                                          color: Color(
+                                              0xfffF9EE6D), // Button color
+                                          child: InkWell(
+                                            splashColor: Colors.white
+                                                .withOpacity(
+                                                    0.1), // Splash color
+                                            onTap: () {
+                                              infoDialog(
+                                                  context,
+                                                  'Circle List ?',
+                                                  'List of your jobs\nand assign job to others',
+                                                  0.2);
+                                            },
+                                            child: SizedBox(
+                                              width: 56,
+                                              height: 56,
+                                              child: Icon(
+                                                Icons.info_outline_rounded,
+                                                color: Colors.black,
+                                                size: 30,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                      ],
+                                      ),
                                     ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
                                   ),
                                   Container(
                                     child: ElevatedButton(
@@ -1273,11 +1283,14 @@ class _tabbarState extends State<tabbar> {
                               Container(
                                 child: unfinishedModels.isEmpty
                                     ? Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
                                         children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                top: MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    8),
+                                          ),
                                           Container(
                                             child: SvgPicture.asset(
                                               "assets/icons/leaf-fall.svg",
@@ -1622,14 +1635,16 @@ class _tabbarState extends State<tabbar> {
                                 ),
                               ),
                               Container(
-                                  child: (list_topic.isEmpty)
-                                      ? Column(children: [
+                                child: (list_topic.isEmpty)
+                                    ? Column(
+                                        children: [
                                           Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                      8)),
+                                            padding: EdgeInsets.only(
+                                                top: MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    8),
+                                          ),
                                           Container(
                                             child: SvgPicture.asset(
                                               "assets/icons/leaf-fall.svg",
@@ -1644,169 +1659,189 @@ class _tabbarState extends State<tabbar> {
                                                 color: Colors.grey[500],
                                                 fontWeight: FontWeight.w500),
                                           )
-                                        ])
-                                      : Expanded(
-                                          child: ListView.builder(
-                                              padding: const EdgeInsets.all(8),
-                                              itemCount: list_topic.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return Container(
-                                                    // height: 150,
-                                                    constraints: BoxConstraints(
-                                                      maxHeight:
-                                                          double.infinity,
-                                                    ),
-                                                    margin: EdgeInsets.fromLTRB(
-                                                        5, 10, 5, 0),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              30),
-                                                      color: Color(0xfffFFC34A),
+                                        ],
+                                      )
+                                    : Expanded(
+                                        child: ListView.builder(
+                                            padding: const EdgeInsets.all(8),
+                                            itemCount: list_topic.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Container(
+                                                // height: 150,
+                                                constraints: BoxConstraints(
+                                                    minHeight: 150),
+                                                margin: EdgeInsets.fromLTRB(
+                                                    5, 10, 5, 0),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                  color: Color(0xfffFFC34A),
 
-                                                      // color: Colors.white,
-                                                    ),
-                                                    child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                  // color: Colors.white,
+                                                ),
+                                                child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
                                                         children: [
-                                                          Row(
-                                                            children: [
-                                                              Container(
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    left: 15,
+                                                                    top: 15),
+                                                            child: Text(
+                                                                '${list_topic[index].topic}',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        22,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          ),
+                                                          Spacer(),
+                                                          Container(
+                                                            child: IconButton(
+                                                                iconSize: 22,
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .favorite,
+                                                                ),
+                                                                color: list_topic[
+                                                                            index]
+                                                                        .fav
+                                                                    ? Colors.red
+                                                                    : Colors
+                                                                        .white,
+                                                                onPressed:
+                                                                    () async {
+                                                                  // bool
+                                                                  //     isChecked =
+                                                                  //     false;
+                                                                  String
+                                                                      fav_topic =
+                                                                      'false';
+                                                                  String
+                                                                      tick_id =
+                                                                      list_topic[
+                                                                              index]
+                                                                          .topic_id;
+                                                                  String
+                                                                      updateDataFav =
+                                                                      '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
+                                                                  await Dio()
+                                                                      .get(
+                                                                          updateDataFav)
+                                                                      .then(
+                                                                          (value) {
+                                                                    // if (value.toString() == 'true') {
+                                                                    print(
+                                                                        'Updated Fav By ID Successed');
+                                                                    // }
+                                                                    setState(
+                                                                        () {
+                                                                      list_topic.removeWhere((item) =>
+                                                                          item.topic_id ==
+                                                                          '${list_topic[index].topic_id}');
+
+                                                                      print(
+                                                                          'deleted topic successed');
+                                                                    });
+                                                                  });
+                                                                  // setState(() {});
+                                                                }),
+                                                          ),
+                                                          GestureDetector(
+                                                              onTap: () async {
+                                                                print(
+                                                                    'click on delete ticktik ${list_topic[index].topic_id}');
+
+                                                                _isShown == true
+                                                                    ? _delete(
+                                                                        context,
+                                                                        list_topic[index]
+                                                                            .topic_id)
+                                                                    : null;
+                                                              },
+                                                              child: Image(
+                                                                image: AssetImage(
+                                                                    'assets/images/trash.png'),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                height: 22,
+                                                              )),
+                                                          SizedBox(
+                                                            width: 20,
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Wrap(
+                                                        direction:
+                                                            Axis.horizontal,
+                                                        children: list_product
+                                                            .map((item) {
+                                                          if (item.product_id ==
+                                                              list_topic[index]
+                                                                  .topic_id) {
+                                                            return Container(
                                                                 margin: EdgeInsets
                                                                     .only(
                                                                         left:
                                                                             15,
                                                                         top:
-                                                                            15),
-                                                                child: Text(
-                                                                    '${list_topic[index].topic}',
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            22,
-                                                                        fontWeight:
-                                                                            FontWeight.bold)),
-                                                              ),
-                                                              Spacer(),
-                                                              Container(
-                                                                child:
-                                                                    IconButton(
-                                                                        iconSize:
-                                                                            22,
-                                                                        icon:
-                                                                            Icon(
-                                                                          Icons
-                                                                              .favorite,
+                                                                            20),
+                                                                child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    children: [
+                                                                      Container(
+                                                                        child:
+                                                                            RoundCheckBox(
+                                                                          size:
+                                                                              22,
+                                                                          uncheckedColor:
+                                                                              Colors.white,
+                                                                          checkedColor:
+                                                                              Colors.green,
+                                                                          onTap:
+                                                                              (selected) {
+                                                                            print('selected ' +
+                                                                                item.product_id);
+                                                                            print('selected ' +
+                                                                                item.product_name);
+
+                                                                            onDismissedTickTick(item.product_name,
+                                                                                item.product_id);
+                                                                          },
                                                                         ),
-                                                                        color: list_topic[index].fav
-                                                                            ? Colors
-                                                                                .red
-                                                                            : Colors
-                                                                                .white,
-                                                                        onPressed:
-                                                                            () async {
-                                                                          // bool
-                                                                          //     isChecked =
-                                                                          //     false;
-                                                                          String
-                                                                              fav_topic =
-                                                                              'false';
-                                                                          String
-                                                                              tick_id =
-                                                                              list_topic[index].topic_id;
-                                                                          String
-                                                                              updateDataFav =
-                                                                              '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
-                                                                          await Dio()
-                                                                              .get(updateDataFav)
-                                                                              .then((value) {
-                                                                            // if (value.toString() == 'true') {
-                                                                            print('Updated Fav By ID Successed');
-                                                                            // }
-                                                                            setState(() {
-                                                                              list_topic.removeWhere((item) => item.topic_id == '${list_topic[index].topic_id}');
-
-                                                                              print('deleted topic successed');
-                                                                            });
-                                                                          });
-                                                                          // setState(() {});
-                                                                        }),
-                                                              ),
-                                                              GestureDetector(
-                                                                  onTap:
-                                                                      () async {
-                                                                    print(
-                                                                        'click on delete ticktik ${list_topic[index].topic_id}');
-
-                                                                    _isShown ==
-                                                                            true
-                                                                        ? _delete(
-                                                                            context,
-                                                                            list_topic[index].topic_id)
-                                                                        : null;
-                                                                  },
-                                                                  child: Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/trash.png'),
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                    height: 22,
-                                                                  )),
-                                                              SizedBox(
-                                                                width: 20,
-                                                              )
-                                                            ],
-                                                          ),
-                                                          Expanded(
-                                                              child: Wrap(
-                                                                  direction: Axis
-                                                                      .horizontal,
-                                                                  children:
-                                                                      list_product
-                                                                          .map(
-                                                                              (item) {
-                                                                    if (item.product_id ==
-                                                                        list_topic[index]
-                                                                            .topic_id) {
-                                                                      return Container(
-                                                                          margin: EdgeInsets.only(
-                                                                              left:
-                                                                                  15,
-                                                                              top:
-                                                                                  20),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(
+                                                                            right:
+                                                                                10,
+                                                                            left:
+                                                                                10),
+                                                                        child:
+                                                                            Expanded(
                                                                           child:
-                                                                              Row(mainAxisSize: MainAxisSize.min, children: [
-                                                                            Container(
-                                                                              child: RoundCheckBox(
-                                                                                size: 22,
-                                                                                uncheckedColor: Colors.white,
-                                                                                checkedColor: Colors.green,
-                                                                                onTap: (selected) {
-                                                                                  print('selected ' + item.product_id);
-                                                                                  print('selected ' + item.product_name);
-
-                                                                                  onDismissedTickTick(item.product_name, item.product_id);
-                                                                                },
-                                                                              ),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.only(right: 10, left: 10),
-                                                                              child: Expanded(
-                                                                                child: Text('${item.product_name}'),
-                                                                              ),
-                                                                            )
-                                                                          ]));
-                                                                    }
-                                                                    return Container();
-                                                                  }).toList())),
-                                                        ]));
-                                              })))
+                                                                              Text('${item.product_name}'),
+                                                                        ),
+                                                                      )
+                                                                    ]));
+                                                          }
+                                                          return Container();
+                                                        }).toList(),
+                                                      ),
+                                                    ]),
+                                              );
+                                            }),
+                                      ),
+                              ),
                             ],
                           )),
                         ],

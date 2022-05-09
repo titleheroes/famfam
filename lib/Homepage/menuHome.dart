@@ -106,210 +106,216 @@ class _MenuHomeState extends State<menuHome> {
 
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 160, top: 75),
       height: MediaQuery.of(context).size.height,
-      child: Container(
-        // alignment: Alignment.centerLeft,
-        child: ListView(
-          children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: 175,
-                ),
-                Stack(
-                  children: [
-                    Container(
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.history_sharp,
-                        ),
-                        color: Colors.white,
-                        iconSize: 36,
-                        onPressed: () async {
-                          String? circle_id = circleModels[0].circle_id;
-                          String? user_id = userModels[0].id;
-                          int history_status = 0;
-                          String updateHistoryForUserStatus =
-                              '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_status';
-                          await Dio()
-                              .get(updateHistoryForUserStatus)
-                              .then((value) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => History(),
+      width: MediaQuery.of(context).size.width,
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Container(
+          padding: EdgeInsets.only(left: 165, top: 75),
+          child: ListView(
+            children: [
+              Row(
+                children: [
+                  Spacer(),
+                  Container(
+                    child: Stack(
+                      children: [
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 40),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.history_sharp,
                               ),
-                            ).then(
-                              (value) => setState(() {}),
+                              color: Colors.white,
+                              iconSize: 40,
+                              onPressed: () async {
+                                String? circle_id = circleModels[0].circle_id;
+                                String? user_id = userModels[0].id;
+                                int history_status = 0;
+                                String updateHistoryForUserStatus =
+                                    '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_status';
+                                await Dio()
+                                    .get(updateHistoryForUserStatus)
+                                    .then((value) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => History(),
+                                    ),
+                                  ).then(
+                                    (value) => setState(() {}),
+                                  );
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        Builder(builder: (context) {
+                          if (history_status == false) {
+                            return Positioned(
+                              child: Container(
+                                child: Icon(
+                                  Icons.circle,
+                                  color: Colors.transparent,
+                                ),
+                              ),
                             );
-                          });
-                        },
-                      ),
+                          } else {
+                            return Positioned(
+                              child: Container(
+                                child: Icon(
+                                  Icons.circle,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            );
+                          }
+                        }),
+                      ],
                     ),
-                    Builder(builder: (context) {
-                      if (history_status == false) {
-                        return Positioned(
-                          child: Container(
-                            child: Icon(
-                              Icons.circle,
-                              color: Colors.transparent,
-                            ),
-                          ),
-                        );
-                      } else {
-                        return Positioned(
-                          child: Container(
-                            child: Icon(
-                              Icons.circle,
-                              color: Colors.red,
-                            ),
-                          ),
-                        );
-                      }
-                    }),
-                  ],
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(user),
+                    ),
+                  );
+                },
+                leading: Icon(
+                  Icons.home,
+                  color: Colors.white,
+                  size: 35,
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(user),
-                  ),
-                );
-              },
-              leading: Icon(
-                Icons.home,
-                color: Colors.white,
-                size: 35,
+                title: Text(
+                  "Home",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-              title: Text(
-                "Home",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
+              SizedBox(
+                height: 15,
               ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PinScreen(),
-                  ),
-                ).then(
-                  (value) => setState(() {}),
-                );
-              },
-              leading: Icon(
-                Icons.note_rounded,
-                color: Colors.white,
-                size: 35,
+              ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PinScreen(),
+                    ),
+                  ).then(
+                    (value) => setState(() {}),
+                  );
+                },
+                leading: Icon(
+                  Icons.note_rounded,
+                  color: Colors.white,
+                  size: 35,
+                ),
+                title: Text(
+                  "Pin Post",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-              title: Text(
-                "Pin Post",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
+              // SizedBox(
+              //   height: 15,
+              // ),
+              // ListTile(
+              //   onTap: () {
+              //     Navigator.pushNamed(context, '/checkin');
+              //   },
+              //   leading: Icon(
+              //     Icons.gps_fixed,
+              //     color: Colors.white,
+              //     size: 35,
+              //   ),
+              //   title: Text(
+              //     "Check-In",
+              //     style: TextStyle(
+              //         color: Colors.white,
+              //         fontSize: 25,
+              //         fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+              SizedBox(
+                height: 15,
               ),
-            ),
-            // SizedBox(
-            //   height: 15,
-            // ),
-            // ListTile(
-            //   onTap: () {
-            //     Navigator.pushNamed(context, '/checkin');
-            //   },
-            //   leading: Icon(
-            //     Icons.gps_fixed,
-            //     color: Colors.white,
-            //     size: 35,
-            //   ),
-            //   title: Text(
-            //     "Check-In",
-            //     style: TextStyle(
-            //         color: Colors.white,
-            //         fontSize: 25,
-            //         fontWeight: FontWeight.bold),
-            //   ),
-            // ),
-            SizedBox(
-              height: 15,
-            ),
-            ListTile(
-              onTap: () {
-                // Navigator.pushNamed(context, ('/voterandom'));
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VoteRandomScreen(),
-                  ),
-                );
-              },
-              leading: Icon(
-                Icons.casino,
-                color: Colors.white,
-                size: 35,
+              ListTile(
+                onTap: () {
+                  // Navigator.pushNamed(context, ('/voterandom'));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VoteRandomScreen(),
+                    ),
+                  );
+                },
+                leading: Icon(
+                  Icons.casino,
+                  color: Colors.white,
+                  size: 35,
+                ),
+                title: Text(
+                  "V and R",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-              title: Text(
-                "V and R",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
+              // SizedBox(
+              //   height: 15,
+              // ),
+              // ListTile(
+              //   onTap: () {},
+              //   leading: Icon(
+              //     Icons.wallet_giftcard_rounded,
+              //     color: Colors.white,
+              //     size: 35,
+              //   ),
+              //   title: Text(
+              //     "Rewardory",
+              //     style: TextStyle(
+              //         color: Colors.white,
+              //         fontSize: 25,
+              //         fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+              SizedBox(
+                height: 15,
               ),
-            ),
-            // SizedBox(
-            //   height: 15,
-            // ),
-            // ListTile(
-            //   onTap: () {},
-            //   leading: Icon(
-            //     Icons.wallet_giftcard_rounded,
-            //     color: Colors.white,
-            //     size: 35,
-            //   ),
-            //   title: Text(
-            //     "Rewardory",
-            //     style: TextStyle(
-            //         color: Colors.white,
-            //         fontSize: 25,
-            //         fontWeight: FontWeight.bold),
-            //   ),
-            // ),
-            SizedBox(
-              height: 15,
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => settingPage()));
-              },
-              leading: Icon(
-                Icons.settings,
-                color: Colors.white,
-                size: 35,
-              ),
-              title: Text(
-                "Setting",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
-              ),
-            )
-          ],
+              ListTile(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => settingPage()));
+                },
+                leading: Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                  size: 35,
+                ),
+                title: Text(
+                  "Setting",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

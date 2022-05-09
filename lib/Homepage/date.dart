@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:famfam/Calendar/calendar.dart';
 import 'package:famfam/Homepage/tabbar.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -139,7 +140,12 @@ class _DateState extends State<Date> {
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/calendar');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Calendar(),
+                  ),
+                );
               },
               child: Center(
                 child: Column(
