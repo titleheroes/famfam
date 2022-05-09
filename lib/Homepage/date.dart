@@ -126,6 +126,7 @@ class _DateState extends State<Date> {
     DateTime date = DateTime.now();
     return Container(
       height: 150,
+      width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(10),
       margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
       decoration: BoxDecoration(
@@ -195,8 +196,7 @@ class _DateState extends State<Date> {
               left: 4,
               top: 8,
             ),
-            child: Expanded(
-                child: Container(
+            child: Container(
               //color: Colors.red,
 
               child: (calendarHaveData)
@@ -279,11 +279,13 @@ class _DateState extends State<Date> {
                     )
                   : Center(
                       child: Text(
-                      "You don't have activity today",
-                      style: TextStyle(
-                          color: Colors.grey[500], fontWeight: FontWeight.w500),
-                    )),
-            )),
+                        "You don't have activity today",
+                        style: TextStyle(
+                            color: Colors.grey[500],
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+            ),
           )
         ],
       ),

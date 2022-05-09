@@ -6,6 +6,7 @@ import 'package:famfam/Homepage/history.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/history_for_user_model.dart';
 import 'package:famfam/models/user_model.dart';
+import 'package:famfam/pinpost_screen/pin_screen.dart';
 import 'package:famfam/screens/voterandom_screen.dart';
 import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/settingPage/settingPage.dart';
@@ -201,7 +202,14 @@ class _MenuHomeState extends State<menuHome> {
             ),
             ListTile(
               onTap: () {
-                Navigator.pushNamed(context, '/pinpost');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PinScreen(),
+                  ),
+                ).then(
+                  (value) => setState(() {}),
+                );
               },
               leading: Icon(
                 Icons.note_rounded,
