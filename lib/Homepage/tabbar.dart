@@ -9,6 +9,7 @@ import 'package:famfam/models/my_order_model.dart';
 import 'package:famfam/screens/components/body.dart';
 import 'package:famfam/models/list_today_ido.dart';
 import 'package:famfam/models/user_model.dart';
+import 'package:famfam/screens/ticktik_screen.dart';
 import 'package:famfam/widgets/circle_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -897,109 +898,111 @@ class _tabbarState extends State<tabbar> {
                                       child: Column(
                                         //page1
                                         children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                170, 20, 10, 10),
-                                            child: Container(
-                                                height: 40,
-                                                child: Row(
-                                                  children: [
-                                                    Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      decoration: BoxDecoration(
-                                                          color: Color(
-                                                              0xfffF9EE6D),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100)),
-                                                      child: ClipOval(
-                                                        child: Material(
-                                                          color: Color(
-                                                              0xfffF9EE6D), // Button color
-                                                          child: InkWell(
-                                                            splashColor: Colors
-                                                                .white
-                                                                .withOpacity(
-                                                                    0.1), // Splash color
-                                                            onTap: () {
-                                                              infoDialog(
-                                                                  context,
-                                                                  'Today, I do ?',
-                                                                  'Assign your Daily Jobs !\nand dissapear day by day.',
-                                                                  0.2);
-                                                            },
-                                                            child: SizedBox(
-                                                              width: 56,
-                                                              height: 56,
-                                                              child: Icon(
-                                                                Icons
-                                                                    .info_outline_rounded,
-                                                                color: Colors
-                                                                    .black,
-                                                                size: 30,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Container(
-                                                      child: ElevatedButton(
-                                                        style: ButtonStyle(
-                                                          backgroundColor:
-                                                              MaterialStateProperty
-                                                                  .all<Color>(Color(
-                                                                      0xfffF9EE6D)),
-                                                          shape:
-                                                              MaterialStateProperty
-                                                                  .all(
-                                                            RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.0),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        onPressed: () {
-                                                          numicon = '0';
-
-                                                          _displayTextInputDialog(
-                                                              context);
-                                                        },
-                                                        child: Row(
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      right: 5),
-                                                              child: Icon(
-                                                                Icons.add,
-                                                                color: Colors
-                                                                    .black,
-                                                                size: 20.0,
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              "Add today's i do",
-                                                              style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: Colors
-                                                                      .black),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                )),
+                                          SizedBox(
+                                            height: 10,
                                           ),
+                                          Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: 40,
+                                              child: Row(
+                                                children: [
+                                                  Spacer(),
+                                                  Container(
+                                                    width: 40,
+                                                    height: 40,
+                                                    decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xfffF9EE6D),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(100)),
+                                                    child: ClipOval(
+                                                      child: Material(
+                                                        color: Color(
+                                                            0xfffF9EE6D), // Button color
+                                                        child: InkWell(
+                                                          splashColor: Colors
+                                                              .white
+                                                              .withOpacity(
+                                                                  0.1), // Splash color
+                                                          onTap: () {
+                                                            infoDialog(
+                                                                context,
+                                                                'Today, I do ?',
+                                                                'Assign your Daily Jobs !\nand dissapear day by day.',
+                                                                0.2);
+                                                          },
+                                                          child: SizedBox(
+                                                            width: 56,
+                                                            height: 56,
+                                                            child: Icon(
+                                                              Icons
+                                                                  .info_outline_rounded,
+                                                              color:
+                                                                  Colors.black,
+                                                              size: 30,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Container(
+                                                    child: ElevatedButton(
+                                                      style: ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all<Color>(Color(
+                                                                    0xfffF9EE6D)),
+                                                        shape:
+                                                            MaterialStateProperty
+                                                                .all(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20.0),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        numicon = '0';
+
+                                                        _displayTextInputDialog(
+                                                            context);
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 5),
+                                                            child: Icon(
+                                                              Icons.add,
+                                                              color:
+                                                                  Colors.black,
+                                                              size: 20.0,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            "Add today's i do",
+                                                            style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Colors
+                                                                    .black),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              )),
                                           Container(
                                             child: (list_todo.isEmpty)
                                                 ? Column(
@@ -1167,105 +1170,105 @@ class _tabbarState extends State<tabbar> {
                           Container(
                               child: Column(
                             children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(210, 20, 0, 0),
-                                child: Container(
-                                  height: 40,
-                                  child: Row(children: [
-                                    Container(
-                                      height: 40,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xfffF9EE6D),
-                                              borderRadius:
-                                                  BorderRadius.circular(100),
-                                            ),
-                                            child: ClipOval(
-                                              child: Material(
-                                                color: Color(
-                                                    0xfffF9EE6D), // Button color
-                                                child: InkWell(
-                                                  splashColor: Colors.white
-                                                      .withOpacity(
-                                                          0.1), // Splash color
-                                                  onTap: () {
-                                                    infoDialog(
-                                                        context,
-                                                        'Circle List ?',
-                                                        'List of your jobs\nand assign job to others',
-                                                        0.2);
-                                                  },
-                                                  child: SizedBox(
-                                                    width: 56,
-                                                    height: 56,
-                                                    child: Icon(
-                                                      Icons
-                                                          .info_outline_rounded,
-                                                      color: Colors.black,
-                                                      size: 30,
-                                                    ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                height: 40,
+                                width: MediaQuery.of(context).size.width,
+                                child: Row(children: [
+                                  Spacer(),
+                                  Container(
+                                    height: 40,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 40,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xfffF9EE6D),
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                          ),
+                                          child: ClipOval(
+                                            child: Material(
+                                              color: Color(
+                                                  0xfffF9EE6D), // Button color
+                                              child: InkWell(
+                                                splashColor: Colors.white
+                                                    .withOpacity(
+                                                        0.1), // Splash color
+                                                onTap: () {
+                                                  infoDialog(
+                                                      context,
+                                                      'Circle List ?',
+                                                      'List of your jobs\nand assign job to others',
+                                                      0.2);
+                                                },
+                                                child: SizedBox(
+                                                  width: 56,
+                                                  height: 56,
+                                                  child: Icon(
+                                                    Icons.info_outline_rounded,
+                                                    color: Colors.black,
+                                                    size: 30,
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 10,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Color(0xfffF9EE6D)),
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TodoBody(tabSelected: 0),
+                                          ),
+                                        ).then((value) => setState(() {}));
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 10)),
+                                          Text(
+                                            "See more",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.zero,
+                                            child: Icon(
+                                              Icons.navigate_next,
+                                              color: Colors.black,
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    Container(
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Color(0xfffF9EE6D)),
-                                          shape: MaterialStateProperty.all(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                            ),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  TodoBody(tabSelected: 0),
-                                            ),
-                                          ).then((value) => setState(() {}));
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 10)),
-                                            Text(
-                                              "See more",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.zero,
-                                              child: Icon(
-                                                Icons.navigate_next,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ]),
-                                ),
+                                  ),
+                                ]),
                               ),
                               Container(
                                 child: unfinishedModels.isEmpty
@@ -1518,102 +1521,104 @@ class _tabbarState extends State<tabbar> {
                           Container(
                               child: Column(
                             children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(215, 20, 0, 0),
-                                child: Container(
-                                  height: 40,
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 40,
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 40,
-                                              height: 40,
-                                              decoration: BoxDecoration(
-                                                color: Color(0xfffF9EE6D),
-                                                borderRadius:
-                                                    BorderRadius.circular(100),
-                                              ),
-                                              child: ClipOval(
-                                                child: Material(
-                                                  color: Color(
-                                                      0xfffF9EE6D), // Button color
-                                                  child: InkWell(
-                                                    splashColor: Colors.white
-                                                        .withOpacity(
-                                                            0.1), // Splash color
-                                                    onTap: () {
-                                                      infoDialog(
-                                                          context,
-                                                          'TickTick ?',
-                                                          'List of thing\nthat you can make and tick\nwhatever you want.',
-                                                          0.24);
-                                                    },
-                                                    child: SizedBox(
-                                                      width: 56,
-                                                      height: 56,
-                                                      child: Icon(
-                                                        Icons
-                                                            .info_outline_rounded,
-                                                        color: Colors.black,
-                                                        size: 30,
-                                                      ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 40,
+                                child: Row(
+                                  children: [
+                                    Spacer(),
+                                    Container(
+                                      height: 40,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xfffF9EE6D),
+                                              borderRadius:
+                                                  BorderRadius.circular(100),
+                                            ),
+                                            child: ClipOval(
+                                              child: Material(
+                                                color: Color(
+                                                    0xfffF9EE6D), // Button color
+                                                child: InkWell(
+                                                  splashColor: Colors.white
+                                                      .withOpacity(
+                                                          0.1), // Splash color
+                                                  onTap: () {
+                                                    infoDialog(
+                                                        context,
+                                                        'TickTick ?',
+                                                        'List of thing\nthat you can make and tick\nwhatever you want.',
+                                                        0.24);
+                                                  },
+                                                  child: SizedBox(
+                                                    width: 56,
+                                                    height: 56,
+                                                    child: Icon(
+                                                      Icons
+                                                          .info_outline_rounded,
+                                                      color: Colors.black,
+                                                      size: 30,
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      ElevatedButton(
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Color(0xfffF9EE6D)),
-                                          shape: MaterialStateProperty.all(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                            ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Color(0xfffF9EE6D)),
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
                                           ),
                                         ),
-                                        onPressed: () {
-                                          Navigator.pushNamed(
-                                                  context, '/ticktik')
-                                              .then((value) {
-                                            setState(() {});
-                                          });
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 10)),
-                                            Text(
-                                              "See more",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.zero,
-                                              child: Icon(
-                                                Icons.navigate_next,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
                                       ),
-                                    ],
-                                  ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TickTikScreen()),
+                                        ).then((value) => setState(() {}));
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 10)),
+                                          Text(
+                                            "See more",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.zero,
+                                            child: Icon(
+                                              Icons.navigate_next,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Container(
