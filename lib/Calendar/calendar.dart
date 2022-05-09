@@ -373,7 +373,7 @@ Future<Null> pullCircle() async {
                       padding: const EdgeInsets.only(right: 390, top: 0),
                       child: IconButton(
                         icon: Icon(
-                          IconData(0xf8f4,
+                          const IconData(0xf8f4,
                               fontFamily: 'MaterialIcons',
                               matchTextDirection: true),
                           color: Colors.black,
@@ -1217,7 +1217,7 @@ Future<Null> pullCircle() async {
                                                                               7,
                                                                               ),
                                                                   child: Icon(
-                                                                    IconData(
+                                                                    const IconData(
                                                                         0xf009e,
                                                                         fontFamily:
                                                                             'MaterialIcons'),
@@ -1573,7 +1573,7 @@ Future<Null> pullCircle() async {
                                                                               7,
                                                                               ),
                                                                   child: Icon(
-                                                                    IconData(
+                                                                    const IconData(
                                                                         0xf009e,
                                                                         fontFamily:
                                                                             'MaterialIcons'),

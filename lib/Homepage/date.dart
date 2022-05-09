@@ -229,7 +229,7 @@ class _DateState extends State<Date> {
                                     Padding(
                                       padding: const EdgeInsets.only(left: 6),
                                       child: Icon(
-                                        IconData(
+                                        const IconData(
                                           0xe3ab,
                                           fontFamily: 'MaterialIcons',
                                         ),
@@ -252,7 +252,7 @@ class _DateState extends State<Date> {
                                       ),
                                     ),
                                     Icon(
-                                      IconData(
+                                      const IconData(
                                         0xe738,
                                         fontFamily: 'MaterialIcons',
                                       ),

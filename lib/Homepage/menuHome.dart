@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:famfam/Homepage/history.dart';
-import 'package:famfam/check-in/Checkin.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/history_for_user_model.dart';
 import 'package:famfam/models/user_model.dart';

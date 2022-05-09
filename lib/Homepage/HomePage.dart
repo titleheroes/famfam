@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/menuHome.dart';
 import 'package:famfam/Homepage/tabbar.dart';
-import 'package:famfam/check-in/Checkin.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/history_for_user_model.dart';
 import 'package:famfam/models/user_model.dart';
@@ -125,7 +124,8 @@ class _HomePageState extends State<HomePage> {
                               child: SingleChildScrollView(
                                 child: Column(children: [
                                   Container(
-                                    constraints: const BoxConstraints(minHeight: 100),
+                                    constraints:
+                                        const BoxConstraints(minHeight: 100),
                                     width: MediaQuery.of(context).size.width,
                                     child: Stack(
                                       children: [
