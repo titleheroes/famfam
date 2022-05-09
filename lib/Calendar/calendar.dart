@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/HomePage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:famfam/widgets/circle_loader.dart';
 import 'package:famfam/models/circle_model.dart';
@@ -30,7 +29,7 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   
-  bool load = true;
+  bool calendar_load= true;
   List<UserModel> userModels = [];
   List<CircleModel> circleModels = [];
   List<CalendarModel> calendarModels = [];
@@ -42,19 +41,9 @@ class _CalendarState extends State<Calendar> {
   TimeOfDay? time1 = TimeOfDay(hour: 12, minute: 12);
   bool isChecked = false;
   bool repeat_selected = false;
-  DateTime? _dateTime;
-  String getText() {
-    if (_dateTime == null) {
-      return 'Select Date';
-    } 
-    
-    else {
-      //return 'Select Date';
-      return DateFormat('dd-MM-yyyy').format(_dateTime!);
-    }
-    
-  }
-
+  DateTime? newdate;
+  
+  String _dateTime = 'Select day';
   final TextEditingController _eventControllertitle = TextEditingController();
   final TextEditingController _eventControllerlocation =
       TextEditingController();
@@ -67,7 +56,7 @@ class _CalendarState extends State<Calendar> {
     pullUserSQLID().then((value){pullCircle().then((value){ 
       
       setState(() {
-        pullCalendar().then((value) => load = false);
+        pullCalendar().then((value) => calendar_load= false);
       });
       
       
@@ -145,7 +134,7 @@ Future<Null> pullCircle() async {
   Future<Null> pullCalendar() async {
 
     setState(() {
-      load = true;
+      calendar_load= true;
       selectedEvents.clear();
     });
     if(calendarModels.length != 0){
@@ -171,7 +160,6 @@ Future<Null> pullCircle() async {
           tempDate = tempDate.toUtc();
           tempDate = tempDate.add(Duration(days: 1));
           tempDate = tempDate.subtract(Duration(hours: 17));
-          
           
           
        
@@ -225,7 +213,11 @@ Future<Null> pullCircle() async {
          
       }
     });
-        }catch(e){}
+        }catch(e){
+          setState(() {
+            calendar_load= false;
+          });
+        }
     
   }
 
@@ -238,39 +230,11 @@ Future<Null> pullCircle() async {
       return days;
   }
 
-   Future pickDate(BuildContext context) async {
-    final initialDate = selectedDay;
-    final nextDate = selectedDay.add(new Duration(days:1));
-
-    
-    final newDate = await showDatePicker(
-        context: context,
-        initialDate: nextDate,
-        firstDate: nextDate ,
-        lastDate: DateTime(2100));
-        
-        
-
-    if (newDate == null) return;
-    setState(() {
-      _dateTime = newDate;
-      repeat_selected = true;
-      print('repeat_selected ========>>>> '+repeat_selected.toString());
-      print('Picking ========>>>>> ' + _dateTime.toString());
-      
-      
-    });
-
-    
-    
-    getDaysInBetween(selectedDay, newDate);
-    print(getDaysInBetween(selectedDay, newDate));
-
-  }
+   
 
   Future<void> insert_act(String title, String note, String location) async{
     setState () {
-      load = true;
+      calendar_load= true;
     }
       SharedPreferences preferences =
           await SharedPreferences.getInstance();
@@ -296,11 +260,13 @@ Future<Null> pullCircle() async {
       String repeat_end_date = 'null';
       String circle_id = preferences.getString('circle_id')!;
       DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(selectedDay.toString());
-      String insertCalendar = '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$date&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
+      String insertCalendar = '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$tempDate&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
       await Dio().get(insertCalendar).then((value) async {
         if (value.toString() == 'true') {
           print('Insert  Successed');
          
+        }else{
+          print('Insert  failed');
         }
 
       });
@@ -311,7 +277,7 @@ Future<Null> pullCircle() async {
   Future<void> insert_repeat(String calendar_title,String calendar_location, String calendar_note) async{
         
         setState(() {
-          load = true;
+          calendar_load= true;
         });
         
         SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -335,9 +301,9 @@ Future<Null> pullCircle() async {
             replacingTime1.minute.toString();
       
         String repeating = '1';
-        String repeat_end_date = getText().toString();
+        String repeat_end_date = _dateTime;
 
-        List repeat_series = getDaysInBetween(selectedDay, _dateTime!);
+        List repeat_series = getDaysInBetween(selectedDay, newdate!);
         print(repeat_series);
 
         String circle_id = preferences.getString('circle_id')!;
@@ -349,9 +315,9 @@ Future<Null> pullCircle() async {
       for(int i = 0;i<repeat_series.length;i++){
 
           String target_day = repeat_series[i].toString();
-
+          DateTime retempDate = new DateFormat("yyyy-MM-dd").parse(target_day);
           String insertCalendar =
-            '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$target_day&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
+            '${MyConstant.domain}/famfam/insertCalendarActivity.php?isAdd=true&title=$title&note=$note&location=$location&date=$retempDate&time_start=$time_start&time_end=$time_end&repeating=$repeating&repeat_end_date=$repeat_end_date&circle_id=$circle_id&user_id=$user_id';
         
 
 
@@ -385,7 +351,7 @@ Future<Null> pullCircle() async {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
-      body: load ? CircleLoader() : ListView(
+      body: calendar_load? CircleLoader() : ListView(
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -646,7 +612,7 @@ Future<Null> pullCircle() async {
         ],
       ),
       
-      floatingActionButton: load ? null : FloatingActionButton.extended(
+      floatingActionButton: calendar_load? null : FloatingActionButton.extended(
         backgroundColor: Color(0xfffA2A2A2),
         onPressed: () =>  showDialog(
             context: context,
@@ -943,23 +909,51 @@ Future<Null> pullCircle() async {
                                 padding: const EdgeInsets.only(top: 3.0),
                               ),
                              
-                              Container(
-                                
-                                child: ElevatedButton(
-                                  child: Text(getText(),style: TextStyle(color: Color.fromARGB(255, 55, 55, 55)),),
-                                  style: ButtonStyle(
-                                    backgroundColor:MaterialStateProperty.all<Color>(Color.fromARGB(255, 251, 229, 190)) ,
-                                      shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0),
-                                              ))),
-                                  onPressed: () async {
-                                    pickDate(context);
-                                  }
-                                  
-                                ),
+                              StatefulBuilder(builder: (context, setState)
+    {
+
+                                  return Container(
+                                    
+                                    child: ElevatedButton(
+                                      child: Text(_dateTime,style: TextStyle(color: Color.fromARGB(255, 55, 55, 55)),),
+                                      style: ButtonStyle(
+                                        backgroundColor:MaterialStateProperty.all<Color>(Color.fromARGB(255, 251, 229, 190)) ,
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5.0),
+                                                  ))),
+                                      onPressed: () async {
+                                        final initialDate = selectedDay;
+                                          final nextDate = selectedDay.add(new Duration(days:1));
+                                          
+                                          final newDates = await showDatePicker(
+                                              context: context,
+                                              initialDate: nextDate,
+                                              firstDate: nextDate ,
+                                              lastDate: DateTime(2100));
+
+                                          if (newDates == null) return;
+                                          setState(() {
+                                            _dateTime = DateFormat('dd-MM-yyyy').format(newDates);
+                                            repeat_selected = true;
+                                            newdate = newDates;
+                                            /*
+                                            print('repeat_selected ========>>>> '+repeat_selected.toString());
+                                            print('Picking ========>>>>> ' + _dateTime.toString());
+                                            */
+                                            
+                                          });
+
+                                          getDaysInBetween(selectedDay, newDates);
+                                          print(getDaysInBetween(selectedDay, newDates));
+
+                                      }
+                                      
+                                    ),
+                                  );
+                                }
                               ),
                             ],
                           ),
@@ -981,7 +975,11 @@ Future<Null> pullCircle() async {
                         color: Color.fromARGB(255, 170, 170, 170),
                         child: Text('CANCEL'),
                         onPressed: () async{
-                          
+                          setState(() {
+                                            _dateTime = 'Select Date';
+                                            
+                                            
+                                          });
                           repeat_selected = false;
                           print('repeat_selected =========>>>> '+repeat_selected.toString());
                           Navigator.pop(context);
@@ -993,7 +991,8 @@ Future<Null> pullCircle() async {
                         color: Colors.amber,
                         child: Text('ADD'),
                         onPressed: () async {
-                         
+                          
+                          
                           if (_eventControllertitle.text.isEmpty )  {
                             
                             Fluttertoast.showToast(msg: "Can't add activity because you did not input 'title' !", gravity: ToastGravity.BOTTOM);
@@ -1004,21 +1003,21 @@ Future<Null> pullCircle() async {
                           }
                           else if(repeat_selected.toString() == 'false') {
                             setState (() {
-                              load = true;
+                              calendar_load= true;
                             },);
                             String title = _eventControllertitle.text;
                             String note = _eventControllernote.text;
                             String location = _eventControllerlocation.text;
-                            insert_act(title,note,location).then((value) => pullCalendar().then((value) => load = false));
+                            insert_act(title,note,location).then((value) => pullCalendar().then((value) => calendar_load= false));
                             
 
                           }else if(repeat_selected.toString() == 'true'){
                             
                             setState (() {
-                              load = true;
+                              calendar_load= true;
                             },);
                             insert_repeat(_eventControllertitle.text, _eventControllerlocation.text, _eventControllernote.text)
-                            .then((value) => pullCalendar().then((value) => load = false));
+                            .then((value) => pullCalendar().then((value) => calendar_load= false).then((value) => repeat_selected = false).then((value) => _dateTime = 'Select Date'));
                             
 
 
@@ -1033,7 +1032,7 @@ Future<Null> pullCircle() async {
                 
                           
                           // setState(() {
-                          //   load = true;
+                          //   calendar_load= true;
                           // });
                           
 
@@ -1441,7 +1440,6 @@ Future<Null> pullCircle() async {
       }
     }
    
-   
 
     
       return selectedEvents[selectedDay] == null?
@@ -1519,8 +1517,6 @@ Future<Null> pullCircle() async {
                                                                     .circular(
                                                                         10)),
                                                          child: ExpansionTile(
-                                                           iconColor: Color.fromARGB(255, 89, 88, 88),
-                                                           
         title: Column(
                                                           children: [
                                                             

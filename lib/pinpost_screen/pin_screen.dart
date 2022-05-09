@@ -423,7 +423,7 @@ class _BodyState extends State<PinScreen> {
   void DeletePinpost(String pin_id) async {
     String target_pin_id = pin_id;
     String DeletePinpost =
-        '${MyConstant.domain}/famfam/deletePinFromPinID.php?isAdd=true&pin_id=$target_pin_id';
+        '${MyConstant.domain}/famfam/deletePinfromPinID.php?isAdd=true&pin_id=$target_pin_id';
     setState(() {
       load = true;
     });

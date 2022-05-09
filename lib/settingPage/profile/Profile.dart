@@ -17,6 +17,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:famfam/widgets/circle_loader.dart';
 
 class Profile extends StatefulWidget {
   final String? userID;
@@ -55,6 +56,7 @@ class _ProfileState extends State<Profile> {
   String phone = 'Loading...';
   String address = 'Loading...';
   String jobs = 'Loading...';
+  bool profileload = true;
 
   @override
   void initState() {
@@ -70,7 +72,7 @@ class _ProfileState extends State<Profile> {
       phone = userModels[0].phone;
       address = userModels[0].address;
       jobs = userModels[0].jobs;
-    });
+    }).then((value) => profileload = false);
   }
 
   Future<Null> pullUserSQLID() async {
@@ -139,7 +141,9 @@ class _ProfileState extends State<Profile> {
           elevation: 0,
           backgroundColor: Color(0xFFF6E5C7),
         ),
-        body: Container(
+        body: profileload
+              ? CircleLoader()
+              : Container(
           color: Colors.white,
           child: ListView(
             children: [
@@ -216,11 +220,18 @@ class _ProfileState extends State<Profile> {
                         ),
                         onPressed: () {
                           String profileImage;
+                          profileload = true;
                           TakePhoto(ImageSource.gallery).then((value) {
                             uploadPictureToStorage().whenComplete(() async {
                               if (urlImage == null) {
+                                setState(() {
+                                  profileload = false;
+                                });
                                 return;
                               } else {
+                                setState(() {
+                                  profileload = true;
+                                });
                                 String uid = userModels[0].uid;
                                 profileImage = Uri.encodeComponent(urlImage!);
                                 String apiInsertUser =

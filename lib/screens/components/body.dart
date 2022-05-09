@@ -39,6 +39,7 @@ import 'package:famfam/models/circle_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
+
 class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -120,6 +121,7 @@ class TodoBody extends StatefulWidget {
   State<TodoBody> createState() => _TodoBodyState();
 }
 
+
 class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
   List<UserModel> userModels = [];
   List<UserModel> employeeModels = [];
@@ -127,7 +129,8 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
   List<MyOrdereModel> finishedModels = [];
   List<MyOrdereModel> myOrderModels = [];
   List<bool> myOrderChecked = [];
-
+  bool orderload = true;
+  
   TabController? tabController;
 
   @override
@@ -137,11 +140,12 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
     tabController!.animateTo(widget.tabSelected);
     pullUserSQLID().then((value) {
       pullEmployeeData();
-      pullMyOrderUnfinished();
+      pullMyOrderUnfinished().then((value) => orderload = false);
       pullMyOrderFinished();
       pullMyOrder().then((value) {
         myOrderIsChecked();
       });
+      
     });
   }
 
@@ -160,7 +164,11 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
           });
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      setState(() {
+        orderload = false;
+      });
+    }
   }
 
   Future<Null> pullMyOrderFinished() async {
@@ -177,8 +185,12 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
             finishedModels.add(model);
           });
         }
+      }).then((value) => orderload = false);
+    } catch (e) {
+      setState(() {
+        orderload = false;
       });
-    } catch (e) {}
+    }
   }
 
   Future<Null> pullMyOrder() async {
@@ -195,8 +207,12 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
             myOrderModels.add(model);
           });
         }
+      }).then((value) => orderload = false);
+    } catch (e) {
+      setState(() {
+        orderload = false;
       });
-    } catch (e) {}
+    }
   }
 
   myOrderIsChecked() {
@@ -277,6 +293,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                       '${MyConstant.domain}/famfam/deleteMyOrderWhereID.php?isAdd=true&my_order_id=$my_order_id';
 
                   await Dio().get(deleteVote).then((value) async {
+                    
                     Navigator.pop(context);
                     await Navigator.push(
                       context,
@@ -358,7 +375,9 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-                body: Column(
+                body: orderload
+              ? CircleLoader()
+              : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(
@@ -521,6 +540,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                                     Fluttertoast.showToast(msg: "You can't finish other people assignment.", gravity: ToastGravity.BOTTOM);
                                                                                   } else {
                                                                                     //ทำเสร็จไป UPDATE DATABASE
+                                                                                    
                                                                                     SharedPreferences preferences = await SharedPreferences.getInstance();
                                                                                     String? circle_id = preferences.getString('circle_id');
                                                                                     String? user_id = userModels[0].id;
@@ -530,6 +550,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                                     String my_order_status = 'true';
                                                                                     String apiUpdateStatusMyOrder = '${MyConstant.domain}/famfam/updateStatusMyOrder.php?isAdd=true&my_order_id=$my_order_id&my_order_status=$my_order_status';
                                                                                     await Dio().get(apiUpdateStatusMyOrder).then((value) async {
+                                                                                      
                                                                                       List<HistoryMyOrderModel> historyMyOrderModel = [];
                                                                                       var uuid = Uuid();
                                                                                       String history_my_order_uid = uuid.v1();
@@ -1590,6 +1611,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                     ToastGravity
                                                                         .BOTTOM);
                                                           } else {
+                                                            
                                                             List<HistoryMyOrderModel>
                                                                 historyMyOrderModel =
                                                                 [];
@@ -1673,6 +1695,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                             item);
                                                                     setState(
                                                                         () {
+                                                                      orderload = true;
                                                                       historyMyOrderModel
                                                                           .add(
                                                                               model);
@@ -2743,13 +2766,14 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
   final List<String> topicPoll = <String>[];
   List<randomModel> topicRandom = [];
   List<VoteModel> voteModels = [];
+  bool voteload = true;
   var user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
     super.initState();
     pullUserSQLID().then((value) {
-      pullAllVote();
+      pullAllVote().then((value) => voteload = false);
       pullAllRandom();
     });
   }
@@ -2791,7 +2815,11 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
           });
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      setState(() {
+        voteload = false;
+      });
+    }
   }
 
   Future<Null> pullAllRandom() async {
@@ -2808,7 +2836,11 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
           });
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      setState(() {
+        voteload = false;
+      });
+    }
   }
 
   bool _isShown = true;
@@ -2840,6 +2872,9 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                       '${MyConstant.domain}/famfam/deleteVoteWhereVoteID.php?isAdd=true&vote_id=$vote_id';
 
                   await Dio().get(deleteVote).then((value) async {
+                    setState(() {
+                      voteload = true;
+                    });
                     Navigator.pop(context);
                     await Navigator.pushReplacementNamed(
                         context, ('/voterandom'));
@@ -2945,7 +2980,9 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                   ),
                 ),
               ),
-              body: SingleChildScrollView(
+              body: voteload
+              ? CircleLoader()
+              : SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -4681,6 +4718,7 @@ Future openDialogPoll(BuildContext context) => showDialog(
                                 color: Colors.black),
                           ),
                           onPressed: () async {
+                            
                             List<VoteModel> voteModels = [];
                             final String getUID = FirebaseAuth
                                 .instance.currentUser!.uid
@@ -4700,6 +4738,7 @@ Future openDialogPoll(BuildContext context) => showDialog(
                                 for (var item in json.decode(value.data)) {
                                   UserModel model = UserModel.fromMap(item);
                                   setState(() {
+                                    
                                     userModels.add(model);
                                   });
                                 }
@@ -5790,6 +5829,7 @@ Future descDialogMyOrder(BuildContext context, String id, String title,
                                           await Dio()
                                               .get(deleteVote)
                                               .then((value) async {
+                                                
                                             Navigator.pop(context);
                                             await Navigator.push(
                                               context,
