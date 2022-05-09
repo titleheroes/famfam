@@ -7,6 +7,7 @@ import 'package:famfam/check-in/Checkin.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/history_for_user_model.dart';
 import 'package:famfam/models/user_model.dart';
+import 'package:famfam/screens/voterandom_screen.dart';
 import 'package:famfam/services/my_constant.dart';
 import 'package:famfam/settingPage/settingPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -241,7 +242,13 @@ class _MenuHomeState extends State<menuHome> {
             ),
             ListTile(
               onTap: () {
-                Navigator.pushNamed(context, ('/voterandom'));
+                // Navigator.pushNamed(context, ('/voterandom'));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VoteRandomScreen(),
+                  ),
+                );
               },
               leading: Icon(
                 Icons.casino,
