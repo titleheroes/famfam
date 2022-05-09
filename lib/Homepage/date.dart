@@ -197,7 +197,7 @@ class _DateState extends State<Date> {
           //แจ้งเตือน
 
           Container(
-            width: 200,
+            width: MediaQuery.of(context).size.width / 2,
             padding: EdgeInsets.only(
               left: 4,
               top: 8,
@@ -211,6 +211,7 @@ class _DateState extends State<Date> {
                       itemCount: calendarModels.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
+                            width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),

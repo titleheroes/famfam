@@ -1661,173 +1661,189 @@ class _tabbarState extends State<tabbar> {
                                           )
                                         ],
                                       )
-                                    : ListView.builder(
-                                        padding: const EdgeInsets.all(8),
-                                        itemCount: list_topic.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Container(
-                                            // height: 150,
-                                            constraints:
-                                                BoxConstraints(minHeight: 150),
-                                            margin: EdgeInsets.fromLTRB(
-                                                5, 10, 5, 0),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              color: Color(0xfffFFC34A),
+                                    : Container(
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                    2 -
+                                                50,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: ListView.builder(
+                                            padding: const EdgeInsets.all(8),
+                                            itemCount: list_topic.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Container(
+                                                // height: 150,
+                                                constraints: BoxConstraints(
+                                                    minHeight: 150),
+                                                margin: EdgeInsets.fromLTRB(
+                                                    5, 10, 5, 0),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                  color: Color(0xfffFFC34A),
 
-                                              // color: Colors.white,
-                                            ),
-                                            child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
+                                                  // color: Colors.white,
+                                                ),
+                                                child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      Container(
-                                                        margin: EdgeInsets.only(
-                                                            left: 15, top: 15),
-                                                        child: Text(
-                                                            '${list_topic[index].topic}',
-                                                            style: TextStyle(
-                                                                fontSize: 22,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                      ),
-                                                      Spacer(),
-                                                      Container(
-                                                        child: IconButton(
-                                                            iconSize: 22,
-                                                            icon: Icon(
-                                                              Icons.favorite,
-                                                            ),
-                                                            color: list_topic[
-                                                                        index]
-                                                                    .fav
-                                                                ? Colors.red
-                                                                : Colors.white,
-                                                            onPressed:
-                                                                () async {
-                                                              // bool
-                                                              //     isChecked =
-                                                              //     false;
-                                                              String fav_topic =
-                                                                  'false';
-                                                              String tick_id =
-                                                                  list_topic[
-                                                                          index]
-                                                                      .topic_id;
-                                                              String
-                                                                  updateDataFav =
-                                                                  '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
-                                                              await Dio()
-                                                                  .get(
-                                                                      updateDataFav)
-                                                                  .then(
-                                                                      (value) {
-                                                                // if (value.toString() == 'true') {
-                                                                print(
-                                                                    'Updated Fav By ID Successed');
-                                                                // }
-                                                                setState(() {
-                                                                  list_topic.removeWhere(
-                                                                      (item) =>
-                                                                          item.topic_id ==
-                                                                          '${list_topic[index].topic_id}');
-
-                                                                  print(
-                                                                      'deleted topic successed');
-                                                                });
-                                                              });
-                                                              // setState(() {});
-                                                            }),
-                                                      ),
-                                                      GestureDetector(
-                                                          onTap: () async {
-                                                            print(
-                                                                'click on delete ticktik ${list_topic[index].topic_id}');
-
-                                                            _isShown == true
-                                                                ? _delete(
-                                                                    context,
-                                                                    list_topic[
-                                                                            index]
-                                                                        .topic_id)
-                                                                : null;
-                                                          },
-                                                          child: Image(
-                                                            image: AssetImage(
-                                                                'assets/images/trash.png'),
-                                                            fit: BoxFit.cover,
-                                                            height: 22,
-                                                          )),
-                                                      SizedBox(
-                                                        width: 20,
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Wrap(
-                                                    direction: Axis.horizontal,
-                                                    children: list_product
-                                                        .map((item) {
-                                                      if (item.product_id ==
-                                                          list_topic[index]
-                                                              .topic_id) {
-                                                        return Container(
+                                                      Row(
+                                                        children: [
+                                                          Container(
                                                             margin:
                                                                 EdgeInsets.only(
                                                                     left: 15,
-                                                                    top: 20),
-                                                            child: Row(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
-                                                                children: [
-                                                                  Container(
-                                                                    child:
-                                                                        RoundCheckBox(
-                                                                      size: 22,
-                                                                      uncheckedColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      checkedColor:
-                                                                          Colors
-                                                                              .green,
-                                                                      onTap:
-                                                                          (selected) {
-                                                                        print('selected ' +
-                                                                            item.product_id);
-                                                                        print('selected ' +
-                                                                            item.product_name);
+                                                                    top: 15),
+                                                            child: Text(
+                                                                '${list_topic[index].topic}',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        22,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          ),
+                                                          Spacer(),
+                                                          Container(
+                                                            child: IconButton(
+                                                                iconSize: 22,
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .favorite,
+                                                                ),
+                                                                color: list_topic[
+                                                                            index]
+                                                                        .fav
+                                                                    ? Colors.red
+                                                                    : Colors
+                                                                        .white,
+                                                                onPressed:
+                                                                    () async {
+                                                                  // bool
+                                                                  //     isChecked =
+                                                                  //     false;
+                                                                  String
+                                                                      fav_topic =
+                                                                      'false';
+                                                                  String
+                                                                      tick_id =
+                                                                      list_topic[
+                                                                              index]
+                                                                          .topic_id;
+                                                                  String
+                                                                      updateDataFav =
+                                                                      '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
+                                                                  await Dio()
+                                                                      .get(
+                                                                          updateDataFav)
+                                                                      .then(
+                                                                          (value) {
+                                                                    // if (value.toString() == 'true') {
+                                                                    print(
+                                                                        'Updated Fav By ID Successed');
+                                                                    // }
+                                                                    setState(
+                                                                        () {
+                                                                      list_topic.removeWhere((item) =>
+                                                                          item.topic_id ==
+                                                                          '${list_topic[index].topic_id}');
 
-                                                                        onDismissedTickTick(
-                                                                            item.product_name,
-                                                                            item.product_id);
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        right:
-                                                                            10,
+                                                                      print(
+                                                                          'deleted topic successed');
+                                                                    });
+                                                                  });
+                                                                  // setState(() {});
+                                                                }),
+                                                          ),
+                                                          GestureDetector(
+                                                              onTap: () async {
+                                                                print(
+                                                                    'click on delete ticktik ${list_topic[index].topic_id}');
+
+                                                                _isShown == true
+                                                                    ? _delete(
+                                                                        context,
+                                                                        list_topic[index]
+                                                                            .topic_id)
+                                                                    : null;
+                                                              },
+                                                              child: Image(
+                                                                image: AssetImage(
+                                                                    'assets/images/trash.png'),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                height: 22,
+                                                              )),
+                                                          SizedBox(
+                                                            width: 20,
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Wrap(
+                                                        direction:
+                                                            Axis.horizontal,
+                                                        children: list_product
+                                                            .map((item) {
+                                                          if (item.product_id ==
+                                                              list_topic[index]
+                                                                  .topic_id) {
+                                                            return Container(
+                                                                margin: EdgeInsets
+                                                                    .only(
                                                                         left:
-                                                                            10),
-                                                                    child: Text(
-                                                                        '${item.product_name}'),
-                                                                  )
-                                                                ]));
-                                                      }
-                                                      return Container();
-                                                    }).toList(),
-                                                  ),
-                                                ]),
-                                          );
-                                        }),
+                                                                            15,
+                                                                        top:
+                                                                            20),
+                                                                child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    children: [
+                                                                      Container(
+                                                                        child:
+                                                                            RoundCheckBox(
+                                                                          size:
+                                                                              22,
+                                                                          uncheckedColor:
+                                                                              Colors.white,
+                                                                          checkedColor:
+                                                                              Colors.green,
+                                                                          onTap:
+                                                                              (selected) {
+                                                                            print('selected ' +
+                                                                                item.product_id);
+                                                                            print('selected ' +
+                                                                                item.product_name);
+
+                                                                            onDismissedTickTick(item.product_name,
+                                                                                item.product_id);
+                                                                          },
+                                                                        ),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(
+                                                                            right:
+                                                                                10,
+                                                                            left:
+                                                                                10),
+                                                                        child: Text(
+                                                                            '${item.product_name}'),
+                                                                      )
+                                                                    ]));
+                                                          }
+                                                          return Container();
+                                                        }).toList(),
+                                                      ),
+                                                    ]),
+                                              );
+                                            }),
+                                      ),
                               ),
                             ],
                           )),
@@ -1891,11 +1907,13 @@ Future infoDialog(
                   ),
                   padding: EdgeInsets.all(20),
                   width: MediaQuery.of(context).size.width * 0.8,
+                  constraints: const BoxConstraints(minHeight: 100),
                   height: MediaQuery.of(context).size.height * size,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
+                        constraints: const BoxConstraints(minHeight: 5),
                         width: MediaQuery.of(context).size.width,
                         child: Stack(
                           children: [

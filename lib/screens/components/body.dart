@@ -2116,6 +2116,7 @@ class _TickBodyState extends State<TickBody> {
                                       //borderRadius: BorderRadius.circular(30),
                                       ),
                                   child: Container(
+                                    width: MediaQuery.of(context).size.width,
                                     child: (list_topic.isEmpty)
                                         ? Column(children: [
                                             Padding(
@@ -2196,40 +2197,67 @@ class _TickBodyState extends State<TickBody> {
                                                                         .white,
                                                                 onPressed:
                                                                     () async {
-                                                                  // bool
-                                                                  //     isChecked =
-                                                                  //     false;
-                                                                  String
-                                                                      fav_topic =
-                                                                      'false';
-                                                                  String
-                                                                      tick_id =
-                                                                      list_topic[
-                                                                              index]
-                                                                          .topic_id;
-                                                                  String
-                                                                      updateDataFav =
-                                                                      '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=$tick_id';
-                                                                  await Dio()
-                                                                      .get(
-                                                                          updateDataFav)
-                                                                      .then(
-                                                                          (value) {
-                                                                    // if (value.toString() == 'true') {
-                                                                    print(
-                                                                        'Updated Fav By ID Successed');
-                                                                    // }
-                                                                    setState(
-                                                                        () {
-                                                                      list_topic.removeWhere((item) =>
-                                                                          item.topic_id ==
-                                                                          '${list_topic[index].topic_id}');
+                                                                  if (list_topic[
+                                                                          index]
+                                                                      .fav) {
+                                                                    String
+                                                                        fav_topic =
+                                                                        'false';
+                                                                    String
+                                                                        updateDataFav =
+                                                                        '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
 
-                                                                      print(
-                                                                          'deleted topic successed');
+                                                                    await Dio()
+                                                                        .get(
+                                                                            updateDataFav)
+                                                                        .then(
+                                                                            (value) {
+                                                                      if (value
+                                                                              .toString() ==
+                                                                          'true') {
+                                                                        print(
+                                                                            'Updated Fav By ID Successed change true to false');
+
+                                                                        // updateFavbool = false;
+                                                                      }
+
+                                                                      Navigator
+                                                                          .pushReplacement(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              TickTikScreen(),
+                                                                        ),
+                                                                      );
                                                                     });
-                                                                  });
-                                                                  // setState(() {});
+                                                                  } else {
+                                                                    String
+                                                                        fav_topic =
+                                                                        'true';
+
+                                                                    String
+                                                                        updateDataFav =
+                                                                        '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
+                                                                    await Dio()
+                                                                        .get(
+                                                                            updateDataFav)
+                                                                        .then(
+                                                                            (value) {
+                                                                      // if (value.toString() == 'true') {
+                                                                      print(
+                                                                          'Updated Fav By ID Successed change false to true');
+                                                                      // }
+
+                                                                      Navigator
+                                                                          .pushReplacement(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              TickTikScreen(),
+                                                                        ),
+                                                                      );
+                                                                    });
+                                                                  }
                                                                 }),
                                                           ),
                                                           GestureDetector(

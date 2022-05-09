@@ -351,265 +351,274 @@ Future<Null> pullCircle() async {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
-      body: calendar_load? CircleLoader() : ListView(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Container(
-                height: size.height * 0.12,
-                width: size.width * 1,
-                // ignore: use_full_hex_values_for_flutter_colors
-                decoration: BoxDecoration(
-                  color: Color(0xffff6e5c7),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(90),
-                  ),
-                ),
-
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 390, top: 0),
-                      child: IconButton(
-                        icon: Icon(
-                          const IconData(0xf8f4,
-                              fontFamily: 'MaterialIcons',
-                              matchTextDirection: true),
-                          color: Colors.black,
-                          size: 45,
-                        ),
-                        onPressed: () {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user)));
-                        },
-                      ),
+      body: calendar_load? CircleLoader() : Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(height: 20, color: Color(0xffff6e5c7),),
+                Container(
+                  height: size.height * 0.12,
+                  width: size.width * 1,
+                  // ignore: use_full_hex_values_for_flutter_colors
+                  decoration: BoxDecoration(
+                    color: Color(0xffff6e5c7),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(90),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 5,
-                        left: 215,
-                        right: 0,
+                  ),
+
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 390, top: 0),
+                        child: IconButton(
+                          icon: Icon(
+                            const IconData(0xf8f4,
+                                fontFamily: 'MaterialIcons',
+                                matchTextDirection: true),
+                            color: Colors.black,
+                            size: 45,
+                          ),
+                          onPressed: () {
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user)));
+                          },
+                        ),
                       ),
-                      child: Container(
-                        width: size.width * 0.5,
-                        height: size.height * 0.0596,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(80),
-                              topRight: Radius.circular(0),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 5,
+                          left: 215,
+                          right: 0,
+                        ),
+                        child: Container(
+                          width: size.width * 0.5,
+                          height: size.height * 0.0596,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(80),
+                                topRight: Radius.circular(0),
+                              ),
+                              color: Colors.white),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 14, left: 60),
+                            child: Text(
+                              "Calendar",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 30,
+                                  color: Colors.black87),
                             ),
-                            color: Colors.white),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 14, left: 60),
-                          child: Text(
-                            "Calendar",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 30,
-                                color: Colors.black87),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Builder(
-                builder: (context) {
-                  for(int i = 0 ;CalendarModel==[];i++){
-                    sleep(Duration(seconds: 1));
+                Builder(
+                  builder: (context) {
+                    for(int i = 0 ;CalendarModel==[];i++){
+                      sleep(Duration(seconds: 1));
+                    }
+                    return Container(
+                      child: TableCalendar(
+                        focusedDay: selectedDay,
+                        firstDay: DateTime(1990),
+                        lastDay: DateTime(2050),
+                        calendarFormat: format,
+                        onFormatChanged: (CalendarFormat _format) {
+                          setState(() {
+                            format = _format;
+                          });
+                        },
+                        startingDayOfWeek: StartingDayOfWeek.sunday,
+                        daysOfWeekVisible: true,
 
-                  }
-                  return TableCalendar(
+                        //Day Changed
+                        onDaySelected: (DateTime selectDay, DateTime focusDay) {
+                          setState(() {
+                            selectedDay = selectDay;
+                            focusedDay = focusDay;
+                          });
+                          // ignore: avoid_print
+                          print('FocusedDay =====>>>'+focusedDay.toString());
+                          print('SelectedDay =========>>>'+selectedDay.toString());
+                        },
+                        selectedDayPredicate: (DateTime date) {
+                          return isSameDay(selectedDay, date);
+                        },
 
-                    
-                    focusedDay: selectedDay,
-                    
-                    firstDay: DateTime(1990),
-                    lastDay: DateTime(2050),
-                    calendarFormat: format,
-                    onFormatChanged: (CalendarFormat _format) {
-                      setState(() {
-                        format = _format;
-                      });
-                    },
-                    startingDayOfWeek: StartingDayOfWeek.sunday,
-                    daysOfWeekVisible: true,
+                        eventLoader: _getEventsfromDay,
 
-                    //Day Changed
-                    onDaySelected: (DateTime selectDay, DateTime focusDay) {
-                      setState(() {
-                        selectedDay = selectDay;
-                        focusedDay = focusDay;
-                      });
-                      // ignore: avoid_print
-                      print('FocusedDay =====>>>'+focusedDay.toString());
-                      print('SelectedDay =========>>>'+selectedDay.toString());
-                    },
-                    selectedDayPredicate: (DateTime date) {
-                      return isSameDay(selectedDay, date);
-                    },
+                        //To style the Calendar
+                        calendarStyle: CalendarStyle(
+                          // isTodayHighlighted: true,
+                          defaultTextStyle:
+                              TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          rowDecoration: BoxDecoration(
+                              border: Border(
+                                  bottom:
+                                      BorderSide(width: 1, color: Color(0xfffEBE9E9)))),
+                          disabledTextStyle: TextStyle(fontSize: 16),
+                          // outsideTextStyle: TextStyle(fontSize: 15, color: Colors.grey),
+                          weekendTextStyle:
+                              TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          cellPadding: EdgeInsets.all(12),
+                          outsideDaysVisible: false,
 
-                    eventLoader: _getEventsfromDay,
-
-                    //To style the Calendar
-                    calendarStyle: CalendarStyle(
-                      // isTodayHighlighted: true,
-                      defaultTextStyle:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                      rowDecoration: BoxDecoration(
-                          border: Border(
-                              bottom:
-                                  BorderSide(width: 1, color: Color(0xfffEBE9E9)))),
-                      disabledTextStyle: TextStyle(fontSize: 16),
-                      // outsideTextStyle: TextStyle(fontSize: 15, color: Colors.grey),
-                      weekendTextStyle:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                      cellPadding: EdgeInsets.all(12),
-                      outsideDaysVisible: false,
-
-                      selectedDecoration: BoxDecoration(
-                        color: Color(0xfffFFC34A),
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(90.0),
-                      ),
-                      todayTextStyle:
-                          TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
-                      selectedTextStyle: TextStyle( 
-                          color: Colors.white, fontWeight: FontWeight.w600),
-                      todayDecoration: BoxDecoration(
-                        color: Colors.white10,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(90.0),
-                      ),
-                      defaultDecoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(90.0),
-                      ),
-                      weekendDecoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                    ),
-                    headerStyle: HeaderStyle(
-                        formatButtonVisible: false,
-                        titleCentered: true,
-                        titleTextStyle: TextStyle(
-                            fontSize: 23,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.brown[800]),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
+                          selectedDecoration: BoxDecoration(
+                            color: Color(0xfffFFC34A),
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(90.0),
+                          ),
+                          todayTextStyle:
+                              TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                          selectedTextStyle: TextStyle( 
+                              color: Colors.white, fontWeight: FontWeight.w600),
+                          todayDecoration: BoxDecoration(
+                            color: Colors.white10,
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(90.0),
+                          ),
+                          defaultDecoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(90.0),
+                          ),
+                          weekendDecoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                        ),
+                        headerStyle: HeaderStyle(
+                            formatButtonVisible: false,
+                            titleCentered: true,
+                            titleTextStyle: TextStyle(
+                                fontSize: 23,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.brown[800]),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                    // topLeft: Radius.circular(40),
+                                    bottomRight: Radius.circular(0))),
+                            formatButtonShowsNext: false,
+                            // formatButtonTextStyle: const TextStyle(
+                            //   color: Colors.white,
+                            // ),
+                            headerMargin: EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                        daysOfWeekStyle: DaysOfWeekStyle(
+                          weekdayStyle: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 19,
+                              color: Colors.white),
+                          decoration: BoxDecoration(
+                            color: Color(0xfffFFC34A),
                             borderRadius: BorderRadius.only(
-                                // topLeft: Radius.circular(40),
-                                bottomRight: Radius.circular(0))),
-                        formatButtonShowsNext: false,
-                        // formatButtonTextStyle: const TextStyle(
-                        //   color: Colors.white,
-                        // ),
-                        headerMargin: EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                    daysOfWeekStyle: DaysOfWeekStyle(
-                      weekdayStyle: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 19,
-                          color: Colors.white),
-                      decoration: BoxDecoration(
-                        color: Color(0xfffFFC34A),
+                                bottomRight: Radius.circular(20),
+                                bottomLeft: Radius.circular(20)),
+                          ),
+                          weekendStyle: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                            color: Colors.white,
+                          ),
+                        ),
+                        daysOfWeekHeight: 50,
+                      ),
+                    );
+
+                   
+                  }
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                
+
+
+              ],
+            ),
+            Positioned(
+                  bottom: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.43,
+                    width: MediaQuery.of(context).size.width, 
+                    decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(20),
-                            bottomLeft: Radius.circular(20)),
-                      ),
-                      weekendStyle: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,
-                        color: Colors.white,
-                      ),
-                    ),
-                    daysOfWeekHeight: 50,
-                  );
-
-                 
-                }
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(60),
-                        topRight: Radius.circular(60)),
-                    color: Color(0xffff6e5c7)),
-                height: size.height * 0.43,
-                child: DefaultTabController(
-                  length: 2,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Column(
+                            topLeft: Radius.circular(60),
+                            topRight: Radius.circular(60)),
+                        color: Color(0xffff6e5c7)),
+                    // height: size.height * 0.43,  
+                    child: DefaultTabController(
+                      length: 2,
+                      child: SingleChildScrollView(
+                        child: Column(
                           children: [
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              height: 70,
-                              child: TabBar(
-                                labelColor: Colors.black,
-                                unselectedLabelColor: Color(0xfffB5B0A2),
-                                labelStyle: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.w800),
-                                unselectedLabelStyle:
-                                    TextStyle(fontWeight: FontWeight.normal),
-                                indicator: BoxDecoration(),
-                                tabs: [
-                                  Tab(
-                                    text: "Activities",
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  height: 70,
+                                  child: TabBar(
+                                    labelColor: Colors.black,
+                                    unselectedLabelColor: Color(0xfffB5B0A2),
+                                    labelStyle: TextStyle(
+                                        fontSize: 25, fontWeight: FontWeight.w800),
+                                    unselectedLabelStyle:
+                                        TextStyle(fontWeight: FontWeight.normal),
+                                    indicator: BoxDecoration(),
+                                    tabs: [
+                                      Tab(
+                                        text: "Activities",
+                                      ),
+                                      Tab(
+                                        text: "Repeat",
+                                      )
+                                    ],
                                   ),
-                                  Tab(
-                                    text: "Repeat",
-                                  )
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 2,
-                              child: TabBarView(
-                                children: [
-                                  // Container(
-                                  //   child: Column(
-                                  //     children: [
-                                  //       SizedBox(
-                                  //         height: 5,
-                                  //       ),
-
-                                 Container(
-                                   //color: Colors.blue,
-                                   child: LayoutBuilder(builder: (context, constraints) =>BuildListView(constraints),)
+                                ),
+                                Container(
+                                  height: MediaQuery.of(context).size.height/4,
+                                  child: TabBarView(
+                                    children: [
+                                      // Container(
+                                      //   child: Column(
+                                      //     children: [
+                                      //       SizedBox(
+                                      //         height: 5,
+                                      //       ),
+                
+                                     Container(
+                                       //color: Colors.blue,
+                                       child: LayoutBuilder(builder: (context, constraints) =>BuildListView(constraints),)
+                                      ),
+                
+                                    
+                                     Container(
+                                        //color: Colors.red,
+                                        child: LayoutBuilder(builder: (context, constraints) =>BuildRepeatListView(constraints),)
+                                      )
+                                    ],
                                   ),
-
+                                ),
                                 
-                                 Container(
-                                    //color: Colors.red,
-                                    child: LayoutBuilder(builder: (context, constraints) =>BuildRepeatListView(constraints),)
-                                  )
-                                ],
-                              ),
-                            ),
-                            
-
-
+                
+                
+                              ],
+                            )
                           ],
-                        )
-                      ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-
-
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
       
       floatingActionButton: calendar_load? null : FloatingActionButton.extended(
@@ -1090,12 +1099,14 @@ Future<Null> pullCircle() async {
       Container(
 
       ):Container(
-       
+       width: MediaQuery.of(context).size.width,
+       height: MediaQuery.of(context).size.height,
 
         child: ListView.builder(itemCount: selectedEvents[selectedDay]?.length, itemBuilder: ((context, index) =>
         
      Row(
-        
+       mainAxisAlignment: MainAxisAlignment.center,
+       crossAxisAlignment: CrossAxisAlignment.start,
         children: [
            
             //  ..._getEventsfromDay(selectedDay).map(
@@ -1103,7 +1114,7 @@ Future<Null> pullCircle() async {
               selectedEvents[selectedDay]![index].repeating == '0' ? Container() :
               Container(
                 
-                margin: EdgeInsets.only(bottom: index == selectedEvents[selectedDay]!.length-1 ? 230 :10),
+                // margin: EdgeInsets.only(bottom: index == selectedEvents[selectedDay]!.length-1 ? 230 :10),
                 child: Padding(
                     
                                                 padding: const EdgeInsets.fromLTRB(10, 0, 20, 5),
@@ -1180,23 +1191,21 @@ Future<Null> pullCircle() async {
                                                                           fontSize:
                                                                               19)),
                                                                 ),
-                                                                Flexible(
-                                                                  child: Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .only(
-                                                                      left: 20,
-                                                                      top: 6,
-                                                                      right: 5,
-                                                                    ),
-                                                                    child: Text(
-                                                                      selectedEvents[selectedDay]![index].title,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              19,
-                                                                          color: Colors
-                                                                              .black),
-                                                                    ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .only(
+                                                                    left: 20,
+                                                                    top: 6,
+                                                                    right: 5,
+                                                                  ),
+                                                                  child: Text(
+                                                                    selectedEvents[selectedDay]![index].title,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            19,
+                                                                        color: Colors
+                                                                            .black),
                                                                   ),
                                                                 ),
                                                                  
@@ -1230,25 +1239,23 @@ Future<Null> pullCircle() async {
                                                                     size: 13,
                                                                   ),
                                                                 ),
-                                                                 Flexible(
-                                                                        child:   Padding(
+                                                                 Padding(
                                                                   padding:
                                                                       const EdgeInsets
-                                                                              .only(
-                                                                          left: 1,
-                                                                          top: 5,
-                                                                          bottom:
-                                                                              5),
+                                                                       .only(
+                                                                   left: 1,
+                                                                   top: 5,
+                                                                   bottom:
+                                                                       5),
                                                                   child: Text(
                                                                     selectedEvents[selectedDay]![index].location,
                                                                     style: TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Color(
-                                                                            0xfff707070)),
+                                                                 fontSize:
+                                                                     15,
+                                                                 color: Color(
+                                                                     0xfff707070)),
                                                                   ),
                                                                 ),
-                                                                  ),
                                                                  
                                                              
                                                               ],
@@ -1290,24 +1297,22 @@ Future<Null> pullCircle() async {
                                                                       size.width *
                                                                           0.44,
                                                                   child:
-                                                                  Flexible(
-                                                                      child:Padding(
+                                                                  Padding(
                                                                     padding:
-                                                                        const EdgeInsets.all(
-                                                                            9.0),
+                                                                    const EdgeInsets.all(
+                                                                        9.0),
                                                                     child: Text(
-                                                                      "You didn't write a note!!",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              13,
-                                                                          color: Color.fromARGB(
-                                                                              255,
-                                                                              83,
-                                                                              83,
-                                                                              83)),
+                                                                  "You didn't write a note!!",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13,
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          83,
+                                                                          83,
+                                                                          83)),
                                                                     ),
                                                                   ),
-                                                                ),
                                                                 
                                                                 ),
                                               ])
@@ -1322,28 +1327,25 @@ Future<Null> pullCircle() async {
                                                                           BorderRadius.circular(
                                                                               2)),
                                                                   width:
-                                                                      size.width *
-                                                                          0.44,
+                                                                      MediaQuery.of(context).size.width /2.3,
                                                                   child:
-                                                                  Flexible(
-                                                                      child:Padding(
+                                                                  Padding(
                                                                     padding:
-                                                                        const EdgeInsets.all(
-                                                                            9.0),
+                                                                    const EdgeInsets.all(
+                                                                        9.0),
                                                                     child: Text(
-                                                                      selectedEvents[selectedDay]![index]
-                                                                          .note,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color: Color.fromARGB(
-                                                                              255,
-                                                                              83,
-                                                                              83,
-                                                                              83)),
+                                                                  selectedEvents[selectedDay]![index]
+                                                                      .note,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          83,
+                                                                          83,
+                                                                          83)),
                                                                     ),
                                                                   ),
-                                                                ),
                                                                 
                                                                 ),
 
@@ -1446,98 +1448,98 @@ Future<Null> pullCircle() async {
       Container(
 
       ):Container(
-       
+       width: MediaQuery.of(context).size.width,
+       height: MediaQuery.of(context).size.height,
 
         child: ListView.builder(itemCount: selectedEvents[selectedDay]?.length, itemBuilder: ((context, index) =>
         
-     Row(
-        
-        children: [
-           
-            //  ..._getEventsfromDay(selectedDay).map(
-            //                               (CalendarModel event) => 
-              selectedEvents[selectedDay]![index].repeating == '1' ? Container() :
-              Container(
-                
-                margin: EdgeInsets.only(bottom: index == selectedEvents[selectedDay]!.length-1 ? 230 :10),
-                child: Padding(
-                    
-                                                padding: const EdgeInsets.fromLTRB(10, 0, 20, 5),
-                                                //margin: EdgeInsets.only(bottom: 50),
-                                                child: Row(
-                                                  children: [
-                                                    Column(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                            left: 1,
+     Center(
+       child: Row(
+          
+          children: [
+             
+              //  ..._getEventsfromDay(selectedDay).map(
+              //                               (CalendarModel event) => 
+                selectedEvents[selectedDay]![index].repeating == '1' ? Container() :
+                Container(
+                  
+                  // margin: EdgeInsets.only(bottom: index == selectedEvents[selectedDay]!.length-1 ? 230 :10),
+                  child: Padding(
+                                                  padding: const EdgeInsets.fromLTRB(10, 0, 20, 5),
+                                                  //margin: EdgeInsets.only(bottom: 50),
+                                                  child: Row(
+                                                    children: [
+                                                      Column(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                              left: 1,
+                                                            ),
+                                                            child: Text(
+                                                              // calendarModels[index].time_start,
+                                                              selectedEvents[selectedDay]![index].time_start,
+                                                              style: TextStyle(
+                                                                  fontSize: 15,
+                                                                  color: Colors
+                                                                      .black54),
+                                                            ),
                                                           ),
-                                                          child: Text(
-                                                            // calendarModels[index].time_start,
-                                                            selectedEvents[selectedDay]![index].time_start,
-                                                            style: TextStyle(
-                                                                fontSize: 15,
-                                                                color: Colors
-                                                                    .black54),
+                                                          SizedBox(
+                                                            height: 8,
                                                           ),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 8,
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                            left: 1,
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                              left: 1,
+                                                            ),
+                                                            child: Text(
+                                                             selectedEvents[selectedDay]![index].time_end,
+                                                              style: TextStyle(
+                                                                  fontSize: 15,
+                                                                  color: Colors
+                                                                      .black54),
+                                                            ),
                                                           ),
-                                                          child: Text(
-                                                           selectedEvents[selectedDay]![index].time_end,
-                                                            style: TextStyle(
-                                                                fontSize: 15,
-                                                                color: Colors
-                                                                    .black54),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 20),
-                                                      child: Container(
-                                                        width: size.width * 0.7,
-                                                        // 
-                                                        decoration: BoxDecoration(
-                                                            color: Color(
-                                                                0xfffE7C581),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10)),
-                                                         child: ExpansionTile(
-        title: Column(
-                                                          children: [
-                                                            
-                                                          Row(
-                                                              children: [
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .only(
-                                                                          left: 5,
-                                                                          top: 6),
-                                                                  child: Text("",
-                                                                      style: TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight
-                                                                                  .w400,
-                                                                          fontSize:
-                                                                              19)),
-                                                                ),
-                                                                Flexible(
-                                                                  child: Padding(
+                                                        ],
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                                left: 20),
+                                                        child: Container(
+                                                          width: size.width * 0.7,
+                                                          // 
+                                                          decoration: BoxDecoration(
+                                                              color: Color(
+                                                                  0xfffE7C581),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
+                                                           child: ExpansionTile(
+          title: Column(
+                                                            children: [
+                                                              
+                                                            Row(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                                .only(
+                                                                            left: 5,
+                                                                            top: 6),
+                                                                    child: Text("",
+                                                                        style: TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight
+                                                                                    .w400,
+                                                                            fontSize:
+                                                                                19)),
+                                                                  ),
+                                                                  Padding(
                                                                     padding:
                                                                         const EdgeInsets
                                                                             .only(
@@ -1554,12 +1556,64 @@ Future<Null> pullCircle() async {
                                                                               .black),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                                 
-                                                              ],
-                                                          
-                                                            ),
-                                                                
+                                                                   
+                                                                ],
+                                                            
+                                                              ),
+                                                                  
+                                                              Row(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                                .only(
+                                                                            left:
+                                                                                28,
+                                                                            top: 5,
+                                                                            right:
+                                                                                7,
+                                                                                ),
+                                                                    child: Icon(
+                                                                      const IconData(
+                                                                          0xf009e,
+                                                                          fontFamily:
+                                                                              'MaterialIcons'),
+                                                                      color: Color
+                                                                          .fromARGB(
+                                                                              255,
+                                                                              245,
+                                                                              245,
+                                                                              245),
+                                                                      size: 13,
+                                                                    ),
+                                                                  ),
+                                                                   Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                         .only(
+                                                                     left: 1,
+                                                                     top: 5,
+                                                                     bottom:
+                                                                         5),
+                                                                    child: Text(
+                                                                      selectedEvents[selectedDay]![index].location,
+                                                                      style: TextStyle(
+                                                                   fontSize:
+                                                                       15,
+                                                                   color: Color(
+                                                                       0xfff707070)),
+                                                                    ),
+                                                                  ),
+                                                                   
+                                                               
+                                                                ],
+                                                              ),
+                                                              
+                                                            ],),
+                                                            children:
+                                                             <Widget>[
+                                                          ListTile(
+                                                            title: 
                                                             Row(
                                                               children: [
                                                                 Padding(
@@ -1567,69 +1621,14 @@ Future<Null> pullCircle() async {
                                                                       const EdgeInsets
                                                                               .only(
                                                                           left:
-                                                                              28,
-                                                                          top: 5,
-                                                                          right:
-                                                                              7,
-                                                                              ),
-                                                                  child: Icon(
-                                                                    const IconData(
-                                                                        0xf009e,
-                                                                        fontFamily:
-                                                                            'MaterialIcons'),
-                                                                    color: Color
-                                                                        .fromARGB(
-                                                                            255,
-                                                                            245,
-                                                                            245,
-                                                                            245),
-                                                                    size: 13,
-                                                                  ),
-                                                                ),
-                                                                 Flexible(
-                                                                        child:   Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .only(
-                                                                          left: 1,
-                                                                          top: 5,
+                                                                              30,
+                                                                          right: 1,
                                                                           bottom:
-                                                                              5),
-                                                                  child: Text(
-                                                                    selectedEvents[selectedDay]![index].location,
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Color(
-                                                                            0xfff707070)),
-                                                                  ),
-                                                                ),
-                                                                  ),
-                                                                 
-                                                             
-                                                              ],
-                                                            ),
-                                                            
-                                                          ],),
-                                                          children:
-                                                           <Widget>[
-                                                        ListTile(
-                                                          title: 
-                                                          Row(
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            30,
-                                                                        right: 1,
-                                                                        bottom:
-                                                                            10),
-                                                                child:
-                                                                (selectedEvents[selectedDay]![index]
-                                                                          .note.isEmpty)
-                                            ? Column(children: [
+                                                                              10),
+                                                                  child:
+                                                                  (selectedEvents[selectedDay]![index]
+                                                                            .note.isEmpty)
+                                              ? Column(children: [
                                                 
                                                 
                                                Container(
@@ -1646,128 +1645,124 @@ Future<Null> pullCircle() async {
                                                                       size.width *
                                                                           0.44,
                                                                   child:
-                                                                  Flexible(
-                                                                      child:Padding(
+                                                                  Padding(
                                                                     padding:
-                                                                        const EdgeInsets.all(
-                                                                            9.0),
+                                                                    const EdgeInsets.all(
+                                                                        9.0),
                                                                     child: Text(
-                                                                      "You didn't write a note!!",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              13,
-                                                                          color: Color.fromARGB(
-                                                                              255,
-                                                                              83,
-                                                                              83,
-                                                                              83)),
+                                                                  "You didn't write a note!!",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13,
+                                                                      color: Color.fromARGB(
+                                                                          255,
+                                                                          83,
+                                                                          83,
+                                                                          83)),
                                                                     ),
                                                                   ),
-                                                                ),
                                                                 
                                                                 ),
                                               ])
-                                              :Container(
-                                                                  decoration: BoxDecoration(
-                                                                      color: Color.fromARGB(
-                                                                          123,
-                                                                          255,
-                                                                          255,
-                                                                          255),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              2)),
-                                                                  width:
-                                                                      size.width *
-                                                                          0.44,
-                                                                  child:
-                                                                  Flexible(
-                                                                      child:Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                            9.0),
-                                                                    child: Text(
-                                                                      selectedEvents[selectedDay]![index]
-                                                                          .note,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color: Color.fromARGB(
-                                                                              255,
-                                                                              83,
-                                                                              83,
-                                                                              83)),
+                                                :Container(
+                                                                    decoration: BoxDecoration(
+                                                                        color: Color.fromARGB(
+                                                                            123,
+                                                                            255,
+                                                                            255,
+                                                                            255),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                2)),
+                                                                    width:
+                                                                        MediaQuery.of(context).size.width / 2.3,
+                                                                    child:
+                                                                    Padding(
+                                                                      padding:
+                                                                      const EdgeInsets.all(
+                                                                          9.0),
+                                                                      child: Text(
+                                                                    selectedEvents[selectedDay]![index]
+                                                                        .note,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            15,
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            83,
+                                                                            83,
+                                                                            83)),
+                                                                      ),
                                                                     ),
+                                                                  
                                                                   ),
-                                                                ),
-                                                                
-                                                                ),
 
+                                                              
+                                                                
+                                                                  
+                                                                ),
+                                                                IconButton(
+                                                                        onPressed:
+                                                                         () {
+                                                                           print('### click delete from index = ' + selectedEvents[selectedDay]![index].id.toString());
+                                                                           print('### Repeating status = ' + selectedEvents[selectedDay]![index].repeating.toString());
+                                                                           if(selectedEvents[selectedDay]![index].repeating.toString() == '0'){
+                                                                                _confirmDialogDelete(selectedEvents[selectedDay]![index].id.toString());
+                                                                           }else{
+
+                                                                              String re_id = selectedEvents[selectedDay]![index].id.toString();                                                         
+                                                                              String re_title = selectedEvents[selectedDay]![index].title.toString();
+                                                                              String re_location = selectedEvents[selectedDay]![index].location.toString();
+                                                                              String re_endDate = selectedEvents[selectedDay]![index].repeat_end_date.toString();
+                                                                              String re_note = selectedEvents[selectedDay]![index].note.toString();
+
+                                                                              print('### Title status = ' + re_title);
+                                                                              print('### Location status = ' + re_location);
+                                                                              print('### Note status = ' + re_note);
+                                                                              print('### end date status = ' + re_endDate);
+
+                                                                             _confirmRepeatDialogDelete(re_id, re_title, re_location, re_note, re_endDate);
+
+                                                                           }
+                                                                           
+                                                                       
+                                                                         },
+                                                                        icon: SvgPicture.asset(
+                                                                        "assets/icons/trash.svg",
+                                                                          height: 20,
+                                                                          ),
+                                                                      ),],
+                                                                
+                                                            ),
                                                             
-                                                              
-                                                                
-                                                              ),
-                                                              IconButton(
-                                                                      onPressed:
-                                                                       () {
-                                                                         print('### click delete from index = ' + selectedEvents[selectedDay]![index].id.toString());
-                                                                         print('### Repeating status = ' + selectedEvents[selectedDay]![index].repeating.toString());
-                                                                         if(selectedEvents[selectedDay]![index].repeating.toString() == '0'){
-                                                                              _confirmDialogDelete(selectedEvents[selectedDay]![index].id.toString());
-                                                                         }else{
-
-                                                                            String re_id = selectedEvents[selectedDay]![index].id.toString();                                                         
-                                                                            String re_title = selectedEvents[selectedDay]![index].title.toString();
-                                                                            String re_location = selectedEvents[selectedDay]![index].location.toString();
-                                                                            String re_endDate = selectedEvents[selectedDay]![index].repeat_end_date.toString();
-                                                                            String re_note = selectedEvents[selectedDay]![index].note.toString();
-
-                                                                            print('### Title status = ' + re_title);
-                                                                            print('### Location status = ' + re_location);
-                                                                            print('### Note status = ' + re_note);
-                                                                            print('### end date status = ' + re_endDate);
-
-                                                                           _confirmRepeatDialogDelete(re_id, re_title, re_location, re_note, re_endDate);
-
-                                                                         }
-                                                                         
-                                                                     
-                                                                       },
-                                                                      icon: SvgPicture.asset(
-                                                                      "assets/icons/trash.svg",
-                                                                        height: 20,
-                                                                        ),
-                                                                    ),],
-                                                              
+                                                            
+                                                             
+                                                            
                                                           ),
-                                                          
-                                                          
-                                                           
-                                                          
-                                                        ),
-          
-        ],
-                                                          
-                                                          ), 
+            
+          ],
                                                             
-                                                                      
+                                                            ), 
+                                                              
                                                                         
-                                                        
-                                                            
-                                                            
-                                                            
-                                                            
-                                                            
+                                                                          
+                                                          
+                                                              
+                                                              
+                                                              
+                                                              
+                                                              
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-              ),
-         
-                                          // )
-        ],
-       )
+                ),
+           
+                                            // )
+          ],
+         ),
+     )
                                         
                                         
                                     ),
