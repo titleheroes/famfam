@@ -36,111 +36,119 @@ class _Welcome1State extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(children: [
-        Stack(
-          children: [
-            Expanded(
-              child: CarouselSlider(
-                  carouselController: _controller,
-                  options: CarouselOptions(
-                      autoPlay: true,
-                      height: MediaQuery.of(context).size.height - 60,
-                      enlargeCenterPage: true,
-                      autoPlayInterval: Duration(seconds: 3),
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _current = index;
-                        });
-                      }),
-                  items: image
-                      .map((e) => ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: <Widget>[
-                                SafeArea(
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 80,
-                                      ),
-                                      Text(
-                                        e.text1,
-                                        style: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: "Merriweather"),
-                                      ),
-                                      Text(
-                                        e.text2,
-                                        style: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: "Merriweather"),
-                                      ),
-                                      Container(
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Column(children: [
+          Stack(
+            // fit: StackFit.expand,
+            children: [
+              CarouselSlider(
+                carouselController: _controller,
+                options: CarouselOptions(
+                    autoPlay: true,
+                    height: MediaQuery.of(context).size.height - 60,
+                    enlargeCenterPage: true,
+                    autoPlayInterval: Duration(seconds: 3),
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _current = index;
+                      });
+                    }),
+                items: image
+                    .map((e) => ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: <Widget>[
+                              SafeArea(
+                                child: Column(
+                                  children: [
+                                    // SizedBox(
+                                    //   height: 80,
+                                    // ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 60),
+                                    ),
+                                    Text(
+                                      e.text1,
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "Merriweather"),
+                                    ),
+                                    Text(
+                                      e.text2,
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "Merriweather"),
+                                    ),
+                                    Flexible(
+                                      child: Container(
                                         child: Image.asset(e.image),
                                       ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ))
-                      .toList()),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height - 100,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: 250,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 2,
-                      primary: Colors.orange.shade300,
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(20.0),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height - 100,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    width: 250,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 2,
+                        primary: Colors.orange.shade300,
+                        shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(20.0),
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Login()));
-                    },
-                    child: Text(
-                      'Get Start!',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Merriweather"),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Login()));
+                      },
+                      child: Text(
+                        'Get Start!',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Merriweather"),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            )
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: image.asMap().entries.map((entry) {
-            return GestureDetector(
-              onTap: () => _controller.animateToPage(entry.key),
-              child: Container(
-                width: 12.0,
-                height: 12.0,
-                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: (Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.orange)
-                        .withOpacity(_current == entry.key ? 0.9 : 0.4)),
-              ),
-            );
-          }).toList(),
-        ),
-      ]),
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: image.asMap().entries.map((entry) {
+              return GestureDetector(
+                onTap: () => _controller.animateToPage(entry.key),
+                child: Container(
+                  width: 12.0,
+                  height: 12.0,
+                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: (Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.orange)
+                          .withOpacity(_current == entry.key ? 0.9 : 0.4)),
+                ),
+              );
+            }).toList(),
+          ),
+        ]),
+      ),
     );
   }
 }

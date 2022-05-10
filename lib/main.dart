@@ -8,7 +8,6 @@ import 'package:famfam/screens/ticktik_screen.dart';
 //import 'package:flutter_famfam/screens/circle_screen.dart';
 import 'package:famfam/screens/voterandom_screen.dart';
 import 'package:famfam/Homepage/HomePage.dart';
-import 'package:famfam/check-in/Checkin.dart';
 import 'package:famfam/loading.dart';
 import 'package:famfam/login.dart';
 import 'package:famfam/register_info.dart';
@@ -74,7 +73,6 @@ void main() async {
         '/ticktik': (context) => TickTikScreen(),
         // '/todolist': (context) => TodoBody(),
         '/voterandom': (context) => VoteRandomScreen(),
-        '/checkin': (context) => CheckIn(),
         '/pinpost': (context) => PinScreen(),
         '/calendar': (context) => Calendar(),
         '/ciecleLoading': (context) => CircleLoader()

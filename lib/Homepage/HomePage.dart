@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:famfam/Homepage/menuHome.dart';
 import 'package:famfam/Homepage/tabbar.dart';
-import 'package:famfam/check-in/Checkin.dart';
 import 'package:famfam/models/circle_model.dart';
 import 'package:famfam/models/history_for_user_model.dart';
 import 'package:famfam/models/user_model.dart';
@@ -99,151 +98,130 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        body: load
-            ? CircleLoader()
-            : Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(color: backgroundColor),
-                  ),
-                  SafeArea(child: menuHome()),
+      body: load
+          ? CircleLoader()
+          : Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(color: backgroundColor),
+                ),
+                SafeArea(child: menuHome()),
 
-                  //Main Screen
-                  TweenAnimationBuilder(
-                      tween: Tween<double>(begin: 0, end: value),
-                      duration: Duration(milliseconds: 500),
-                      builder: (___, double val, __) {
-                        return (Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.identity()
-                            ..setEntry(3, 2, 0.001)
-                            ..setEntry(0, 3, -280 * val)
-                            ..rotateY(-(pi / 6) * val),
-                          child: Scaffold(
-                            //Main Screen
-                            body: SafeArea(
-                              child: SingleChildScrollView(
-                                child: Column(children: [
-                                  Container(
-                                    constraints: const BoxConstraints(minHeight: 100),
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Stack(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(
-                                                  20, 20, 0, 0),
-                                              child: CircleAvatar(
-                                                radius: 50,
-                                                backgroundColor: Colors.white,
-                                                backgroundImage:
-                                                    NetworkImage(profileImage),
-                                              ),
-                                            ),
-                                            // Container(
-                                            //   margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
-                                            //   height: 90,
-                                            //   width: 90,
-                                            //   decoration: BoxDecoration(
-                                            //       shape: BoxShape.circle,
-                                            //       color: Colors.orange),
-                                            // ),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsets.fromLTRB(
-                                                      15, 20, 0, 0),
-                                                  child: Text(
-                                                    family,
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(
-                                                      fontSize: 22,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  child: Row(
-                                                    // mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      Container(
-                                                        margin:
-                                                            EdgeInsets.fromLTRB(
-                                                                15, 0, 0, 0),
-                                                        child: Text(
-                                                          "Hey, ",
-                                                          style: TextStyle(
-                                                            fontSize: 30,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        child: Text(
-                                                          name + "!",
-                                                          style: TextStyle(
-                                                              fontSize: 30,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: Container(
+                //Main Screen
+                TweenAnimationBuilder(
+                    tween: Tween<double>(begin: 0, end: value),
+                    duration: Duration(milliseconds: 500),
+                    builder: (___, double val, __) {
+                      return (Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.identity()
+                          ..setEntry(3, 2, 0.001)
+                          ..setEntry(0, 3, -280 * val)
+                          ..rotateY(-(pi / 6) * val),
+                        child: Scaffold(
+                          //Main Screen
+                          body: SafeArea(
+                            child: SingleChildScrollView(
+                              child: Column(children: [
+                                Container(
+                                  constraints:
+                                      const BoxConstraints(minHeight: 100),
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Stack(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
                                             margin: EdgeInsets.fromLTRB(
-                                                0, 30, 30, 0),
-                                            child: IconButton(
-                                                icon: Icon(
-                                                  Icons.menu_open_rounded,
-                                                  size: 40,
-                                                ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    value == 0
-                                                        ? value = 1
-                                                        : value = 0;
-                                                  });
-                                                }),
+                                                20, 20, 0, 0),
+                                            child: CircleAvatar(
+                                              radius: 50,
+                                              backgroundColor: Colors.white,
+                                              backgroundImage:
+                                                  NetworkImage(profileImage),
+                                            ),
                                           ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.fromLTRB(
+                                                    15, 20, 0, 0),
+                                                child: Text(
+                                                  family,
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                    fontSize: 22,
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                child: Row(
+                                                  // mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Container(
+                                                      margin:
+                                                          EdgeInsets.fromLTRB(
+                                                              15, 0, 0, 0),
+                                                      child: Text(
+                                                        "Hey, ",
+                                                        style: TextStyle(
+                                                          fontSize: 30,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      child: Text(
+                                                        name + "!",
+                                                        style: TextStyle(
+                                                            fontSize: 30,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: Container(
+                                          margin:
+                                              EdgeInsets.fromLTRB(0, 30, 30, 0),
+                                          child: IconButton(
+                                              icon: Icon(
+                                                Icons.menu_open_rounded,
+                                                size: 40,
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  value == 0
+                                                      ? value = 1
+                                                      : value = 0;
+                                                });
+                                              }),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                  Date(),
-                                  tabbar()
-                                ]),
-                              ),
+                                ),
+                                Date(),
+                                tabbar()
+                              ]),
                             ),
                           ),
-                        ));
-                      }),
-
-                  //open drawer
-                  // GestureDetector(
-                  //   onHorizontalDragUpdate: (e) {
-                  //     if (e.delta.dx < 0) {
-                  //       setState(() {
-                  //         value = 1;
-                  //       });
-                  //     } else {
-                  //       setState(() {
-                  //         value = 0;
-                  //       });
-                  //     }
-                  //   },
-                  // )
-                ],
-              ));
+                        ),
+                      ));
+                    }),
+              ],
+            ),
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:famfam/Calendar/calendar.dart';
 import 'package:famfam/Homepage/tabbar.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -126,6 +127,7 @@ class _DateState extends State<Date> {
     DateTime date = DateTime.now();
     return Container(
       height: 150,
+      width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(10),
       margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
       decoration: BoxDecoration(
@@ -138,7 +140,12 @@ class _DateState extends State<Date> {
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/calendar');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Calendar(),
+                  ),
+                );
               },
               child: Center(
                 child: Column(
@@ -190,13 +197,12 @@ class _DateState extends State<Date> {
           //แจ้งเตือน
 
           Container(
-            width: 200,
+            width: MediaQuery.of(context).size.width / 2,
             padding: EdgeInsets.only(
               left: 4,
               top: 8,
             ),
-            child: Expanded(
-                child: Container(
+            child: Container(
               //color: Colors.red,
 
               child: (calendarHaveData)
@@ -205,6 +211,7 @@ class _DateState extends State<Date> {
                       itemCount: calendarModels.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
+                            width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
@@ -229,7 +236,7 @@ class _DateState extends State<Date> {
                                     Padding(
                                       padding: const EdgeInsets.only(left: 6),
                                       child: Icon(
-                                        IconData(
+                                        const IconData(
                                           0xe3ab,
                                           fontFamily: 'MaterialIcons',
                                         ),
@@ -252,7 +259,7 @@ class _DateState extends State<Date> {
                                       ),
                                     ),
                                     Icon(
-                                      IconData(
+                                      const IconData(
                                         0xe738,
                                         fontFamily: 'MaterialIcons',
                                       ),
@@ -279,11 +286,13 @@ class _DateState extends State<Date> {
                     )
                   : Center(
                       child: Text(
-                      "You don't have activity today",
-                      style: TextStyle(
-                          color: Colors.grey[500], fontWeight: FontWeight.w500),
-                    )),
-            )),
+                        "You don't have activity today",
+                        style: TextStyle(
+                            color: Colors.grey[500],
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+            ),
           )
         ],
       ),

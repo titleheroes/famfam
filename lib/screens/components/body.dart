@@ -39,7 +39,6 @@ import 'package:famfam/models/circle_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
-
 class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -121,7 +120,6 @@ class TodoBody extends StatefulWidget {
   State<TodoBody> createState() => _TodoBodyState();
 }
 
-
 class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
   List<UserModel> userModels = [];
   List<UserModel> employeeModels = [];
@@ -130,7 +128,7 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
   List<MyOrdereModel> myOrderModels = [];
   List<bool> myOrderChecked = [];
   bool orderload = true;
-  
+
   TabController? tabController;
 
   @override
@@ -145,7 +143,6 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
       pullMyOrder().then((value) {
         myOrderIsChecked();
       });
-      
     });
   }
 
@@ -293,7 +290,6 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                       '${MyConstant.domain}/famfam/deleteMyOrderWhereID.php?isAdd=true&my_order_id=$my_order_id';
 
                   await Dio().get(deleteVote).then((value) async {
-                    
                     Navigator.pop(context);
                     await Navigator.push(
                       context,
@@ -376,131 +372,395 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                   ),
                 ),
                 body: orderload
-              ? CircleLoader()
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 29, right: 29),
-                      child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF9EE6D).withOpacity(0.44),
-                              borderRadius: BorderRadius.circular(19),
-                            ),
-                            height: 66,
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: TabBar(
-                                controller: tabController,
-                                indicator: BoxDecoration(
-                                  color: Color(0xFFFFC34A),
-                                  borderRadius: BorderRadius.circular(19),
-                                ),
-                                labelStyle: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                unselectedLabelStyle: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400),
-                                labelColor: Colors.black87,
-                                unselectedLabelColor: Color(0xFFA5A59D),
-                                tabs: [
-                                  Tab(text: 'Unfinished'),
-                                  Tab(text: 'Finished'),
-                                  Tab(text: 'My Order'),
-                                ],
-                              ),
-                            ),
+                    ? CircleLoader()
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 15,
                           ),
-                          SingleChildScrollView(
-                            child: SizedBox(
-                              height: 640,
-                              child: TabBarView(
-                                controller: tabController,
-                                children: [
-                                  Container(
-                                    child: unfinishedModels.isEmpty
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 12.0),
-                                            child: Container(
-                                              //height: 100,
-                                              //width: 100,
-                                              decoration: BoxDecoration(
-                                                  //color: Colors.pink.shade700,
-                                                  //borderRadius: BorderRadius.circular(30),
-                                                  ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: <Widget>[
-                                                  SvgPicture.asset(
-                                                    "assets/icons/leaf-fall.svg",
-                                                    height: 85,
-                                                    color: Colors.black
-                                                        .withOpacity(0.4),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 1,
-                                                  ),
-                                                  Text(
-                                                    "You don't have any list right now.",
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.5),
-                                                      fontSize: 18,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 29, right: 29),
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF9EE6D).withOpacity(0.44),
+                                    borderRadius: BorderRadius.circular(19),
+                                  ),
+                                  height: 66,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: TabBar(
+                                      controller: tabController,
+                                      indicator: BoxDecoration(
+                                        color: Color(0xFFFFC34A),
+                                        borderRadius: BorderRadius.circular(19),
+                                      ),
+                                      labelStyle: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                      unselectedLabelStyle: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w400),
+                                      labelColor: Colors.black87,
+                                      unselectedLabelColor: Color(0xFFA5A59D),
+                                      tabs: [
+                                        Tab(text: 'Unfinished'),
+                                        Tab(text: 'Finished'),
+                                        Tab(text: 'My Order'),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SingleChildScrollView(
+                                  child: SizedBox(
+                                    height: 640,
+                                    child: TabBarView(
+                                      controller: tabController,
+                                      children: [
+                                        Container(
+                                          child: unfinishedModels.isEmpty
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 12.0),
+                                                  child: Container(
+                                                    //height: 100,
+                                                    //width: 100,
+                                                    decoration: BoxDecoration(
+                                                        //color: Colors.pink.shade700,
+                                                        //borderRadius: BorderRadius.circular(30),
+                                                        ),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        SvgPicture.asset(
+                                                          "assets/icons/leaf-fall.svg",
+                                                          height: 85,
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 1,
+                                                        ),
+                                                        Text(
+                                                          "You don't have any list right now.",
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.5),
+                                                            fontSize: 18,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        : Expanded(
-                                            child: ListView.builder(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                itemCount:
-                                                    unfinishedModels.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return Container(
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          constraints:
-                                                              const BoxConstraints(
-                                                                  minHeight:
-                                                                      80),
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  bottom: 6),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                            color: Color(
-                                                                0xfffFFC34A),
+                                                )
+                                              : ListView.builder(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  itemCount:
+                                                      unfinishedModels.length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    return Container(
+                                                      child: Column(
+                                                        children: [
+                                                          Container(
+                                                            constraints:
+                                                                const BoxConstraints(
+                                                                    minHeight:
+                                                                        80),
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    bottom: 6),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              color: Color(
+                                                                  0xfffFFC34A),
+                                                            ),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .fromLTRB(
+                                                                      10,
+                                                                      10,
+                                                                      10,
+                                                                      10),
+                                                              child: Row(
+                                                                  // mainAxisAlignment:
+                                                                  //     MainAxisAlignment
+                                                                  //         .spaceBetween,
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          left:
+                                                                              6,
+                                                                          right:
+                                                                              2),
+                                                                      child: Builder(builder:
+                                                                          (BuildContext
+                                                                              context) {
+                                                                        return Container(
+                                                                          width:
+                                                                              40,
+                                                                          height:
+                                                                              40,
+                                                                          child:
+                                                                              Stack(
+                                                                            children: [
+                                                                              RoundCheckBox(isChecked: false, onTap: null),
+                                                                              FlatButton(
+                                                                                color: Colors.white,
+                                                                                shape: RoundedRectangleBorder(
+                                                                                    side: BorderSide(
+                                                                                      color: Colors.transparent,
+                                                                                    ),
+                                                                                    borderRadius: BorderRadius.circular(50)),
+                                                                                onPressed: () async {
+                                                                                  {
+                                                                                    // ติ๊กถูก
+                                                                                    if (userModels[0].id != unfinishedModels[index].employee_id) {
+                                                                                      Fluttertoast.showToast(msg: "You can't finish other people assignment.", gravity: ToastGravity.BOTTOM);
+                                                                                    } else {
+                                                                                      //ทำเสร็จไป UPDATE DATABASE
+
+                                                                                      SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                                                      String? circle_id = preferences.getString('circle_id');
+                                                                                      String? user_id = userModels[0].id;
+                                                                                      String? my_order_id = unfinishedModels[index].my_order_id;
+                                                                                      String owner_fname = unfinishedModels[index].owner_fname;
+                                                                                      String my_order_topic = unfinishedModels[index].my_order_topic;
+                                                                                      String my_order_status = 'true';
+                                                                                      String apiUpdateStatusMyOrder = '${MyConstant.domain}/famfam/updateStatusMyOrder.php?isAdd=true&my_order_id=$my_order_id&my_order_status=$my_order_status';
+                                                                                      await Dio().get(apiUpdateStatusMyOrder).then((value) async {
+                                                                                        List<HistoryMyOrderModel> historyMyOrderModel = [];
+                                                                                        var uuid = Uuid();
+                                                                                        String history_my_order_uid = uuid.v1();
+                                                                                        String InsertHistoryMyOrder = '${MyConstant.domain}/famfam/insertHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid&owner_fname=$owner_fname&my_order_topic=$my_order_topic&my_order_status=$my_order_status';
+                                                                                        await Dio().get(InsertHistoryMyOrder).then((value) async {
+                                                                                          String getHistoryMyOrder = '${MyConstant.domain}/famfam/getHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid';
+                                                                                          await Dio().get(getHistoryMyOrder).then((value) async {
+                                                                                            for (var item in json.decode(value.data)) {
+                                                                                              HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
+                                                                                              setState(() {
+                                                                                                historyMyOrderModel.add(model);
+                                                                                              });
+                                                                                            }
+                                                                                            String history_my_order_id = historyMyOrderModel[0].history_my_order_id;
+                                                                                            String InsertHistoryMyOrderRelation = '${MyConstant.domain}/famfam/insertHistoryMyOrderRelation.php?isAdd=true&history_my_order_id=$history_my_order_id&circle_id=$circle_id&user_id=$user_id';
+                                                                                            await Dio().get(InsertHistoryMyOrderRelation).then((value) async {
+                                                                                              int history_statuss = 1;
+                                                                                              String updateHistoryForUserStatus = '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
+                                                                                              await Dio().get(updateHistoryForUserStatus).then((value) async {
+                                                                                                await Navigator.push(
+                                                                                                  context,
+                                                                                                  MaterialPageRoute(
+                                                                                                    builder: (context) => TodoBody(tabSelected: tabController!.index),
+                                                                                                  ),
+                                                                                                );
+                                                                                              });
+                                                                                            });
+                                                                                          });
+                                                                                        });
+                                                                                      });
+                                                                                    }
+                                                                                  }
+                                                                                },
+                                                                                child: Container(),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        );
+                                                                      }),
+                                                                    ),
+                                                                    const VerticalDivider(
+                                                                      width: 20,
+                                                                      thickness:
+                                                                          1.5,
+                                                                      indent: 5,
+                                                                      endIndent:
+                                                                          5,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    Expanded(
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: EdgeInsets.fromLTRB(
+                                                                            0,
+                                                                            3,
+                                                                            10,
+                                                                            0),
+                                                                        child:
+                                                                            RaisedButton(
+                                                                          color:
+                                                                              Color(
+                                                                            0xfffFFC34A,
+                                                                          ),
+                                                                          elevation:
+                                                                              0,
+                                                                          hoverElevation:
+                                                                              0,
+                                                                          focusElevation:
+                                                                              0,
+                                                                          highlightElevation:
+                                                                              0,
+                                                                          onPressed:
+                                                                              () {
+                                                                            descDialog(
+                                                                                context,
+                                                                                unfinishedModels[index].my_order_id!,
+                                                                                unfinishedModels[index].my_order_topic,
+                                                                                unfinishedModels[index].my_order_desc);
+                                                                          },
+                                                                          child:
+                                                                              Align(
+                                                                            alignment:
+                                                                                Alignment.centerLeft,
+                                                                            child:
+                                                                                Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                CheckMe(index, unfinishedModels),
+                                                                                SizedBox(
+                                                                                  height: 5,
+                                                                                ),
+                                                                                Text(
+                                                                                  '${unfinishedModels[index].my_order_topic}',
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 18,
+                                                                                    fontWeight: FontWeight.normal,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .topRight,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets.fromLTRB(
+                                                                            0,
+                                                                            5,
+                                                                            5,
+                                                                            5),
+                                                                        child:
+                                                                            CircleAvatar(
+                                                                          radius:
+                                                                              25,
+                                                                          backgroundImage:
+                                                                              NetworkImage(unfinishedModels[index].employee_profile),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ]),
+                                                            ),
                                                           ),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .fromLTRB(
-                                                                    10,
-                                                                    10,
-                                                                    10,
-                                                                    10),
-                                                            child: Row(
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }),
+                                        ),
+                                        Container(
+                                          child: finishedModels.isEmpty
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 12.0),
+                                                  child: Container(
+                                                    //height: 100,
+                                                    //width: 100,
+                                                    decoration: BoxDecoration(
+                                                        //color: Colors.pink.shade700,
+                                                        //borderRadius: BorderRadius.circular(30),
+                                                        ),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        SvgPicture.asset(
+                                                          "assets/icons/leaf-fall.svg",
+                                                          height: 85,
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 1,
+                                                        ),
+                                                        Text(
+                                                          "You don't have any list right now.",
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.5),
+                                                            fontSize: 18,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
+                                              : ListView.builder(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  itemCount:
+                                                      finishedModels.length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    return Container(
+                                                      child: Column(
+                                                        children: [
+                                                          Container(
+                                                            constraints:
+                                                                const BoxConstraints(
+                                                                    minHeight:
+                                                                        80),
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    bottom: 6),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              color: Color(
+                                                                  0xfffFFC34A),
+                                                            ),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .fromLTRB(
+                                                                      10,
+                                                                      10,
+                                                                      10,
+                                                                      10),
+                                                              child: Row(
                                                                 // mainAxisAlignment:
                                                                 //     MainAxisAlignment
                                                                 //         .spaceBetween,
@@ -523,65 +783,27 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                         child:
                                                                             Stack(
                                                                           children: [
-                                                                            RoundCheckBox(
-                                                                                isChecked: false,
-                                                                                onTap: null),
+                                                                            CircleAvatar(
+                                                                              radius: 20,
+                                                                              backgroundColor: Color.fromARGB(255, 235, 113, 104),
+                                                                              child: CircleAvatar(
+                                                                                radius: 15,
+                                                                                backgroundColor: Color.fromARGB(255, 235, 113, 104),
+                                                                                backgroundImage: AssetImage('assets/images/trash.png'),
+                                                                              ),
+                                                                            ),
                                                                             FlatButton(
-                                                                              color: Colors.white,
                                                                               shape: RoundedRectangleBorder(
                                                                                   side: BorderSide(
                                                                                     color: Colors.transparent,
                                                                                   ),
                                                                                   borderRadius: BorderRadius.circular(50)),
-                                                                              onPressed: () async {
+                                                                              onPressed: () {
                                                                                 {
                                                                                   // ติ๊กถูก
-                                                                                  if (userModels[0].id != unfinishedModels[index].employee_id) {
-                                                                                    Fluttertoast.showToast(msg: "You can't finish other people assignment.", gravity: ToastGravity.BOTTOM);
-                                                                                  } else {
-                                                                                    //ทำเสร็จไป UPDATE DATABASE
-                                                                                    
-                                                                                    SharedPreferences preferences = await SharedPreferences.getInstance();
-                                                                                    String? circle_id = preferences.getString('circle_id');
-                                                                                    String? user_id = userModels[0].id;
-                                                                                    String? my_order_id = unfinishedModels[index].my_order_id;
-                                                                                    String owner_fname = unfinishedModels[index].owner_fname;
-                                                                                    String my_order_topic = unfinishedModels[index].my_order_topic;
-                                                                                    String my_order_status = 'true';
-                                                                                    String apiUpdateStatusMyOrder = '${MyConstant.domain}/famfam/updateStatusMyOrder.php?isAdd=true&my_order_id=$my_order_id&my_order_status=$my_order_status';
-                                                                                    await Dio().get(apiUpdateStatusMyOrder).then((value) async {
-                                                                                      
-                                                                                      List<HistoryMyOrderModel> historyMyOrderModel = [];
-                                                                                      var uuid = Uuid();
-                                                                                      String history_my_order_uid = uuid.v1();
-                                                                                      String InsertHistoryMyOrder = '${MyConstant.domain}/famfam/insertHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid&owner_fname=$owner_fname&my_order_topic=$my_order_topic&my_order_status=$my_order_status';
-                                                                                      await Dio().get(InsertHistoryMyOrder).then((value) async {
-                                                                                        String getHistoryMyOrder = '${MyConstant.domain}/famfam/getHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid';
-                                                                                        await Dio().get(getHistoryMyOrder).then((value) async {
-                                                                                          for (var item in json.decode(value.data)) {
-                                                                                            HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
-                                                                                            setState(() {
-                                                                                              historyMyOrderModel.add(model);
-                                                                                            });
-                                                                                          }
-                                                                                          String history_my_order_id = historyMyOrderModel[0].history_my_order_id;
-                                                                                          String InsertHistoryMyOrderRelation = '${MyConstant.domain}/famfam/insertHistoryMyOrderRelation.php?isAdd=true&history_my_order_id=$history_my_order_id&circle_id=$circle_id&user_id=$user_id';
-                                                                                          await Dio().get(InsertHistoryMyOrderRelation).then((value) async {
-                                                                                            int history_statuss = 1;
-                                                                                            String updateHistoryForUserStatus = '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
-                                                                                            await Dio().get(updateHistoryForUserStatus).then((value) async {
-                                                                                              await Navigator.push(
-                                                                                                context,
-                                                                                                MaterialPageRoute(
-                                                                                                  builder: (context) => TodoBody(tabSelected: tabController!.index),
-                                                                                                ),
-                                                                                              );
-                                                                                            });
-                                                                                          });
-                                                                                        });
-                                                                                      });
-                                                                                    });
-                                                                                  }
+                                                                                  print('click on delete ticktik ${finishedModels[index].my_order_topic}');
+                                                                                  _isShown == true ? _delete(context, finishedModels[index].my_order_id!) : null;
+                                                                                  // Fluttertoast.showToast(msg: "You have finish this assignment already.", gravity: ToastGravity.BOTTOM);
                                                                                 }
                                                                               },
                                                                               child: Container(),
@@ -628,9 +850,9 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                             () {
                                                                           descDialog(
                                                                               context,
-                                                                              unfinishedModels[index].my_order_id!,
-                                                                              unfinishedModels[index].my_order_topic,
-                                                                              unfinishedModels[index].my_order_desc);
+                                                                              finishedModels[index].my_order_id!,
+                                                                              finishedModels[index].my_order_topic,
+                                                                              finishedModels[index].my_order_desc);
                                                                         },
                                                                         child:
                                                                             Align(
@@ -641,12 +863,12 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                             crossAxisAlignment:
                                                                                 CrossAxisAlignment.start,
                                                                             children: [
-                                                                              CheckMe(index, unfinishedModels),
+                                                                              CheckMe(index, finishedModels),
                                                                               SizedBox(
                                                                                 height: 5,
                                                                               ),
                                                                               Text(
-                                                                                '${unfinishedModels[index].my_order_topic}',
+                                                                                '${finishedModels[index].my_order_topic}',
                                                                                 style: TextStyle(
                                                                                   fontSize: 18,
                                                                                   fontWeight: FontWeight.normal,
@@ -675,565 +897,330 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                         radius:
                                                                             25,
                                                                         backgroundImage:
-                                                                            NetworkImage(unfinishedModels[index].employee_profile),
+                                                                            NetworkImage(finishedModels[index].employee_profile),
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ]),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                }),
-                                          ),
-                                  ),
-                                  Container(
-                                    child: finishedModels.isEmpty
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 12.0),
-                                            child: Container(
-                                              //height: 100,
-                                              //width: 100,
-                                              decoration: BoxDecoration(
-                                                  //color: Colors.pink.shade700,
-                                                  //borderRadius: BorderRadius.circular(30),
-                                                  ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: <Widget>[
-                                                  SvgPicture.asset(
-                                                    "assets/icons/leaf-fall.svg",
-                                                    height: 85,
-                                                    color: Colors.black
-                                                        .withOpacity(0.4),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 1,
-                                                  ),
-                                                  Text(
-                                                    "You don't have any list right now.",
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.5),
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        : Expanded(
-                                            child: ListView.builder(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                itemCount:
-                                                    finishedModels.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return Container(
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          constraints:
-                                                              const BoxConstraints(
-                                                                  minHeight:
-                                                                      80),
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  bottom: 6),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                            color: Color(
-                                                                0xfffFFC34A),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .fromLTRB(
-                                                                    10,
-                                                                    10,
-                                                                    10,
-                                                                    10),
-                                                            child: Row(
-                                                              // mainAxisAlignment:
-                                                              //     MainAxisAlignment
-                                                              //         .spaceBetween,
-                                                              children: <
-                                                                  Widget>[
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      left: 6,
-                                                                      right: 2),
-                                                                  child: Builder(builder:
-                                                                      (BuildContext
-                                                                          context) {
-                                                                    return Container(
-                                                                      width: 40,
-                                                                      height:
-                                                                          40,
-                                                                      child:
-                                                                          Stack(
-                                                                        children: [
-                                                                          CircleAvatar(
-                                                                            radius:
-                                                                                20,
-                                                                            backgroundColor: Color.fromARGB(
-                                                                                255,
-                                                                                235,
-                                                                                113,
-                                                                                104),
-                                                                            child:
-                                                                                CircleAvatar(
-                                                                              radius: 15,
-                                                                              backgroundColor: Color.fromARGB(255, 235, 113, 104),
-                                                                              backgroundImage: AssetImage('assets/images/trash.png'),
-                                                                            ),
-                                                                          ),
-                                                                          FlatButton(
-                                                                            shape: RoundedRectangleBorder(
-                                                                                side: BorderSide(
-                                                                                  color: Colors.transparent,
-                                                                                ),
-                                                                                borderRadius: BorderRadius.circular(50)),
-                                                                            onPressed:
-                                                                                () {
-                                                                              {
-                                                                                // ติ๊กถูก
-                                                                                print('click on delete ticktik ${finishedModels[index].my_order_topic}');
-                                                                                _isShown == true ? _delete(context, finishedModels[index].my_order_id!) : null;
-                                                                                // Fluttertoast.showToast(msg: "You have finish this assignment already.", gravity: ToastGravity.BOTTOM);
-                                                                              }
-                                                                            },
-                                                                            child:
-                                                                                Container(),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  }),
-                                                                ),
-                                                                const VerticalDivider(
-                                                                  width: 20,
-                                                                  thickness:
-                                                                      1.5,
-                                                                  indent: 5,
-                                                                  endIndent: 5,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
-                                                                Expanded(
-                                                                  child:
-                                                                      Padding(
-                                                                    padding: EdgeInsets
-                                                                        .fromLTRB(
-                                                                            0,
-                                                                            3,
-                                                                            10,
-                                                                            0),
-                                                                    child:
-                                                                        RaisedButton(
-                                                                      color:
-                                                                          Color(
-                                                                        0xfffFFC34A,
-                                                                      ),
-                                                                      elevation:
-                                                                          0,
-                                                                      hoverElevation:
-                                                                          0,
-                                                                      focusElevation:
-                                                                          0,
-                                                                      highlightElevation:
-                                                                          0,
-                                                                      onPressed:
-                                                                          () {
-                                                                        descDialog(
-                                                                            context,
-                                                                            finishedModels[index].my_order_id!,
-                                                                            finishedModels[index].my_order_topic,
-                                                                            finishedModels[index].my_order_desc);
-                                                                      },
-                                                                      child:
-                                                                          Align(
-                                                                        alignment:
-                                                                            Alignment.centerLeft,
-                                                                        child:
-                                                                            Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            CheckMe(index,
-                                                                                finishedModels),
-                                                                            SizedBox(
-                                                                              height: 5,
-                                                                            ),
-                                                                            Text(
-                                                                              '${finishedModels[index].my_order_topic}',
-                                                                              style: TextStyle(
-                                                                                fontSize: 18,
-                                                                                fontWeight: FontWeight.normal,
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .topRight,
-                                                                  child:
-                                                                      Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.fromLTRB(
-                                                                            0,
-                                                                            5,
-                                                                            5,
-                                                                            5),
-                                                                    child:
-                                                                        CircleAvatar(
-                                                                      radius:
-                                                                          25,
-                                                                      backgroundImage:
-                                                                          NetworkImage(
-                                                                              finishedModels[index].employee_profile),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }),
+                                        ),
+                                        Container(
+                                          constraints: const BoxConstraints(
+                                              minHeight: 80),
+                                          child: myOrderModels.isEmpty
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 12.0),
+                                                  child: Container(
+                                                    //height: 100,
+                                                    //width: 100,
+                                                    decoration: BoxDecoration(
+                                                        //color: Colors.pink.shade700,
+                                                        //borderRadius: BorderRadius.circular(30),
+                                                        ),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        SvgPicture.asset(
+                                                          "assets/icons/leaf-fall.svg",
+                                                          height: 85,
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 1,
+                                                        ),
+                                                        Text(
+                                                          "You don't have any list right now.",
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.5),
+                                                            fontSize: 18,
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
-                                                  );
-                                                }),
-                                          ),
-                                  ),
-                                  Container(
-                                    constraints:
-                                        const BoxConstraints(minHeight: 80),
-                                    child: myOrderModels.isEmpty
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 12.0),
-                                            child: Container(
-                                              //height: 100,
-                                              //width: 100,
-                                              decoration: BoxDecoration(
-                                                  //color: Colors.pink.shade700,
-                                                  //borderRadius: BorderRadius.circular(30),
                                                   ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: <Widget>[
-                                                  SvgPicture.asset(
-                                                    "assets/icons/leaf-fall.svg",
-                                                    height: 85,
-                                                    color: Colors.black
-                                                        .withOpacity(0.4),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 1,
-                                                  ),
-                                                  Text(
-                                                    "You don't have any list right now.",
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.5),
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        : Expanded(
-                                            child: ListView.builder(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                itemCount: myOrderModels.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return Container(
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          constraints:
-                                                              const BoxConstraints(
-                                                                  minHeight:
-                                                                      80),
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  bottom: 6),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                            color: Color(
-                                                                0xfffFFC34A),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .fromLTRB(
-                                                                    10,
-                                                                    10,
-                                                                    10,
-                                                                    10),
-                                                            child: Row(
-                                                                // mainAxisAlignment:
-                                                                //     MainAxisAlignment
-                                                                //         .spaceBetween,
-                                                                children: <
-                                                                    Widget>[
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left: 6,
-                                                                        right:
-                                                                            2),
-                                                                    child: Builder(builder:
-                                                                        (BuildContext
-                                                                            context) {
-                                                                      for (int i =
-                                                                              0;
-                                                                          myOrderChecked ==
-                                                                              null;
-                                                                          i++) {
-                                                                        sleep(Duration(
-                                                                            seconds:
-                                                                                1));
-                                                                      }
-                                                                      if (myOrderChecked[
-                                                                              index] ==
-                                                                          true) {
-                                                                        return Container(
-                                                                          width:
-                                                                              40,
-                                                                          height:
-                                                                              40,
-                                                                          child:
-                                                                              Stack(
-                                                                            children: [
-                                                                              RoundCheckBox(isChecked: true, onTap: null),
-                                                                              FlatButton(
-                                                                                shape: RoundedRectangleBorder(
-                                                                                    side: BorderSide(
-                                                                                      color: Colors.transparent,
-                                                                                    ),
-                                                                                    borderRadius: BorderRadius.circular(50)),
-                                                                                onPressed: () {
-                                                                                  {
-                                                                                    // ติ๊กถูก
-                                                                                    Fluttertoast.showToast(msg: "You have finish this assignment already.", gravity: ToastGravity.BOTTOM);
-                                                                                  }
-                                                                                },
-                                                                                child: Container(),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        );
-                                                                      } else {
-                                                                        return Container(
-                                                                          width:
-                                                                              40,
-                                                                          height:
-                                                                              40,
-                                                                          child:
-                                                                              Stack(
-                                                                            children: [
-                                                                              RoundCheckBox(isChecked: false, onTap: null),
-                                                                              FlatButton(
-                                                                                color: Colors.white,
-                                                                                shape: RoundedRectangleBorder(
-                                                                                    side: BorderSide(
-                                                                                      color: Colors.transparent,
-                                                                                    ),
-                                                                                    borderRadius: BorderRadius.circular(50)),
-                                                                                onPressed: () async {
-                                                                                  {
-                                                                                    // ติ๊กถูก
-                                                                                    if (userModels[0].id != myOrderModels[index].employee_id) {
-                                                                                      Fluttertoast.showToast(msg: "You can't finish other people assignment.", gravity: ToastGravity.BOTTOM);
-                                                                                    } else {
-                                                                                      //ทำเสร็จไป UPDATE DATABASE
-                                                                                      SharedPreferences preferences = await SharedPreferences.getInstance();
-                                                                                      String? circle_id = preferences.getString('circle_id');
-                                                                                      String? user_id = userModels[0].id;
-                                                                                      String? my_order_id = myOrderModels[index].my_order_id;
-                                                                                      String owner_fname = myOrderModels[index].owner_fname;
-                                                                                      String my_order_topic = myOrderModels[index].my_order_topic;
-                                                                                      String my_order_status = 'true';
-                                                                                      String apiUpdateStatusMyOrder = '${MyConstant.domain}/famfam/updateStatusMyOrder.php?isAdd=true&my_order_id=$my_order_id&my_order_status=$my_order_status';
-                                                                                      await Dio().get(apiUpdateStatusMyOrder).then((value) async {
-                                                                                        List<HistoryMyOrderModel> historyMyOrderModel = [];
-                                                                                        var uuid = Uuid();
-                                                                                        String history_my_order_uid = uuid.v1();
-                                                                                        String InsertHistoryMyOrder = '${MyConstant.domain}/famfam/insertHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid&owner_fname=$owner_fname&my_order_topic=$my_order_topic&my_order_status=$my_order_status';
-                                                                                        await Dio().get(InsertHistoryMyOrder).then((value) async {
-                                                                                          String getHistoryMyOrder = '${MyConstant.domain}/famfam/getHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid';
-                                                                                          await Dio().get(getHistoryMyOrder).then((value) async {
-                                                                                            for (var item in json.decode(value.data)) {
-                                                                                              HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
-                                                                                              setState(() {
-                                                                                                historyMyOrderModel.add(model);
-                                                                                              });
-                                                                                            }
-                                                                                            String history_my_order_id = historyMyOrderModel[0].history_my_order_id;
-                                                                                            String InsertHistoryMyOrderRelation = '${MyConstant.domain}/famfam/insertHistoryMyOrderRelation.php?isAdd=true&history_my_order_id=$history_my_order_id&circle_id=$circle_id&user_id=$user_id';
-                                                                                            await Dio().get(InsertHistoryMyOrderRelation).then((value) async {
-                                                                                              int history_statuss = 1;
-                                                                                              String updateHistoryForUserStatus = '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
-                                                                                              await Dio().get(updateHistoryForUserStatus).then((value) async {
-                                                                                                await Navigator.push(
-                                                                                                  context,
-                                                                                                  MaterialPageRoute(
-                                                                                                    builder: (context) => TodoBody(tabSelected: tabController!.index),
-                                                                                                  ),
-                                                                                                );
+                                                )
+                                              : ListView.builder(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  itemCount:
+                                                      myOrderModels.length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    return Container(
+                                                      child: Column(
+                                                        children: [
+                                                          Container(
+                                                            constraints:
+                                                                const BoxConstraints(
+                                                                    minHeight:
+                                                                        80),
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    bottom: 6),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              color: Color(
+                                                                  0xfffFFC34A),
+                                                            ),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .fromLTRB(
+                                                                      10,
+                                                                      10,
+                                                                      10,
+                                                                      10),
+                                                              child: Row(
+                                                                  // mainAxisAlignment:
+                                                                  //     MainAxisAlignment
+                                                                  //         .spaceBetween,
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          left:
+                                                                              6,
+                                                                          right:
+                                                                              2),
+                                                                      child: Builder(builder:
+                                                                          (BuildContext
+                                                                              context) {
+                                                                        for (int i =
+                                                                                0;
+                                                                            myOrderChecked ==
+                                                                                null;
+                                                                            i++) {
+                                                                          sleep(
+                                                                              Duration(seconds: 1));
+                                                                        }
+                                                                        if (myOrderChecked[index] ==
+                                                                            true) {
+                                                                          return Container(
+                                                                            width:
+                                                                                40,
+                                                                            height:
+                                                                                40,
+                                                                            child:
+                                                                                Stack(
+                                                                              children: [
+                                                                                RoundCheckBox(isChecked: true, onTap: null),
+                                                                                FlatButton(
+                                                                                  shape: RoundedRectangleBorder(
+                                                                                      side: BorderSide(
+                                                                                        color: Colors.transparent,
+                                                                                      ),
+                                                                                      borderRadius: BorderRadius.circular(50)),
+                                                                                  onPressed: () {
+                                                                                    {
+                                                                                      // ติ๊กถูก
+                                                                                      Fluttertoast.showToast(msg: "You have finish this assignment already.", gravity: ToastGravity.BOTTOM);
+                                                                                    }
+                                                                                  },
+                                                                                  child: Container(),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          );
+                                                                        } else {
+                                                                          return Container(
+                                                                            width:
+                                                                                40,
+                                                                            height:
+                                                                                40,
+                                                                            child:
+                                                                                Stack(
+                                                                              children: [
+                                                                                RoundCheckBox(isChecked: false, onTap: null),
+                                                                                FlatButton(
+                                                                                  color: Colors.white,
+                                                                                  shape: RoundedRectangleBorder(
+                                                                                      side: BorderSide(
+                                                                                        color: Colors.transparent,
+                                                                                      ),
+                                                                                      borderRadius: BorderRadius.circular(50)),
+                                                                                  onPressed: () async {
+                                                                                    {
+                                                                                      // ติ๊กถูก
+                                                                                      if (userModels[0].id != myOrderModels[index].employee_id) {
+                                                                                        Fluttertoast.showToast(msg: "You can't finish other people assignment.", gravity: ToastGravity.BOTTOM);
+                                                                                      } else {
+                                                                                        //ทำเสร็จไป UPDATE DATABASE
+                                                                                        SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                                                        String? circle_id = preferences.getString('circle_id');
+                                                                                        String? user_id = userModels[0].id;
+                                                                                        String? my_order_id = myOrderModels[index].my_order_id;
+                                                                                        String owner_fname = myOrderModels[index].owner_fname;
+                                                                                        String my_order_topic = myOrderModels[index].my_order_topic;
+                                                                                        String my_order_status = 'true';
+                                                                                        String apiUpdateStatusMyOrder = '${MyConstant.domain}/famfam/updateStatusMyOrder.php?isAdd=true&my_order_id=$my_order_id&my_order_status=$my_order_status';
+                                                                                        await Dio().get(apiUpdateStatusMyOrder).then((value) async {
+                                                                                          List<HistoryMyOrderModel> historyMyOrderModel = [];
+                                                                                          var uuid = Uuid();
+                                                                                          String history_my_order_uid = uuid.v1();
+                                                                                          String InsertHistoryMyOrder = '${MyConstant.domain}/famfam/insertHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid&owner_fname=$owner_fname&my_order_topic=$my_order_topic&my_order_status=$my_order_status';
+                                                                                          await Dio().get(InsertHistoryMyOrder).then((value) async {
+                                                                                            String getHistoryMyOrder = '${MyConstant.domain}/famfam/getHistoryMyOrder.php?isAdd=true&history_my_order_uid=$history_my_order_uid';
+                                                                                            await Dio().get(getHistoryMyOrder).then((value) async {
+                                                                                              for (var item in json.decode(value.data)) {
+                                                                                                HistoryMyOrderModel model = HistoryMyOrderModel.fromMap(item);
+                                                                                                setState(() {
+                                                                                                  historyMyOrderModel.add(model);
+                                                                                                });
+                                                                                              }
+                                                                                              String history_my_order_id = historyMyOrderModel[0].history_my_order_id;
+                                                                                              String InsertHistoryMyOrderRelation = '${MyConstant.domain}/famfam/insertHistoryMyOrderRelation.php?isAdd=true&history_my_order_id=$history_my_order_id&circle_id=$circle_id&user_id=$user_id';
+                                                                                              await Dio().get(InsertHistoryMyOrderRelation).then((value) async {
+                                                                                                int history_statuss = 1;
+                                                                                                String updateHistoryForUserStatus = '${MyConstant.domain}/famfam/editHistoryForUserrStatus.php?isAdd=true&circle_id=$circle_id&user_id=$user_id&history_status=$history_statuss';
+                                                                                                await Dio().get(updateHistoryForUserStatus).then((value) async {
+                                                                                                  await Navigator.push(
+                                                                                                    context,
+                                                                                                    MaterialPageRoute(
+                                                                                                      builder: (context) => TodoBody(tabSelected: tabController!.index),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                });
                                                                                               });
                                                                                             });
                                                                                           });
                                                                                         });
-                                                                                      });
+                                                                                      }
                                                                                     }
-                                                                                  }
-                                                                                },
-                                                                                child: Container(),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        );
-                                                                      }
-                                                                    }),
-                                                                  ),
-                                                                  const VerticalDivider(
-                                                                    width: 20,
-                                                                    thickness:
-                                                                        1.5,
-                                                                    indent: 5,
-                                                                    endIndent:
-                                                                        5,
-                                                                    color: Colors
-                                                                        .white,
-                                                                  ),
-                                                                  Expanded(
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: EdgeInsets
-                                                                          .fromLTRB(
-                                                                              0,
-                                                                              3,
-                                                                              10,
-                                                                              0),
-                                                                      child:
-                                                                          RaisedButton(
-                                                                        color:
-                                                                            Color(
-                                                                          0xfffFFC34A,
-                                                                        ),
-                                                                        elevation:
-                                                                            0,
-                                                                        hoverElevation:
-                                                                            0,
-                                                                        focusElevation:
-                                                                            0,
-                                                                        highlightElevation:
-                                                                            0,
-                                                                        onPressed:
-                                                                            () {
-                                                                          descDialogMyOrder(
-                                                                              context,
-                                                                              myOrderModels[index].my_order_id!,
-                                                                              myOrderModels[index].my_order_topic,
-                                                                              myOrderModels[index].my_order_desc,
-                                                                              tabController!);
-                                                                        },
-                                                                        child:
-                                                                            Align(
-                                                                          alignment:
-                                                                              Alignment.centerLeft,
-                                                                          child:
-                                                                              Column(
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              CheckMe(index, myOrderModels),
-                                                                              SizedBox(
-                                                                                height: 5,
-                                                                              ),
-                                                                              Text(
-                                                                                '${myOrderModels[index].my_order_topic}',
-                                                                                style: TextStyle(
-                                                                                  fontSize: 18,
-                                                                                  fontWeight: FontWeight.normal,
+                                                                                  },
+                                                                                  child: Container(),
                                                                                 ),
-                                                                              ),
-                                                                            ],
+                                                                              ],
+                                                                            ),
+                                                                          );
+                                                                        }
+                                                                      }),
+                                                                    ),
+                                                                    const VerticalDivider(
+                                                                      width: 20,
+                                                                      thickness:
+                                                                          1.5,
+                                                                      indent: 5,
+                                                                      endIndent:
+                                                                          5,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    Expanded(
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: EdgeInsets.fromLTRB(
+                                                                            0,
+                                                                            3,
+                                                                            10,
+                                                                            0),
+                                                                        child:
+                                                                            RaisedButton(
+                                                                          color:
+                                                                              Color(
+                                                                            0xfffFFC34A,
+                                                                          ),
+                                                                          elevation:
+                                                                              0,
+                                                                          hoverElevation:
+                                                                              0,
+                                                                          focusElevation:
+                                                                              0,
+                                                                          highlightElevation:
+                                                                              0,
+                                                                          onPressed:
+                                                                              () {
+                                                                            descDialogMyOrder(
+                                                                                context,
+                                                                                myOrderModels[index].my_order_id!,
+                                                                                myOrderModels[index].my_order_topic,
+                                                                                myOrderModels[index].my_order_desc,
+                                                                                tabController!);
+                                                                          },
+                                                                          child:
+                                                                              Align(
+                                                                            alignment:
+                                                                                Alignment.centerLeft,
+                                                                            child:
+                                                                                Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                CheckMe(index, myOrderModels),
+                                                                                SizedBox(
+                                                                                  height: 5,
+                                                                                ),
+                                                                                Text(
+                                                                                  '${myOrderModels[index].my_order_topic}',
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 18,
+                                                                                    fontWeight: FontWeight.normal,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
                                                                           ),
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .topRight,
-                                                                    child:
-                                                                        Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.fromLTRB(
-                                                                              0,
-                                                                              5,
-                                                                              5,
-                                                                              5),
+                                                                    Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .topRight,
                                                                       child:
-                                                                          CircleAvatar(
-                                                                        radius:
-                                                                            25,
-                                                                        backgroundImage:
-                                                                            NetworkImage(myOrderModels[index].employee_profile),
+                                                                          Padding(
+                                                                        padding: const EdgeInsets.fromLTRB(
+                                                                            0,
+                                                                            5,
+                                                                            5,
+                                                                            5),
+                                                                        child:
+                                                                            CircleAvatar(
+                                                                          radius:
+                                                                              25,
+                                                                          backgroundImage:
+                                                                              NetworkImage(myOrderModels[index].employee_profile),
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                ]),
+                                                                  ]),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                }),
-                                          ),
-                                  )
-                                ],
-                              ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                addMyOrder(size, context, tabController!.index),
+                              ],
                             ),
                           ),
-                          addMyOrder(size, context, tabController!.index),
                         ],
                       ),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),
@@ -1611,7 +1598,6 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                     ToastGravity
                                                                         .BOTTOM);
                                                           } else {
-                                                            
                                                             List<HistoryMyOrderModel>
                                                                 historyMyOrderModel =
                                                                 [];
@@ -1695,7 +1681,8 @@ class _TodoBodyState extends State<TodoBody> with TickerProviderStateMixin {
                                                                             item);
                                                                     setState(
                                                                         () {
-                                                                      orderload = true;
+                                                                      orderload =
+                                                                          true;
                                                                       historyMyOrderModel
                                                                           .add(
                                                                               model);
@@ -2116,255 +2103,247 @@ class _TickBodyState extends State<TickBody> {
                           SizedBox(
                             height: 15,
                           ),
-                          Center(
-                            child: Container(
-                              width: 368,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(25),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 5.0,
-                                    offset: Offset(0, 3),
-                                  ),
-                                  BoxShadow(
-                                    color: Colors.white,
-                                    offset: Offset(-5, 0),
-                                  ),
-                                  BoxShadow(
-                                    color: Colors.white,
-                                    offset: Offset(5, 0),
-                                  ),
-                                ],
-                              ),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  suffixIcon: Icon(
-                                    Icons.search_sharp,
-                                    color: Color(0xFFFFC34A),
-                                  ),
-                                  hintText: "Search TickTic",
-                                  border: InputBorder.none,
-                                  // hintStyle: TextStyle(
-                                  //   color: Colors.black,
-                                  // ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 15,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
                           SingleChildScrollView(
                             child: SizedBox(
                               height: 640,
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 12.0),
                                 child: Container(
-                                    //height: 100,
-                                    //width: 100,
-                                    decoration: BoxDecoration(
-                                        //color: Colors.pink.shade700,
-                                        //borderRadius: BorderRadius.circular(30),
-                                        ),
-                                    child: Container(
-                                        child: (list_topic.isEmpty)
-                                            ? Column(children: [
-                                                Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height /
-                                                            8)),
-                                                Container(
-                                                  child: SvgPicture.asset(
-                                                    "assets/icons/leaf-fall.svg",
-                                                    height: 85,
-                                                    color: Colors.black
-                                                        .withOpacity(0.4),
-                                                  ),
+                                  //height: 100,
+                                  //width: 100,
+                                  decoration: BoxDecoration(
+                                      //color: Colors.pink.shade700,
+                                      //borderRadius: BorderRadius.circular(30),
+                                      ),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: (list_topic.isEmpty)
+                                        ? Column(children: [
+                                            Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: MediaQuery.of(context)
+                                                            .size
+                                                            .height /
+                                                        8)),
+                                            Container(
+                                              child: SvgPicture.asset(
+                                                "assets/icons/leaf-fall.svg",
+                                                height: 85,
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                              ),
+                                            ),
+                                            Text(
+                                              "You don't have any list right now",
+                                              style: TextStyle(
+                                                  color: Colors.grey[500],
+                                                  fontWeight: FontWeight.w500),
+                                            )
+                                          ])
+                                        : ListView.builder(
+                                            padding: const EdgeInsets.all(8),
+                                            itemCount: list_topic.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Container(
+                                                // height: 150,
+                                                constraints: BoxConstraints(
+                                                    minHeight: 150),
+                                                margin: EdgeInsets.fromLTRB(
+                                                    5, 10, 5, 0),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                  color: Color(0xfffFFC34A),
+
+                                                  // color: Colors.white,
                                                 ),
-                                                Text(
-                                                  "You don't have any list right now",
-                                                  style: TextStyle(
-                                                      color: Colors.grey[500],
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                )
-                                              ])
-                                            : Expanded(
-                                                child: ListView.builder(
-                                                    padding:
-                                                        const EdgeInsets.all(8),
-                                                    itemCount:
-                                                        list_topic.length,
-                                                    itemBuilder:
-                                                        (BuildContext context,
-                                                            int index) {
-                                                      // return buildTickTick(
-                                                      //     list_topic[index].topic,
-                                                      //     list_topic[index].fav,
-                                                      //     list_topic[index].topic_id);
-
-                                                      return IntrinsicHeight(
-                                                        child: Container(
-                                                            // height: 150,
-
-                                                            constraints:
-                                                                BoxConstraints(
-                                                                    minHeight:
-                                                                        150),
+                                                child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Container(
                                                             margin:
-                                                                EdgeInsets.all(
-                                                                    15),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          30),
-                                                              color: Color(
-                                                                  0xfffFFC34A),
-                                                              // color: Colors.white,
-                                                            ),
-                                                            child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Row(
+                                                                EdgeInsets.only(
+                                                                    left: 15,
+                                                                    top: 15),
+                                                            child: Text(
+                                                                '${list_topic[index].topic}',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        22,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          ),
+                                                          Spacer(),
+                                                          Container(
+                                                            child: IconButton(
+                                                                iconSize: 22,
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .favorite,
+                                                                ),
+                                                                color: list_topic[
+                                                                            index]
+                                                                        .fav
+                                                                    ? Colors.red
+                                                                    : Colors
+                                                                        .white,
+                                                                onPressed:
+                                                                    () async {
+                                                                  if (list_topic[
+                                                                          index]
+                                                                      .fav) {
+                                                                    String
+                                                                        fav_topic =
+                                                                        'false';
+                                                                    String
+                                                                        updateDataFav =
+                                                                        '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
+
+                                                                    await Dio()
+                                                                        .get(
+                                                                            updateDataFav)
+                                                                        .then(
+                                                                            (value) {
+                                                                      if (value
+                                                                              .toString() ==
+                                                                          'true') {
+                                                                        print(
+                                                                            'Updated Fav By ID Successed change true to false');
+
+                                                                        // updateFavbool = false;
+                                                                      }
+
+                                                                      Navigator
+                                                                          .pushReplacement(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              TickTikScreen(),
+                                                                        ),
+                                                                      );
+                                                                    });
+                                                                  } else {
+                                                                    String
+                                                                        fav_topic =
+                                                                        'true';
+
+                                                                    String
+                                                                        updateDataFav =
+                                                                        '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
+                                                                    await Dio()
+                                                                        .get(
+                                                                            updateDataFav)
+                                                                        .then(
+                                                                            (value) {
+                                                                      // if (value.toString() == 'true') {
+                                                                      print(
+                                                                          'Updated Fav By ID Successed change false to true');
+                                                                      // }
+
+                                                                      Navigator
+                                                                          .pushReplacement(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              TickTikScreen(),
+                                                                        ),
+                                                                      );
+                                                                    });
+                                                                  }
+                                                                }),
+                                                          ),
+                                                          GestureDetector(
+                                                              onTap: () async {
+                                                                print(
+                                                                    'click on delete ticktik ${list_topic[index].topic_id}');
+
+                                                                _isShown == true
+                                                                    ? _delete(
+                                                                        context,
+                                                                        list_topic[index]
+                                                                            .topic_id)
+                                                                    : null;
+                                                              },
+                                                              child: Image(
+                                                                image: AssetImage(
+                                                                    'assets/images/trash.png'),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                height: 22,
+                                                              )),
+                                                          SizedBox(
+                                                            width: 20,
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Wrap(
+                                                        direction:
+                                                            Axis.horizontal,
+                                                        children: list_product
+                                                            .map((item) {
+                                                          if (item.product_id ==
+                                                              list_topic[index]
+                                                                  .topic_id) {
+                                                            return Container(
+                                                                margin: EdgeInsets
+                                                                    .only(
+                                                                        left:
+                                                                            15,
+                                                                        top:
+                                                                            20),
+                                                                child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
                                                                     children: [
-                                                                      // ListTile(
-                                                                      //   title: Text('hi'),
-                                                                      // ),
                                                                       Container(
-                                                                        margin: EdgeInsets.only(
-                                                                            left:
-                                                                                15,
-                                                                            top:
-                                                                                15),
-                                                                        child: Text(
-                                                                            '${list_topic[index].topic}',
-                                                                            style:
-                                                                                TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                                                                      ),
-                                                                      // Text(
-                                                                      //     '${list_topic[index].fav}'),
-                                                                      Spacer(),
-
-                                                                      Container(
-                                                                        child: IconButton(
-                                                                            iconSize: 22,
-                                                                            icon: Icon(
-                                                                              Icons.favorite,
-                                                                            ),
-                                                                            color: list_topic[index].fav ? Colors.red : Colors.white,
-                                                                            onPressed: () async {
-                                                                              if (list_topic[index].fav) {
-                                                                                String fav_topic = 'false';
-                                                                                String updateDataFav = '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
-
-                                                                                await Dio().get(updateDataFav).then((value) {
-                                                                                  if (value.toString() == 'true') {
-                                                                                    print('Updated Fav By ID Successed change true to false');
-
-                                                                                    // updateFavbool = false;
-                                                                                  }
-
-                                                                                  Navigator.pushReplacement(
-                                                                                    context,
-                                                                                    MaterialPageRoute(
-                                                                                      builder: (context) => TickTikScreen(),
-                                                                                    ),
-                                                                                  );
-                                                                                });
-                                                                              } else {
-                                                                                String fav_topic = 'true';
-
-                                                                                String updateDataFav = '${MyConstant.domain}/famfam/updateFavTickTick.php?isAdd=true&fav_topic=$fav_topic&tick_id=${list_topic[index].topic_id}';
-                                                                                await Dio().get(updateDataFav).then((value) {
-                                                                                  // if (value.toString() == 'true') {
-                                                                                  print('Updated Fav By ID Successed change false to true');
-                                                                                  // }
-
-                                                                                  Navigator.pushReplacement(
-                                                                                    context,
-                                                                                    MaterialPageRoute(
-                                                                                      builder: (context) => TickTikScreen(),
-                                                                                    ),
-                                                                                  );
-                                                                                });
-                                                                              }
-                                                                            }),
-                                                                      ),
-                                                                      GestureDetector(
+                                                                        child:
+                                                                            RoundCheckBox(
+                                                                          size:
+                                                                              22,
+                                                                          uncheckedColor:
+                                                                              Colors.white,
+                                                                          checkedColor:
+                                                                              Colors.green,
                                                                           onTap:
-                                                                              () {
-                                                                            print('click on delete ticktik ${list_topic[index].topic_id}');
-                                                                            _isShown == true
-                                                                                ? _delete(context, list_topic[index].topic_id)
-                                                                                : null;
-                                                                          },
-                                                                          child:
-                                                                              Image(
-                                                                            image:
-                                                                                AssetImage('assets/images/trash.png'),
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                            height:
-                                                                                22,
-                                                                          )),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            20,
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  Expanded(
-                                                                      child: Wrap(
-                                                                          direction: Axis.horizontal,
-                                                                          children: list_product.map((item) {
-                                                                            if (item.product_id ==
-                                                                                list_topic[index].topic_id) {
-                                                                              return Container(
-                                                                                  margin: EdgeInsets.only(left: 15, top: 20),
-                                                                                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                                                                    Container(
-                                                                                      child: RoundCheckBox(
-                                                                                        size: 22,
-                                                                                        uncheckedColor: Colors.white,
-                                                                                        checkedColor: Colors.green,
-                                                                                        onTap: (selected) {
-                                                                                          print('selected ' + item.product_id);
-                                                                                          print('selected ' + item.product_name);
+                                                                              (selected) {
+                                                                            print('selected ' +
+                                                                                item.product_id);
+                                                                            print('selected ' +
+                                                                                item.product_name);
 
-                                                                                          onDismissed(item.product_name, item.product_id);
-                                                                                        },
-                                                                                      ),
-                                                                                    ),
-                                                                                    Padding(
-                                                                                      padding: const EdgeInsets.only(right: 10, left: 10),
-                                                                                      child: Expanded(
-                                                                                        child: Text('${item.product_name}'),
-                                                                                      ),
-                                                                                    )
-                                                                                  ]));
-                                                                            }
-                                                                            return Container();
-                                                                          }).toList())),
-                                                                  SizedBox(
-                                                                    height: 20,
-                                                                  )
-                                                                ])),
-                                                      );
-                                                    })))),
+                                                                            onDismissed(item.product_name,
+                                                                                item.product_id);
+                                                                          },
+                                                                        ),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(
+                                                                            right:
+                                                                                10,
+                                                                            left:
+                                                                                10),
+                                                                        child: Text(
+                                                                            '${item.product_name}'),
+                                                                      )
+                                                                    ]));
+                                                          }
+                                                          return Container();
+                                                        }).toList(),
+                                                      ),
+                                                    ]),
+                                              );
+                                            }),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -2737,9 +2716,10 @@ class _TicBotSheetState extends State<TicBotSheet> {
                                     )),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom),
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom,
+                                  ),
                                 ),
                                 SizedBox(height: 10),
                               ],
@@ -2981,373 +2961,630 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                 ),
               ),
               body: voteload
-              ? CircleLoader()
-              : SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 29, right: 29),
+                  ? CircleLoader()
+                  : SingleChildScrollView(
                       child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF9EE6D).withOpacity(0.44),
-                              borderRadius: BorderRadius.circular(19),
-                            ),
-                            height: 66,
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: TabBar(
-                                indicator: BoxDecoration(
-                                  color: Color(0xFFFFC34A),
-                                  borderRadius: BorderRadius.circular(19),
-                                  // boxShadow: [
-                                  //   BoxShadow(
-                                  //     color: Colors.grey.shade400,
-                                  //     blurRadius: 5.0,
-                                  //     offset: Offset(0, 3),
-                                  //   ),
-                                  // ],
-                                ),
-                                labelStyle: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                unselectedLabelStyle: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400),
-                                labelColor: Colors.black87,
-                                unselectedLabelColor: Color(0xFFA5A59D),
-                                tabs: [
-                                  Tab(text: 'Vote'),
-                                  Tab(text: 'Random'),
-                                ],
-                              ),
-                            ),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 15,
                           ),
-                          SingleChildScrollView(
-                            child: SizedBox(
-                              height: 640,
-                              child: TabBarView(
-                                children: [
-// Vote TabBarView
-                                  Container(
-                                    height: MediaQuery.of(context).size.height,
-                                    padding: const EdgeInsets.only(top: 12.0),
-                                    child: Column(
+                          Padding(
+                            padding: const EdgeInsets.only(left: 29, right: 29),
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF9EE6D).withOpacity(0.44),
+                                    borderRadius: BorderRadius.circular(19),
+                                  ),
+                                  height: 66,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: TabBar(
+                                      indicator: BoxDecoration(
+                                        color: Color(0xFFFFC34A),
+                                        borderRadius: BorderRadius.circular(19),
+                                        // boxShadow: [
+                                        //   BoxShadow(
+                                        //     color: Colors.grey.shade400,
+                                        //     blurRadius: 5.0,
+                                        //     offset: Offset(0, 3),
+                                        //   ),
+                                        // ],
+                                      ),
+                                      labelStyle: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                      unselectedLabelStyle: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w400),
+                                      labelColor: Colors.black87,
+                                      unselectedLabelColor: Color(0xFFA5A59D),
+                                      tabs: [
+                                        Tab(text: 'Vote'),
+                                        Tab(text: 'Random'),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SingleChildScrollView(
+                                  child: SizedBox(
+                                    height: 640,
+                                    child: TabBarView(
                                       children: [
+// Vote TabBarView
                                         Container(
-                                          height: 560,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.864,
-                                          decoration: BoxDecoration(),
-                                          child: Builder(builder: (context) {
-                                            // Vote is Empty
-                                            return voteModels.isEmpty
-                                                ? Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      SvgPicture.asset(
-                                                        "assets/icons/leaf-fall.svg",
-                                                        height: 85,
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 1,
-                                                      ),
-                                                      Text(
-                                                        "No POLL is going on right now.",
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.5),
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                                // Vote Topic ListViewBuilder
-                                                : ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    shrinkWrap: true,
-                                                    itemCount:
-                                                        voteModels.length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return Container(
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              height: 180,
-                                                              margin: EdgeInsets
-                                                                  .only(
-                                                                      bottom:
-                                                                          10),
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10),
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          249,
-                                                                          234,
-                                                                          184),
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                        color: Color.fromARGB(
-                                                                            138,
-                                                                            209,
-                                                                            209,
-                                                                            209),
-                                                                        offset: Offset(
-                                                                            1,
-                                                                            -1),
-                                                                        blurRadius:
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          padding:
+                                              const EdgeInsets.only(top: 12.0),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: 560,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.864,
+                                                decoration: BoxDecoration(),
+                                                child:
+                                                    Builder(builder: (context) {
+                                                  // Vote is Empty
+                                                  return voteModels.isEmpty
+                                                      ? Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: <Widget>[
+                                                            SvgPicture.asset(
+                                                              "assets/icons/leaf-fall.svg",
+                                                              height: 85,
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(
+                                                                      0.4),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 1,
+                                                            ),
+                                                            Text(
+                                                              "No POLL is going on right now.",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.5),
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      // Vote Topic ListViewBuilder
+                                                      : ListView.builder(
+                                                          scrollDirection:
+                                                              Axis.vertical,
+                                                          shrinkWrap: true,
+                                                          itemCount:
+                                                              voteModels.length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            return Container(
+                                                              child: Column(
+                                                                children: [
+                                                                  Container(
+                                                                    height: 180,
+                                                                    margin: EdgeInsets.only(
+                                                                        bottom:
                                                                             10),
-                                                                    BoxShadow(
+                                                                    decoration: BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                10),
                                                                         color: Color.fromARGB(
                                                                             255,
-                                                                            255,
-                                                                            255,
-                                                                            255),
-                                                                        offset: Offset(
-                                                                            -5,
-                                                                            -5),
-                                                                        blurRadius:
-                                                                            5),
-                                                                  ]),
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .fromLTRB(
-                                                                        10,
-                                                                        0,
-                                                                        10,
-                                                                        10),
-                                                                child: Row(
-                                                                    children: <
-                                                                        Widget>[
-                                                                      Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.only(
-                                                                          left:
-                                                                              6,
-                                                                          right:
-                                                                              2,
-                                                                        ),
-                                                                      ),
-                                                                      Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          Container(
-                                                                            width:
-                                                                                341,
-                                                                            child:
-                                                                                Row(
-                                                                              children: [
-                                                                                Align(
-                                                                                  alignment: Alignment.topRight,
-                                                                                  child: Padding(
-                                                                                    padding: const EdgeInsets.fromLTRB(0, 18, 5, 5),
-                                                                                    child: CircleAvatar(
-                                                                                      radius: 28,
-                                                                                      backgroundImage: NetworkImage(voteModels[index].host_profile),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                Padding(
-                                                                                  padding: const EdgeInsets.only(left: 5, top: 10),
-                                                                                  child: Container(
-                                                                                    width: 230,
-                                                                                    child: Text(
-                                                                                      voteModels[index].vote_topic,
-                                                                                      maxLines: 2,
-                                                                                      overflow: TextOverflow.ellipsis,
-
-                                                                                      // "ข้าวเย็นกินไรดีนะ",
-                                                                                      style: TextStyle(
-                                                                                        fontWeight: FontWeight.w500,
-                                                                                        fontSize: 17,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                Expanded(
-                                                                                  child: Align(
-                                                                                    alignment: Alignment.topRight,
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.only(bottom: 30),
-                                                                                      child: Builder(
-                                                                                        builder: (context) {
-                                                                                          if (userModels[0].id == voteModels[index].host_id) {
-                                                                                            return
-                                                                                                // PopUpMen(
-                                                                                                //   menuList: [
-                                                                                                //     PopupMenuItem(
-                                                                                                //       child: ListTile(
-                                                                                                //         leading: Icon(
-                                                                                                //           Icons.delete_rounded,
-                                                                                                //         ),
-                                                                                                //         title: Text("Delete"),
-                                                                                                //         onTap: () {
-                                                                                                //           print('## You Click Delete form index = $index');
-                                                                                                //           // confirmDialogDelete(context, topicRandom[index]);
-                                                                                                //         },
-                                                                                                //       ),
-                                                                                                //     ),
-                                                                                                //   ],
-                                                                                                //   icon: SvgPicture.asset(
-                                                                                                //     "assets/icons/menu-dots.svg",
-                                                                                                //     height: 20,
-                                                                                                //   ),
-                                                                                                // );
-                                                                                                GestureDetector(
-                                                                                              onTap: () {
-                                                                                                print('click on delete ticktik ${voteModels[index].vote_topic}');
-                                                                                                _isShown == true ? _deleteVote(context, voteModels[index].vote_id) : null;
-                                                                                              },
-                                                                                              child: Image(
-                                                                                                image: AssetImage('assets/images/trash.png'),
-                                                                                                fit: BoxFit.cover,
-                                                                                                height: 22,
-                                                                                              ),
-                                                                                            );
-                                                                                          } else {
-                                                                                            return Container();
-                                                                                          }
-                                                                                        },
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ],
+                                                                            249,
+                                                                            234,
+                                                                            184),
+                                                                        boxShadow: [
+                                                                          BoxShadow(
+                                                                              color: Color.fromARGB(138, 209, 209, 209),
+                                                                              offset: Offset(1, -1),
+                                                                              blurRadius: 10),
+                                                                          BoxShadow(
+                                                                              color: Color.fromARGB(255, 255, 255, 255),
+                                                                              offset: Offset(-5, -5),
+                                                                              blurRadius: 5),
+                                                                        ]),
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          10,
+                                                                          0,
+                                                                          10,
+                                                                          10),
+                                                                      child: Row(
+                                                                          children: <
+                                                                              Widget>[
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.only(
+                                                                                left: 6,
+                                                                                right: 2,
+                                                                              ),
                                                                             ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            height:
-                                                                                15,
-                                                                          ),
-                                                                          Row(
-                                                                            children: [
-                                                                              Text(
-                                                                                "Poll is",
-                                                                                style: TextStyle(
-                                                                                  fontWeight: FontWeight.w500,
-                                                                                  fontSize: 16,
-                                                                                ),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: 5,
-                                                                              ),
-                                                                              Builder(builder: (context) {
-                                                                                return voteModels[index].vote_final.isEmpty
-                                                                                    ? Text(
-                                                                                        "Active",
-                                                                                        style: TextStyle(
-                                                                                          color: Colors.red,
-                                                                                          fontWeight: FontWeight.w600,
-                                                                                          fontSize: 16,
-                                                                                        ),
-                                                                                      )
-                                                                                    : Text(
-                                                                                        "Finished",
-                                                                                        style: TextStyle(
-                                                                                          color: Colors.green,
-                                                                                          fontWeight: FontWeight.w600,
-                                                                                          fontSize: 16,
-                                                                                        ),
-                                                                                      );
-                                                                              }),
-                                                                            ],
-                                                                          ),
-                                                                          Builder(builder:
-                                                                              (context) {
-                                                                            return voteModels[index].vote_final.isEmpty
-                                                                                ? Container(
-                                                                                    height: 40,
-                                                                                    width: size.width / 1.3,
-                                                                                    margin: EdgeInsets.only(top: 7),
-                                                                                    decoration: BoxDecoration(
-                                                                                      borderRadius: BorderRadius.circular(20),
-                                                                                      color: Color.fromARGB(255, 197, 150, 63),
-                                                                                    ),
-                                                                                    child: FlatButton(
-                                                                                      onPressed: () async {
-                                                                                        List<VoteOptionModel> voteOptionModels = [];
-                                                                                        List<VoteParticipantModel> voteParticipantModels = [];
-                                                                                        List<UserModel> circleUserCheck = [];
-                                                                                        String? vote_id = voteModels[index].vote_id;
-                                                                                        String pullVoteOptions = '${MyConstant.domain}/famfam/getVoteOptions.php?isAdd=true&vote_id=$vote_id';
-                                                                                        await Dio().get(pullVoteOptions).then((value) async {
-                                                                                          for (var item in json.decode(value.data)) {
-                                                                                            VoteOptionModel model = VoteOptionModel.fromMap(item);
-                                                                                            setState(() {
-                                                                                              voteOptionModels.add(model);
-                                                                                            });
-                                                                                          }
-                                                                                        });
-                                                                                        String pullVoteParticipants = '${MyConstant.domain}/famfam/getVoteParticipant.php?isAdd=true&vote_id=$vote_id';
-                                                                                        try {
-                                                                                          await Dio().get(pullVoteParticipants).then(
-                                                                                            (value) async {
-                                                                                              for (var item in json.decode(value.data)) {
-                                                                                                VoteParticipantModel model = VoteParticipantModel.fromMap(item);
-                                                                                                setState(() {
-                                                                                                  voteParticipantModels.add(model);
-                                                                                                });
-                                                                                              }
-                                                                                            },
-                                                                                          );
-                                                                                        } catch (e) {}
-
-                                                                                        SharedPreferences preferences = await SharedPreferences.getInstance();
-                                                                                        String? circle_id = preferences.getString('circle_id');
-
-                                                                                        String pullUserWhereCircleID = '${MyConstant.domain}/famfam/getUserWhereCircleID.php?isAdd=true&circle_id=$circle_id';
-                                                                                        await Dio().get(pullUserWhereCircleID).then((value) async {
-                                                                                          for (var item in json.decode(value.data)) {
-                                                                                            UserModel model = UserModel.fromMap(item);
-                                                                                            setState(() {
-                                                                                              circleUserCheck.add(model);
-                                                                                            });
-                                                                                          }
-                                                                                        });
-
-                                                                                        openPollForVote(context, voteModels[index], voteParticipantModels, voteOptionModels, userModels[0].id, circleUserCheck.length);
-                                                                                      },
-                                                                                      child: Center(
+                                                                            Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Container(
+                                                                                  width: 341,
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      Align(
+                                                                                        alignment: Alignment.topRight,
                                                                                         child: Padding(
-                                                                                          padding: const EdgeInsets.only(bottom: 5),
+                                                                                          padding: const EdgeInsets.fromLTRB(0, 18, 5, 5),
+                                                                                          child: CircleAvatar(
+                                                                                            radius: 28,
+                                                                                            backgroundImage: NetworkImage(voteModels[index].host_profile),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                      Padding(
+                                                                                        padding: const EdgeInsets.only(left: 5, top: 10),
+                                                                                        child: Container(
+                                                                                          width: 230,
                                                                                           child: Text(
-                                                                                            'Click here to Vote',
+                                                                                            voteModels[index].vote_topic,
+                                                                                            maxLines: 2,
+                                                                                            overflow: TextOverflow.ellipsis,
 
-                                                                                            // "กระเพาหมูกรอบ",
+                                                                                            // "ข้าวเย็นกินไรดีนะ",
                                                                                             style: TextStyle(
-                                                                                              color: Colors.white,
                                                                                               fontWeight: FontWeight.w500,
-                                                                                              fontSize: 18,
+                                                                                              fontSize: 17,
                                                                                             ),
                                                                                           ),
                                                                                         ),
                                                                                       ),
+                                                                                      Expanded(
+                                                                                        child: Align(
+                                                                                          alignment: Alignment.topRight,
+                                                                                          child: Padding(
+                                                                                            padding: const EdgeInsets.only(bottom: 30),
+                                                                                            child: Builder(
+                                                                                              builder: (context) {
+                                                                                                if (userModels[0].id == voteModels[index].host_id) {
+                                                                                                  return
+                                                                                                      // PopUpMen(
+                                                                                                      //   menuList: [
+                                                                                                      //     PopupMenuItem(
+                                                                                                      //       child: ListTile(
+                                                                                                      //         leading: Icon(
+                                                                                                      //           Icons.delete_rounded,
+                                                                                                      //         ),
+                                                                                                      //         title: Text("Delete"),
+                                                                                                      //         onTap: () {
+                                                                                                      //           print('## You Click Delete form index = $index');
+                                                                                                      //           // confirmDialogDelete(context, topicRandom[index]);
+                                                                                                      //         },
+                                                                                                      //       ),
+                                                                                                      //     ),
+                                                                                                      //   ],
+                                                                                                      //   icon: SvgPicture.asset(
+                                                                                                      //     "assets/icons/menu-dots.svg",
+                                                                                                      //     height: 20,
+                                                                                                      //   ),
+                                                                                                      // );
+                                                                                                      GestureDetector(
+                                                                                                    onTap: () {
+                                                                                                      print('click on delete ticktik ${voteModels[index].vote_topic}');
+                                                                                                      _isShown == true ? _deleteVote(context, voteModels[index].vote_id) : null;
+                                                                                                    },
+                                                                                                    child: Image(
+                                                                                                      image: AssetImage('assets/images/trash.png'),
+                                                                                                      fit: BoxFit.cover,
+                                                                                                      height: 22,
+                                                                                                    ),
+                                                                                                  );
+                                                                                                } else {
+                                                                                                  return Container();
+                                                                                                }
+                                                                                              },
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 15,
+                                                                                ),
+                                                                                Row(
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      "Poll is",
+                                                                                      style: TextStyle(
+                                                                                        fontWeight: FontWeight.w500,
+                                                                                        fontSize: 16,
+                                                                                      ),
                                                                                     ),
-                                                                                  )
-                                                                                : Container(
+                                                                                    SizedBox(
+                                                                                      width: 5,
+                                                                                    ),
+                                                                                    Builder(builder: (context) {
+                                                                                      return voteModels[index].vote_final.isEmpty
+                                                                                          ? Text(
+                                                                                              "Active",
+                                                                                              style: TextStyle(
+                                                                                                color: Colors.red,
+                                                                                                fontWeight: FontWeight.w600,
+                                                                                                fontSize: 16,
+                                                                                              ),
+                                                                                            )
+                                                                                          : Text(
+                                                                                              "Finished",
+                                                                                              style: TextStyle(
+                                                                                                color: Colors.green,
+                                                                                                fontWeight: FontWeight.w600,
+                                                                                                fontSize: 16,
+                                                                                              ),
+                                                                                            );
+                                                                                    }),
+                                                                                  ],
+                                                                                ),
+                                                                                Builder(builder: (context) {
+                                                                                  return voteModels[index].vote_final.isEmpty
+                                                                                      ? Container(
+                                                                                          height: 40,
+                                                                                          width: size.width / 1.3,
+                                                                                          margin: EdgeInsets.only(top: 7),
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(20),
+                                                                                            color: Color.fromARGB(255, 197, 150, 63),
+                                                                                          ),
+                                                                                          child: FlatButton(
+                                                                                            onPressed: () async {
+                                                                                              List<VoteOptionModel> voteOptionModels = [];
+                                                                                              List<VoteParticipantModel> voteParticipantModels = [];
+                                                                                              List<UserModel> circleUserCheck = [];
+                                                                                              String? vote_id = voteModels[index].vote_id;
+                                                                                              String pullVoteOptions = '${MyConstant.domain}/famfam/getVoteOptions.php?isAdd=true&vote_id=$vote_id';
+                                                                                              await Dio().get(pullVoteOptions).then((value) async {
+                                                                                                for (var item in json.decode(value.data)) {
+                                                                                                  VoteOptionModel model = VoteOptionModel.fromMap(item);
+                                                                                                  setState(() {
+                                                                                                    voteOptionModels.add(model);
+                                                                                                  });
+                                                                                                }
+                                                                                              });
+                                                                                              String pullVoteParticipants = '${MyConstant.domain}/famfam/getVoteParticipant.php?isAdd=true&vote_id=$vote_id';
+                                                                                              try {
+                                                                                                await Dio().get(pullVoteParticipants).then(
+                                                                                                  (value) async {
+                                                                                                    for (var item in json.decode(value.data)) {
+                                                                                                      VoteParticipantModel model = VoteParticipantModel.fromMap(item);
+                                                                                                      setState(() {
+                                                                                                        voteParticipantModels.add(model);
+                                                                                                      });
+                                                                                                    }
+                                                                                                  },
+                                                                                                );
+                                                                                              } catch (e) {}
+
+                                                                                              SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                                                              String? circle_id = preferences.getString('circle_id');
+
+                                                                                              String pullUserWhereCircleID = '${MyConstant.domain}/famfam/getUserWhereCircleID.php?isAdd=true&circle_id=$circle_id';
+                                                                                              await Dio().get(pullUserWhereCircleID).then((value) async {
+                                                                                                for (var item in json.decode(value.data)) {
+                                                                                                  UserModel model = UserModel.fromMap(item);
+                                                                                                  setState(() {
+                                                                                                    circleUserCheck.add(model);
+                                                                                                  });
+                                                                                                }
+                                                                                              });
+
+                                                                                              openPollForVote(context, voteModels[index], voteParticipantModels, voteOptionModels, userModels[0].id, circleUserCheck.length);
+                                                                                            },
+                                                                                            child: Center(
+                                                                                              child: Padding(
+                                                                                                padding: const EdgeInsets.only(bottom: 5),
+                                                                                                child: Text(
+                                                                                                  'Click here to Vote',
+
+                                                                                                  // "กระเพาหมูกรอบ",
+                                                                                                  style: TextStyle(
+                                                                                                    color: Colors.white,
+                                                                                                    fontWeight: FontWeight.w500,
+                                                                                                    fontSize: 18,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        )
+                                                                                      : Container(
+                                                                                          height: 40,
+                                                                                          width: size.width / 1.3,
+                                                                                          margin: EdgeInsets.only(top: 7),
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(20),
+                                                                                            color: Color.fromARGB(255, 255, 255, 255),
+                                                                                          ),
+                                                                                          child: Center(
+                                                                                            child: Padding(
+                                                                                              padding: const EdgeInsets.only(bottom: 5),
+                                                                                              child: Text(
+                                                                                                voteModels[index].vote_final,
+
+                                                                                                // "กระเพาหมูกรอบ",
+                                                                                                style: TextStyle(
+                                                                                                  fontWeight: FontWeight.w500,
+                                                                                                  fontSize: 18,
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        );
+                                                                                }),
+                                                                              ],
+                                                                            ),
+                                                                          ]),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                        );
+                                                }),
+                                              ),
+                                              // Create Vote Button
+                                              Expanded(
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  child: Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.66,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.864,
+                                                    child: ElevatedButton(
+                                                      style: ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all<Color>(Color(
+                                                                    0xFFF9EE6D)),
+                                                        shape:
+                                                            MaterialStateProperty
+                                                                .all(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        90.0),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      child: Text(
+                                                        'Create Vote',
+                                                        style: TextStyle(
+                                                            fontSize: 24,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      onPressed: () {
+                                                        openDialogPoll(context);
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+// Random TabBarView
+                                        Container(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          padding:
+                                              const EdgeInsets.only(top: 12.0),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: 560,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.864,
+                                                decoration: BoxDecoration(
+                                                    // color: Colors.pink.shade200,
+                                                    //borderRadius: BorderRadius.circular(30),
+                                                    ),
+                                                child:
+                                                    Builder(builder: (context) {
+                                                  return topicRandom.isEmpty
+                                                      ? Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: <Widget>[
+                                                            SvgPicture.asset(
+                                                              "assets/icons/leaf-fall.svg",
+                                                              height: 85,
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(
+                                                                      0.4),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 1,
+                                                            ),
+                                                            Text(
+                                                              "No RANDOM is going on right now.",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.5),
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : ListView.builder(
+                                                          scrollDirection:
+                                                              Axis.vertical,
+                                                          shrinkWrap: true,
+                                                          itemCount: topicRandom
+                                                              .length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            return Container(
+                                                              child: Column(
+                                                                children: [
+                                                                  Container(
+                                                                      height:
+                                                                          180,
+                                                                      margin: EdgeInsets.only(
+                                                                          bottom:
+                                                                              10),
+                                                                      decoration: BoxDecoration(
+                                                                          borderRadius: BorderRadius.circular(
+                                                                              10),
+                                                                          color: Color.fromARGB(
+                                                                              255,
+                                                                              249,
+                                                                              234,
+                                                                              184),
+                                                                          boxShadow: [
+                                                                            BoxShadow(
+                                                                                color: Color.fromARGB(138, 209, 209, 209),
+                                                                                offset: Offset(1, -1),
+                                                                                blurRadius: 10),
+                                                                            BoxShadow(
+                                                                                color: Color.fromARGB(255, 255, 255, 255),
+                                                                                offset: Offset(-5, -5),
+                                                                                blurRadius: 5),
+                                                                          ]),
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets.fromLTRB(
+                                                                            10,
+                                                                            0,
+                                                                            10,
+                                                                            10),
+                                                                        child: Row(
+                                                                            // mainAxisAlignment:
+                                                                            //     MainAxisAlignment
+                                                                            //         .spaceBetween,
+                                                                            children: <Widget>[
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.only(
+                                                                                  left: 6,
+                                                                                  right: 2,
+                                                                                ),
+                                                                              ),
+                                                                              Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Container(
+                                                                                    width: 341,
+                                                                                    child: Row(
+                                                                                      // mainAxisAlignment: MainAxisAlignment.,
+                                                                                      children: [
+                                                                                        Align(
+                                                                                          alignment: Alignment.topRight,
+                                                                                          child: Padding(
+                                                                                            padding: const EdgeInsets.fromLTRB(0, 18, 5, 5),
+                                                                                            child: CircleAvatar(
+                                                                                              radius: 28,
+                                                                                              backgroundImage: NetworkImage(topicRandom[index].user_profile),
+                                                                                              // child: Image.network(
+                                                                                              //   // "assets/images/new-mia.png",
+                                                                                              //   topicRandom[index].user_profile,
+                                                                                              //   fit: BoxFit.cover,
+                                                                                              // ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        Padding(
+                                                                                          padding: const EdgeInsets.only(left: 5, top: 10),
+                                                                                          child: Container(
+                                                                                            width: 230,
+                                                                                            child: Text(
+                                                                                              topicRandom[index].random_topic,
+                                                                                              maxLines: 2,
+                                                                                              overflow: TextOverflow.ellipsis,
+
+                                                                                              // "ข้าวเย็นกินไรดีนะ",
+                                                                                              style: TextStyle(
+                                                                                                fontWeight: FontWeight.w500,
+                                                                                                fontSize: 17,
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        Expanded(
+                                                                                          child: Align(
+                                                                                            alignment: Alignment.topRight,
+                                                                                            child: Padding(
+                                                                                              padding: const EdgeInsets.only(bottom: 30),
+                                                                                              child: Builder(
+                                                                                                builder: (context) {
+                                                                                                  if (userModels[0].id == topicRandom[index].user_id) {
+                                                                                                    return GestureDetector(
+                                                                                                      onTap: () {
+                                                                                                        print('click on delete ticktik ${topicRandom[index].random_topic}');
+                                                                                                        _isShown == true ? _deleteRandom(context, topicRandom[index].random_id!) : null;
+                                                                                                      },
+                                                                                                      child: Image(
+                                                                                                        image: AssetImage('assets/images/trash.png'),
+                                                                                                        fit: BoxFit.cover,
+                                                                                                        height: 22,
+                                                                                                      ),
+                                                                                                    );
+                                                                                                  } else {
+                                                                                                    return Container();
+                                                                                                  }
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 15,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    "Result:",
+                                                                                    style: TextStyle(
+                                                                                      fontWeight: FontWeight.w500,
+                                                                                      fontSize: 16,
+                                                                                    ),
+                                                                                  ),
+                                                                                  Container(
                                                                                     height: 40,
                                                                                     width: size.width / 1.3,
                                                                                     margin: EdgeInsets.only(top: 7),
@@ -3359,7 +3596,7 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                       child: Padding(
                                                                                         padding: const EdgeInsets.only(bottom: 5),
                                                                                         child: Text(
-                                                                                          voteModels[index].vote_final,
+                                                                                          topicRandom[index].random_final,
 
                                                                                           // "กระเพาหมูกรอบ",
                                                                                           style: TextStyle(
@@ -3369,355 +3606,80 @@ class _VoteRandomBodyState extends State<VoteRandomBody> {
                                                                                         ),
                                                                                       ),
                                                                                     ),
-                                                                                  );
-                                                                          }),
-                                                                        ],
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    },
-                                                  );
-                                          }),
-                                        ),
-                                        // Create Vote Button
-                                        Expanded(
-                                          child: Align(
-                                            alignment: Alignment.bottomCenter,
-                                            child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.66,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.864,
-                                              child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          Color(0xFFF9EE6D)),
-                                                  shape:
-                                                      MaterialStateProperty.all(
-                                                    RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              90.0),
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                  'Create Vote',
-                                                  style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.black),
-                                                ),
-                                                onPressed: () {
-                                                  openDialogPoll(context);
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-// Random TabBarView
-                                  Container(
-                                    height: MediaQuery.of(context).size.height,
-                                    padding: const EdgeInsets.only(top: 12.0),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 560,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.864,
-                                          decoration: BoxDecoration(
-                                              // color: Colors.pink.shade200,
-                                              //borderRadius: BorderRadius.circular(30),
-                                              ),
-                                          child: Builder(builder: (context) {
-                                            return topicRandom.isEmpty
-                                                ? Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      SvgPicture.asset(
-                                                        "assets/icons/leaf-fall.svg",
-                                                        height: 85,
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 1,
-                                                      ),
-                                                      Text(
-                                                        "No RANDOM is going on right now.",
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.5),
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                                : ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    shrinkWrap: true,
-                                                    itemCount:
-                                                        topicRandom.length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return Container(
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                                height: 180,
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        bottom:
-                                                                            10),
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10),
-                                                                    color: Color
-                                                                        .fromARGB(
-                                                                            255,
-                                                                            249,
-                                                                            234,
-                                                                            184),
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                          color: Color.fromARGB(
-                                                                              138,
-                                                                              209,
-                                                                              209,
-                                                                              209),
-                                                                          offset: Offset(
-                                                                              1,
-                                                                              -1),
-                                                                          blurRadius:
-                                                                              10),
-                                                                      BoxShadow(
-                                                                          color: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              255,
-                                                                              255),
-                                                                          offset: Offset(
-                                                                              -5,
-                                                                              -5),
-                                                                          blurRadius:
-                                                                              5),
-                                                                    ]),
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .fromLTRB(
-                                                                          10,
-                                                                          0,
-                                                                          10,
-                                                                          10),
-                                                                  child: Row(
-                                                                      // mainAxisAlignment:
-                                                                      //     MainAxisAlignment
-                                                                      //         .spaceBetween,
-                                                                      children: <
-                                                                          Widget>[
-                                                                        Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.only(
-                                                                            left:
-                                                                                6,
-                                                                            right:
-                                                                                2,
-                                                                          ),
-                                                                        ),
-                                                                        Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            Container(
-                                                                              width: 341,
-                                                                              child: Row(
-                                                                                // mainAxisAlignment: MainAxisAlignment.,
-                                                                                children: [
-                                                                                  Align(
-                                                                                    alignment: Alignment.topRight,
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.fromLTRB(0, 18, 5, 5),
-                                                                                      child: CircleAvatar(
-                                                                                        radius: 28,
-                                                                                        backgroundImage: NetworkImage(topicRandom[index].user_profile),
-                                                                                        // child: Image.network(
-                                                                                        //   // "assets/images/new-mia.png",
-                                                                                        //   topicRandom[index].user_profile,
-                                                                                        //   fit: BoxFit.cover,
-                                                                                        // ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.only(left: 5, top: 10),
-                                                                                    child: Container(
-                                                                                      width: 230,
-                                                                                      child: Text(
-                                                                                        topicRandom[index].random_topic,
-                                                                                        maxLines: 2,
-                                                                                        overflow: TextOverflow.ellipsis,
-
-                                                                                        // "ข้าวเย็นกินไรดีนะ",
-                                                                                        style: TextStyle(
-                                                                                          fontWeight: FontWeight.w500,
-                                                                                          fontSize: 17,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  Expanded(
-                                                                                    child: Align(
-                                                                                      alignment: Alignment.topRight,
-                                                                                      child: Padding(
-                                                                                        padding: const EdgeInsets.only(bottom: 30),
-                                                                                        child: Builder(
-                                                                                          builder: (context) {
-                                                                                            if (userModels[0].id == topicRandom[index].user_id) {
-                                                                                              return GestureDetector(
-                                                                                                onTap: () {
-                                                                                                  print('click on delete ticktik ${topicRandom[index].random_topic}');
-                                                                                                  _isShown == true ? _deleteRandom(context, topicRandom[index].random_id!) : null;
-                                                                                                },
-                                                                                                child: Image(
-                                                                                                  image: AssetImage('assets/images/trash.png'),
-                                                                                                  fit: BoxFit.cover,
-                                                                                                  height: 22,
-                                                                                                ),
-                                                                                              );
-                                                                                            } else {
-                                                                                              return Container();
-                                                                                            }
-                                                                                          },
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
                                                                                   ),
                                                                                 ],
                                                                               ),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 15,
-                                                                            ),
-                                                                            Text(
-                                                                              "Result:",
-                                                                              style: TextStyle(
-                                                                                fontWeight: FontWeight.w500,
-                                                                                fontSize: 16,
-                                                                              ),
-                                                                            ),
-                                                                            Container(
-                                                                              height: 40,
-                                                                              width: size.width / 1.3,
-                                                                              margin: EdgeInsets.only(top: 7),
-                                                                              decoration: BoxDecoration(
-                                                                                borderRadius: BorderRadius.circular(20),
-                                                                                color: Color.fromARGB(255, 255, 255, 255),
-                                                                              ),
-                                                                              child: Center(
-                                                                                child: Padding(
-                                                                                  padding: const EdgeInsets.only(bottom: 5),
-                                                                                  child: Text(
-                                                                                    topicRandom[index].random_final,
-
-                                                                                    // "กระเพาหมูกรอบ",
-                                                                                    style: TextStyle(
-                                                                                      fontWeight: FontWeight.w500,
-                                                                                      fontSize: 18,
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ]),
-                                                                )),
-                                                          ],
+                                                                            ]),
+                                                                      )),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                        );
+                                                }),
+                                              ),
+                                              Expanded(
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  child: Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.66,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.864,
+                                                    child: ElevatedButton(
+                                                      style: ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all<Color>(Color(
+                                                                    0xFFF9EE6D)),
+                                                        shape:
+                                                            MaterialStateProperty
+                                                                .all(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        90.0),
+                                                          ),
                                                         ),
-                                                      );
-                                                    },
-                                                  );
-                                          }),
-                                        ),
-                                        Expanded(
-                                          child: Align(
-                                            alignment: Alignment.bottomCenter,
-                                            child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.66,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.864,
-                                              child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          Color(0xFFF9EE6D)),
-                                                  shape:
-                                                      MaterialStateProperty.all(
-                                                    RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              90.0),
+                                                      ),
+                                                      child: Text(
+                                                        'Create Random',
+                                                        style: TextStyle(
+                                                            fontSize: 24,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      onPressed: () {
+                                                        openDialogRandom(
+                                                            context);
+                                                      },
                                                     ),
                                                   ),
                                                 ),
-                                                child: Text(
-                                                  'Create Random',
-                                                  style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.black),
-                                                ),
-                                                onPressed: () {
-                                                  openDialogRandom(context);
-                                                },
                                               ),
-                                            ),
+                                            ],
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
             ),
           ],
         ),
@@ -4718,7 +4680,6 @@ Future openDialogPoll(BuildContext context) => showDialog(
                                 color: Colors.black),
                           ),
                           onPressed: () async {
-                            
                             List<VoteModel> voteModels = [];
                             final String getUID = FirebaseAuth
                                 .instance.currentUser!.uid
@@ -4738,7 +4699,6 @@ Future openDialogPoll(BuildContext context) => showDialog(
                                 for (var item in json.decode(value.data)) {
                                   UserModel model = UserModel.fromMap(item);
                                   setState(() {
-                                    
                                     userModels.add(model);
                                   });
                                 }
@@ -5829,7 +5789,6 @@ Future descDialogMyOrder(BuildContext context, String id, String title,
                                           await Dio()
                                               .get(deleteVote)
                                               .then((value) async {
-                                                
                                             Navigator.pop(context);
                                             await Navigator.push(
                                               context,

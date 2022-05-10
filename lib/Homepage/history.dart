@@ -40,7 +40,7 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
         pullHistoryMyOrder().then((value) {
           historyMyOrderModels.reversed;
         }).then((value) => historyload = false);
-        
+
         pullHistoryPinPost().then((value) {
           historyPinPostModels.reversed;
         });
@@ -136,507 +136,474 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: DefaultTabController(
-        length: 2,
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Text(""),
-              Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: PreferredSize(
-                  preferredSize: Size.fromHeight(55.0),
-                  child: AppBar(
-                    title: Text(
-                      'History',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    centerTitle: true,
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    leading: IconButton(
-                      onPressed: () async {
-                        Navigator.pop(context);
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                HomePage(FirebaseAuth.instance.currentUser),
-                          ),
-                        );
-                      },
-                      icon: SvgPicture.asset(
-                        "assets/icons/chevron-back-outline.svg",
-                        height: 35,
-                      ),
-                    ),
-                    actions: [
-                      IconButton(
-                        icon: SvgPicture.asset(
-                          "assets/icons/information-_1_.svg",
-                          height: 30,
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        child: DefaultTabController(
+          length: 2,
+          child: SafeArea(
+            child: Stack(
+              children: [
+                Text(""),
+                Scaffold(
+                  backgroundColor: Colors.transparent,
+                  appBar: PreferredSize(
+                    preferredSize: Size.fromHeight(55.0),
+                    child: AppBar(
+                      title: Text(
+                        'History',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
                         ),
-                        onPressed: () {
-                          infoDialog(
-                              context,
-                              'History ?',
-                              'List of your circle history\nWhat they do recently.',
-                              0.2);
-                        },
                       ),
-                    ],
-                  ),
-                ),
-                body:  historyload
-              ? CircleLoader()
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 29, right: 29),
-                      child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF9EE6D).withOpacity(0.44),
-                              borderRadius: BorderRadius.circular(19),
+                      centerTitle: true,
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      leading: IconButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  HomePage(FirebaseAuth.instance.currentUser),
                             ),
-                            height: 66,
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: TabBar(
-                                indicator: BoxDecoration(
-                                  color: Color(0xFFFFC34A),
-                                  borderRadius: BorderRadius.circular(19),
-                                ),
-                                labelStyle: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                unselectedLabelStyle: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400),
-                                labelColor: Colors.black87,
-                                unselectedLabelColor: Color(0xFFA5A59D),
-                                tabs: [
-                                  Tab(text: 'My Order'),
-                                  Tab(text: 'Pin Post'),
-                                  // Tab(text: 'V and R'),
-                                ],
-                              ),
-                            ),
+                          );
+                        },
+                        icon: SvgPicture.asset(
+                          "assets/icons/chevron-back-outline.svg",
+                          height: 35,
+                        ),
+                      ),
+                      actions: [
+                        IconButton(
+                          icon: SvgPicture.asset(
+                            "assets/icons/information-_1_.svg",
+                            height: 30,
                           ),
-                          SingleChildScrollView(
-                            child: SizedBox(
-                              height: 640,
-                              child: TabBarView(
+                          onPressed: () {
+                            infoDialog(
+                                context,
+                                'History ?',
+                                'List of your circle history\nWhat they do recently.',
+                                0.2);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  body: historyload
+                      ? CircleLoader()
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 29, right: 29),
+                              child: Column(
                                 children: [
                                   Container(
-                                    child: historyMyOrderModels.isEmpty
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 12.0),
-                                            child: Container(
-                                              //height: 100,
-                                              //width: 100,
-                                              decoration: BoxDecoration(
-                                                  //color: Colors.pink.shade700,
-                                                  //borderRadius: BorderRadius.circular(30),
-                                                  ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: <Widget>[
-                                                  SvgPicture.asset(
-                                                    "assets/icons/leaf-fall.svg",
-                                                    height: 85,
-                                                    color: Colors.black
-                                                        .withOpacity(0.4),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 1,
-                                                  ),
-                                                  Text(
-                                                    "You don't have any list right now.",
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.5),
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        : Expanded(
-                                            child: Align(
-                                              alignment: Alignment.topCenter,
-                                              child: ListView.builder(
-                                                  reverse: true,
-                                                  shrinkWrap: true,
-                                                  padding:
-                                                      const EdgeInsets.all(8),
-                                                  itemCount:
-                                                      historyMyOrderModels
-                                                          .length,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return Column(
-                                                      children: [
-                                                        Container(
-                                                          constraints:
-                                                              const BoxConstraints(
-                                                                  minHeight:
-                                                                      80),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .fromLTRB(
-                                                                    15,
-                                                                    15,
-                                                                    15,
-                                                                    15),
-                                                            child: Builder(
-                                                                builder:
-                                                                    (context) {
-                                                              print(historyMyOrderModels[
-                                                                      index]
-                                                                  .my_order_status);
-                                                              if (historyMyOrderModels[
-                                                                          index]
-                                                                      .my_order_status ==
-                                                                  'false') {
-                                                                return Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        Text(
-                                                                          '${historyMyOrderModels[index].owner_fname}',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          ' has Assigned ',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.normal,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        Text(
-                                                                          "' ${historyMyOrderModels[index].my_order_topic} '",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          ' to you.',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.normal,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              } else {
-                                                                return Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Text(
-                                                                      'You has finished Assigned ',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            18,
-                                                                        fontWeight:
-                                                                            FontWeight.normal,
-                                                                      ),
-                                                                    ),
-                                                                    Text(
-                                                                      "' ${historyMyOrderModels[index].my_order_topic} '",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            18,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        Text(
-                                                                          'from',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.normal,
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          ' ${historyMyOrderModels[index].owner_fname}',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              }
-                                                            }),
-                                                          ),
-                                                        ),
-                                                        Divider(),
-                                                      ],
-                                                    );
-                                                  }),
-                                            ),
-                                          ),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Color(0xFFF9EE6D).withOpacity(0.44),
+                                      borderRadius: BorderRadius.circular(19),
+                                    ),
+                                    height: 66,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: TabBar(
+                                        indicator: BoxDecoration(
+                                          color: Color(0xFFFFC34A),
+                                          borderRadius:
+                                              BorderRadius.circular(19),
+                                        ),
+                                        labelStyle: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        unselectedLabelStyle: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.w400),
+                                        labelColor: Colors.black87,
+                                        unselectedLabelColor: Color(0xFFA5A59D),
+                                        tabs: [
+                                          Tab(text: 'My Order'),
+                                          Tab(text: 'Pin Post'),
+                                          // Tab(text: 'V and R'),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                  Container(
-                                    child: historyPinPostModels.isEmpty
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 12.0),
-                                            child: Container(
-                                              //height: 100,
-                                              //width: 100,
-                                              decoration: BoxDecoration(
-                                                  //color: Colors.pink.shade700,
-                                                  //borderRadius: BorderRadius.circular(30),
-                                                  ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: <Widget>[
-                                                  SvgPicture.asset(
-                                                    "assets/icons/leaf-fall.svg",
-                                                    height: 85,
-                                                    color: Colors.black
-                                                        .withOpacity(0.4),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 1,
-                                                  ),
-                                                  Text(
-                                                    "You don't have any list right now.",
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.5),
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        : Expanded(
-                                            child: Align(
-                                              alignment: Alignment.topCenter,
-                                              child: ListView.builder(
-                                                  reverse: true,
-                                                  shrinkWrap: true,
-                                                  padding:
-                                                      const EdgeInsets.all(8),
-                                                  itemCount:
-                                                      historyPinPostModels
-                                                          .length,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return Column(
-                                                      children: [
-                                                        Container(
-                                                          constraints:
-                                                              const BoxConstraints(
-                                                                  minHeight:
-                                                                      55),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .fromLTRB(
-                                                                    15,
-                                                                    15,
-                                                                    15,
-                                                                    15),
-                                                            child: Builder(
-                                                                builder:
-                                                                    (context) {
-                                                              if (historyPinPostModels[
-                                                                          index]
-                                                                      .history_isreply ==
-                                                                  '') {
-                                                                return Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        Text(
-                                                                          '${historyPinPostModels[index].author_name}',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          ' has posting the PinPost ',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.normal,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              } else {
-                                                                return Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        Text(
-                                                                          historyPinPostModels[index]
-                                                                              .history_isreply,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          ' has replied to ',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.normal,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        Text(
-                                                                          "${historyPinPostModels[index].author_name}'s",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          " PinPost",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                18,
-                                                                            fontWeight:
-                                                                                FontWeight.normal,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              }
-                                                            }),
+                                  SingleChildScrollView(
+                                    child: SizedBox(
+                                      height: 640,
+                                      child: TabBarView(
+                                        children: [
+                                          Container(
+                                            child: historyMyOrderModels.isEmpty
+                                                ? Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 12.0),
+                                                    child: Container(
+                                                      //height: 100,
+                                                      //width: 100,
+                                                      decoration: BoxDecoration(
+                                                          //color: Colors.pink.shade700,
+                                                          //borderRadius: BorderRadius.circular(30),
                                                           ),
-                                                        ),
-                                                        Divider(),
-                                                      ],
-                                                    );
-                                                  }),
-                                            ),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          SvgPicture.asset(
+                                                            "assets/icons/leaf-fall.svg",
+                                                            height: 85,
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 1,
+                                                          ),
+                                                          Text(
+                                                            "You don't have any list right now.",
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                              fontSize: 18,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Align(
+                                                    alignment:
+                                                        Alignment.topCenter,
+                                                    child: ListView.builder(
+                                                        reverse: true,
+                                                        shrinkWrap: true,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8),
+                                                        itemCount:
+                                                            historyMyOrderModels
+                                                                .length,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          return Column(
+                                                            children: [
+                                                              Container(
+                                                                constraints:
+                                                                    const BoxConstraints(
+                                                                        minHeight:
+                                                                            80),
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          15,
+                                                                          15,
+                                                                          15,
+                                                                          15),
+                                                                  child: Builder(
+                                                                      builder:
+                                                                          (context) {
+                                                                    print(historyMyOrderModels[
+                                                                            index]
+                                                                        .my_order_status);
+                                                                    if (historyMyOrderModels[index]
+                                                                            .my_order_status ==
+                                                                        'false') {
+                                                                      return Column(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.start,
+                                                                        children: [
+                                                                          Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(
+                                                                                '${historyMyOrderModels[index].owner_fname}',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                              Text(
+                                                                                ' has Assigned ',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.normal,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(
+                                                                                "' ${historyMyOrderModels[index].my_order_topic} '",
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                              Text(
+                                                                                ' to you.',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.normal,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    } else {
+                                                                      return Column(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.start,
+                                                                        children: [
+                                                                          Text(
+                                                                            'You has finished Assigned ',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 18,
+                                                                              fontWeight: FontWeight.normal,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            "' ${historyMyOrderModels[index].my_order_topic} '",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 18,
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                          Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(
+                                                                                'from',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.normal,
+                                                                                ),
+                                                                              ),
+                                                                              Text(
+                                                                                ' ${historyMyOrderModels[index].owner_fname}',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    }
+                                                                  }),
+                                                                ),
+                                                              ),
+                                                              Divider(),
+                                                            ],
+                                                          );
+                                                        }),
+                                                  ),
                                           ),
+                                          Container(
+                                            child: historyPinPostModels.isEmpty
+                                                ? Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 12.0),
+                                                    child: Container(
+                                                      //height: 100,
+                                                      //width: 100,
+                                                      decoration: BoxDecoration(
+                                                          //color: Colors.pink.shade700,
+                                                          //borderRadius: BorderRadius.circular(30),
+                                                          ),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          SvgPicture.asset(
+                                                            "assets/icons/leaf-fall.svg",
+                                                            height: 85,
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 1,
+                                                          ),
+                                                          Text(
+                                                            "You don't have any list right now.",
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                              fontSize: 18,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Align(
+                                                    alignment:
+                                                        Alignment.topCenter,
+                                                    child: ListView.builder(
+                                                        reverse: true,
+                                                        shrinkWrap: true,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8),
+                                                        itemCount:
+                                                            historyPinPostModels
+                                                                .length,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          return Column(
+                                                            children: [
+                                                              Container(
+                                                                constraints:
+                                                                    const BoxConstraints(
+                                                                        minHeight:
+                                                                            55),
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          15,
+                                                                          15,
+                                                                          15,
+                                                                          15),
+                                                                  child: Builder(
+                                                                      builder:
+                                                                          (context) {
+                                                                    if (historyPinPostModels[index]
+                                                                            .history_isreply ==
+                                                                        '') {
+                                                                      return Column(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.start,
+                                                                        children: [
+                                                                          Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(
+                                                                                '${historyPinPostModels[index].author_name}',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                              Text(
+                                                                                ' has posting the PinPost ',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.normal,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    } else {
+                                                                      return Column(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.start,
+                                                                        children: [
+                                                                          Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(
+                                                                                historyPinPostModels[index].history_isreply,
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                              Text(
+                                                                                ' has replied to ',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.normal,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(
+                                                                                "${historyPinPostModels[index].author_name}'s",
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                              Text(
+                                                                                " PinPost",
+                                                                                style: TextStyle(
+                                                                                  fontSize: 18,
+                                                                                  fontWeight: FontWeight.normal,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    }
+                                                                  }),
+                                                                ),
+                                                              ),
+                                                              Divider(),
+                                                            ],
+                                                          );
+                                                        }),
+                                                  ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                          ],
+                        ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -734,14 +701,11 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.066,
-                              width: MediaQuery.of(context).size.width * 0.864,
-                            ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.066,
+                            width: MediaQuery.of(context).size.width * 0.864,
                           ),
                         ),
                       ],

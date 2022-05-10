@@ -1,7 +1,9 @@
 import 'package:famfam/settingPage/settingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:famfam/Homepage/HomePage.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HelpPage extends StatelessWidget {
   @override
@@ -46,7 +48,13 @@ class HelpPage extends StatelessWidget {
               height: 10,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Clipboard.setData(ClipboardData(
+                  text: '+66 98 897 9131',
+                ));
+                Fluttertoast.showToast(
+                    msg: "Copied to clipboard.", gravity: ToastGravity.BOTTOM);
+              },
               child: Row(children: [
                 SizedBox(
                   width: 10,
@@ -79,7 +87,13 @@ class HelpPage extends StatelessWidget {
               height: 10,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Clipboard.setData(ClipboardData(
+                  text: 'wutthipat.tortlew@gmail.com',
+                ));
+                Fluttertoast.showToast(
+                    msg: "Copied to clipboard.", gravity: ToastGravity.BOTTOM);
+              },
               child: Row(children: [
                 SizedBox(
                   width: 10,
