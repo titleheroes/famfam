@@ -104,7 +104,11 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
           });
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      setState(() {
+        historyload = false;
+      });
+    }
   }
 
   Future<Null> pullHistoryPinPost() async {
@@ -122,7 +126,11 @@ class _HistoryState extends State<History> with TickerProviderStateMixin {
           });
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      setState(() {
+        historyload = false;
+      });
+    }
   }
 
   Widget build(BuildContext context) {
