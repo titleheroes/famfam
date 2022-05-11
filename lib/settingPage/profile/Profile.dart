@@ -142,168 +142,179 @@ class _ProfileState extends State<Profile> {
           backgroundColor: Color(0xFFF6E5C7),
         ),
         body: profileload
-              ? CircleLoader()
-              : Container(
-          color: Colors.white,
-          child: ListView(
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height / 4,
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 9,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 9,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Color(0xFFF6E5C7),
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(50),
-                            bottomRight: Radius.circular(50),
+            ? CircleLoader()
+            : Container(
+                color: Colors.white,
+                child: ListView(
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height / 4,
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height / 9,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(color: Colors.white),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 10,
-                    child: Container(
-                      width: 200,
-                      height: 200,
-                      // child: Image.network(profile),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(
-                          width: 8,
-                          color: const Color(0xFFFFFFFF),
-                        ),
-                      ),
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.white,
-                        backgroundImage: _imageFile == null
-                            ? NetworkImage(profile) as ImageProvider
-                            : FileImage(
-                                File(_imageFile!.path),
+                        Positioned(
+                          top: 0,
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height / 9,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Color(0xFFF6E5C7),
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(50),
+                                  bottomRight: Radius.circular(50),
+                                ),
                               ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 150,
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      child: ElevatedButton(
-                        child: Icon(
-                          Icons.autorenew_rounded,
-                          color: Colors.black,
-                          size: 30,
+                            ),
+                          ),
                         ),
-                        style: ButtonStyle(
-                          shape: MaterialStateProperty.all(CircleBorder()),
-                          backgroundColor: MaterialStateProperty.resolveWith(
-                              (states) => Colors.white),
-                        ),
-                        onPressed: () {
-                          String profileImage;
-                          profileload = true;
-                          TakePhoto(ImageSource.gallery).then((value) {
-                            uploadPictureToStorage().whenComplete(() async {
-                              if (urlImage == null) {
-                                setState(() {
-                                  profileload = false;
-                                });
-                                return;
-                              } else {
-                                setState(() {
-                                  profileload = true;
-                                });
-                                String uid = userModels[0].uid;
-                                profileImage = Uri.encodeComponent(urlImage!);
-                                String apiInsertUser =
-                                    '${MyConstant.domain}/famfam/updateProfileUserWhereUID.php?isAdd=true&uid=$uid&profileImage=$profileImage';
-                                await Dio()
-                                    .get(apiInsertUser)
-                                    .then((value) async {
-                                  await Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Profile(
-                                        userID: widget.userID,
-                                        circle_id: widget.circle_id,
-                                        profileUser: widget.profileUser,
-                                        profileMem: widget.profileMem,
-                                        profileOwner: widget.profileOwner,
-                                      ),
+                        Positioned(
+                          top: 10,
+                          child: Container(
+                            width: 200,
+                            height: 200,
+                            // child: Image.network(profile),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(100),
+                              border: Border.all(
+                                width: 8,
+                                color: const Color(0xFFFFFFFF),
+                              ),
+                            ),
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.white,
+                              backgroundImage: _imageFile == null
+                                  ? NetworkImage(profile) as ImageProvider
+                                  : FileImage(
+                                      File(_imageFile!.path),
                                     ),
-                                  );
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 150,
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            child: ElevatedButton(
+                              child: Icon(
+                                Icons.autorenew_rounded,
+                                color: Colors.black,
+                                size: 30,
+                              ),
+                              style: ButtonStyle(
+                                shape:
+                                    MaterialStateProperty.all(CircleBorder()),
+                                backgroundColor:
+                                    MaterialStateProperty.resolveWith(
+                                        (states) => Colors.white),
+                              ),
+                              onPressed: () {
+                                String profileImage;
+                                profileload = true;
+                                TakePhoto(ImageSource.gallery).then((value) {
+                                  uploadPictureToStorage()
+                                      .whenComplete(() async {
+                                    if (urlImage == null) {
+                                      setState(() {
+                                        profileload = false;
+                                      });
+                                      return;
+                                    } else {
+                                      setState(() {
+                                        profileload = true;
+                                      });
+                                      String uid = userModels[0].uid;
+                                      profileImage =
+                                          Uri.encodeComponent(urlImage!);
+                                      String apiInsertUser =
+                                          '${MyConstant.domain}/famfam/updateProfileUserWhereUID.php?isAdd=true&uid=$uid&profileImage=$profileImage';
+                                      await Dio()
+                                          .get(apiInsertUser)
+                                          .then((value) async {
+                                        await Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Profile(
+                                              userID: widget.userID,
+                                              circle_id: widget.circle_id,
+                                              profileUser: widget.profileUser,
+                                              profileMem: widget.profileMem,
+                                              profileOwner: widget.profileOwner,
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    }
+                                  });
                                 });
-                              }
-                            });
-                          });
-                        },
-                      ),
+                              },
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${fname} ${lname}',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Builder(builder: (context) {
+                              if (widget.profileUser == 1) {
+                                return IconButton(
+                                  icon: SvgPicture.asset(
+                                      "assets/icons/pencil.svg"),
+                                  onPressed: () async {
+                                    editUserName(context, userModels[0].id!,
+                                        "Name & Surname", fname, lname);
+                                  },
+                                );
+                              } else {
+                                return Container();
+                              }
+                            }),
+                          ],
+                        ),
+                        Text(
+                          'ID: ' + '$userID',
+                          style: TextStyle(
+                              color: Colors.grey[500],
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        headtoppic("Birthdate", birth, 'birth'),
+                        headtoppic("Personal ID", personalID, 'personalID'),
+                        headtoppic("Phone number", phone, 'phone'),
+                        headtoppic("Address", address, 'address'),
+                        headtoppic("Jobs", jobs, 'jobs'),
+                      ],
+                    ),
+                    CheckUser(widget.profileUser!, widget.profileMem!,
+                        widget.profileOwner!),
+                  ],
+                ),
               ),
-              Column(
-                children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${fname} ${lname}',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      IconButton(
-                        icon: SvgPicture.asset("assets/icons/pencil.svg"),
-                        onPressed: () async {
-                          editUserName(context, userModels[0].id!,
-                              "Name & Surname", fname, lname);
-                        },
-                      ),
-                    ],
-                  ),
-                  Text(
-                    'ID: ' + '$userID',
-                    style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  headtoppic("Birthdate", birth, 'birth'),
-                  headtoppic("Personal ID", personalID, 'personalID'),
-                  headtoppic("Phone number", phone, 'phone'),
-                  headtoppic("Address", address, 'address'),
-                  headtoppic("Jobs", jobs, 'jobs'),
-                ],
-              ),
-              CheckUser(widget.profileUser!, widget.profileMem!,
-                  widget.profileOwner!),
-            ],
-          ),
-        ),
       ),
     );
   }
