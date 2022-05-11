@@ -85,7 +85,7 @@ class AboutPage extends StatelessWidget {
               },
               child: Row(children: [
                 Text(
-                  'Pricacy Policy',
+                  'Privacy Policy',
                   style: TextStyle(color: Colors.black, fontSize: 16),
                 ),
                 Spacer(),

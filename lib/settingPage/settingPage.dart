@@ -12,7 +12,6 @@ import 'package:famfam/settingPage/privacy/changepass.dart';
 import 'package:famfam/settingPage/profile/Profile.dart';
 import 'package:famfam/settingPage/about/about.dart';
 import 'package:famfam/settingPage/help/help.dart';
-import 'package:famfam/settingPage/notification/notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -199,20 +198,6 @@ class _settingPageState extends State<settingPage> {
                       );
                     },
                   ),
-                  // ElevatedButton(
-                  //   style: ElevatedButton.styleFrom(
-                  //       primary: Colors.white,
-                  //       padding: EdgeInsets.fromLTRB(30, 20, 0, 20),
-                  //       elevation: 0),
-                  //   child: buttonSettings(
-                  //       'assets/images/Notification.png', "Notification"),
-                  //   onPressed: () {
-                  //     Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) => NotificationPage()));
-                  //   },
-                  // ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         primary: Colors.white,

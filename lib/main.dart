@@ -15,7 +15,6 @@ import 'package:famfam/welcome.dart';
 import 'package:famfam/widgets/circle_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:famfam/services/service_locator.dart';
-import 'package:famfam/settingPage/ezmode/ezmode.dart';
 import 'package:famfam/settingPage/member/member.dart';
 import 'package:famfam/settingPage/profile/Profile.dart';
 import 'package:famfam/settingPage/settingPage.dart';

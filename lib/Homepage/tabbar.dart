@@ -485,66 +485,62 @@ class _tabbarState extends State<tabbar> {
                     ? Container(
                         width: 500,
                         height: 50,
-                        child: Expanded(
-                            child: Container(
-                                child: (count_byUser_Models.length != 0 &&
-                                        have_recommend)
-                                    ? ListView.builder(
-                                        itemCount: count_byUser_Models.length,
-                                        scrollDirection: Axis.horizontal,
-                                        physics: BouncingScrollPhysics(),
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return (int.parse(
-                                                      count_byUser_Models[index]
-                                                          .count) >=
-                                                  5)
-                                              ? Container(
-                                                  //width: 100,
-                                                  margin: EdgeInsets.only(
-                                                      left: index == 0 ? 10 : 6,
-                                                      bottom: 10),
-                                                  child: ElevatedButton(
-                                                      style: ButtonStyle(
-                                                        shape:
-                                                            MaterialStateProperty
-                                                                .all(
-                                                          RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20.0),
-                                                          ),
-                                                        ),
-                                                        backgroundColor:
-                                                            MaterialStateProperty
-                                                                .all<Color>(Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        255,
-                                                                        205,
-                                                                        67)),
+                        child: Container(
+                            child: (count_byUser_Models.length != 0 &&
+                                    have_recommend)
+                                ? ListView.builder(
+                                    itemCount: count_byUser_Models.length,
+                                    scrollDirection: Axis.horizontal,
+                                    physics: BouncingScrollPhysics(),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return (int.parse(
+                                                  count_byUser_Models[index]
+                                                      .count) >=
+                                              5)
+                                          ? Container(
+                                              //width: 100,
+                                              margin: EdgeInsets.only(
+                                                  left: index == 0 ? 10 : 6,
+                                                  bottom: 10),
+                                              child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    shape: MaterialStateProperty
+                                                        .all(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20.0),
                                                       ),
-                                                      onPressed: () {
-                                                        print(
-                                                            '${count_byUser_Models[index].today_i_do_text}');
-                                                        nameController.text =
-                                                            '${count_byUser_Models[index].today_i_do_text}';
-                                                      },
-                                                      child: Text(
-                                                        '${count_byUser_Models[index].today_i_do_text}',
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            color:
-                                                                Colors.black),
-                                                      )),
-                                                )
-                                              : Container();
-                                        },
-                                      )
-                                    : null)),
+                                                    ),
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all<Color>(
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    255,
+                                                                    205,
+                                                                    67)),
+                                                  ),
+                                                  onPressed: () {
+                                                    print(
+                                                        '${count_byUser_Models[index].today_i_do_text}');
+                                                    nameController.text =
+                                                        '${count_byUser_Models[index].today_i_do_text}';
+                                                  },
+                                                  child: Text(
+                                                    '${count_byUser_Models[index].today_i_do_text}',
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.black),
+                                                  )),
+                                            )
+                                          : Container();
+                                    },
+                                  )
+                                : null),
                       )
                     : null,
               ),

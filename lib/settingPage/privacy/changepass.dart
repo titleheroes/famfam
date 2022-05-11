@@ -57,13 +57,17 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ),
               ),
               Container(
-                  padding: EdgeInsets.only(top: 10, left: 25, right: 25),
-                  child: TextField(
-                      controller: OldPassController,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Type your old password',
-                          hintStyle: TextStyle(color: Colors.grey[500])))),
+                padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+                child: TextField(
+                  obscureText: true,
+                  controller: OldPassController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Type your old password',
+                    hintStyle: TextStyle(color: Colors.grey[500]),
+                  ),
+                ),
+              ),
               Container(
                 padding: EdgeInsets.only(top: 15, left: 20),
                 child: Text(
@@ -77,6 +81,7 @@ class _ChangePasswordState extends State<ChangePassword> {
               Container(
                   padding: EdgeInsets.only(top: 10, left: 25, right: 25),
                   child: TextField(
+                      obscureText: true,
                       controller: NewPassController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -95,6 +100,7 @@ class _ChangePasswordState extends State<ChangePassword> {
               Container(
                 padding: EdgeInsets.only(top: 10, left: 25, right: 25),
                 child: TextField(
+                  obscureText: true,
                   controller: RetypePassController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -151,19 +157,20 @@ class _ChangePasswordState extends State<ChangePassword> {
                           print('Wrong password provided for that user.');
                         }
                       }
-                      if (OldPassController == "") {
+                      if (OldPassController.text == "") {
                         Fluttertoast.showToast(
                             msg: "Please insert old password.",
                             gravity: ToastGravity.BOTTOM);
-                      } else if (NewPassController == "") {
+                      } else if (NewPassController.text == "") {
                         Fluttertoast.showToast(
                             msg: "Please insert new password.",
                             gravity: ToastGravity.BOTTOM);
-                      } else if (RetypePassController == "") {
+                      } else if (RetypePassController.text == "") {
                         Fluttertoast.showToast(
                             msg: "Please retype new password.",
                             gravity: ToastGravity.BOTTOM);
-                      } else if (NewPassController != RetypePassController) {
+                      } else if (NewPassController.text !=
+                          RetypePassController.text) {
                         Fluttertoast.showToast(
                             msg:
                                 "Please enter new password as same as retype password.",
@@ -190,7 +197,31 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   ),
                                   // The "No" button
                                   CupertinoDialogAction(
-                                    onPressed: () async {},
+                                    onPressed: () async {
+                                      var user =
+                                          FirebaseAuth.instance.currentUser;
+                                      user!
+                                          .updatePassword(
+                                              NewPassController.text)
+                                          .then((value) {
+                                        print("Successfully changed password");
+                                      }).catchError((error) {
+                                        print("Password can't be changed" +
+                                            error.toString());
+                                        Navigator.pop(context);
+                                        Fluttertoast.showToast(
+                                          msg: "Password can't be changed",
+                                          gravity: ToastGravity.BOTTOM,
+                                        );
+                                      }).then((value) {
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                        Fluttertoast.showToast(
+                                          msg: 'Successfully changed password',
+                                          gravity: ToastGravity.BOTTOM,
+                                        );
+                                      });
+                                    },
                                     child: const Text('Confirm'),
                                     isDefaultAction: true,
                                     isDestructiveAction: true,
